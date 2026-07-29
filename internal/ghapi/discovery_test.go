@@ -8,13 +8,11 @@ import (
 	"reflect"
 	"strings"
 	"testing"
-
-	"gh-contribs/internal/config"
-	"gh-contribs/internal/logging"
 )
 
 // restServer serves a fake GitHub Enterprise REST API from a path -> JSON map.
-// Paths absent from the map return 404.
+// Paths absent from the map return 404. A body may be prefixed with "403|" or
+// "401|" to serve that status instead.
 func restServer(t *testing.T, routes map[string]string) *httptest.Server {
 	t.Helper()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -43,72 +41,23 @@ func restServer(t *testing.T, routes map[string]string) *httptest.Server {
 	return srv
 }
 
-func discoveryClient(t *testing.T, srv *httptest.Server, tokens ...string) *Client {
+// failingGraphQL always errors, forcing DiscoverPeople onto the REST fallback.
+func failingGraphQL(t *testing.T) *httptest.Server {
 	t.Helper()
-	if len(tokens) == 0 {
-		tokens = []string{"test-token"}
-	}
-	return New(
-		WithConfig(config.Config{
-			Host:       "github.example.com",
-			RestBase:   srv.URL + "/api/v3/",
-			UploadBase: srv.URL + "/api/uploads/",
-		}),
-		WithTokenResolver(staticTokens(tokens...)),
-		WithLogger(logging.Nop),
-	)
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, `{"errors":[{"message":"graphql disabled"}]}`)
+	}))
+	t.Cleanup(srv.Close)
+	return srv
 }
 
-func TestDiscoverUserLogins_MergesViewerOrgsAndTeams(t *testing.T) {
-	srv := restServer(t, map[string]string{
-		"/api/v3/user":                            `{"login":"octocat"}`,
-		"/api/v3/user/orgs":                       `[{"login":"acme"}]`,
-		"/api/v3/orgs/acme/members":               `[{"login":"bob"},{"login":"alice"}]`,
-		"/api/v3/user/teams":                      `[{"id":42,"name":"core","organization":{"id":7}}]`,
-		"/api/v3/organizations/7/team/42/members": `[{"login":"carol"},{"login":"alice"}]`,
+func TestRESTFallback_ViewerFailureIsFatal(t *testing.T) {
+	rest := restServer(t, map[string]string{
+		// No /user route, and no teams either, so nothing at all can be found.
 	})
 
-	got, err := discoveryClient(t, srv).DiscoverUserLogins(context.Background())
-	if err != nil {
-		t.Fatalf("DiscoverUserLogins returned error: %v", err)
-	}
-	want := []string{"alice", "bob", "carol", "octocat"}
-	if !reflect.DeepEqual(got, want) {
-		t.Fatalf("logins = %v, want %v (deduped and sorted)", got, want)
-	}
-}
-
-func TestDiscoverUserLogins_SkipsUnreadableOrgsAndTeams(t *testing.T) {
-	srv := restServer(t, map[string]string{
-		"/api/v3/user":              `{"login":"octocat"}`,
-		"/api/v3/user/orgs":         `[{"login":"acme"},{"login":"secret"}]`,
-		"/api/v3/orgs/acme/members": `[{"login":"alice"}]`,
-		// secret's members and the teams endpoint both 403.
-		"/api/v3/orgs/secret/members": `403|{"message":"Forbidden"}`,
-		"/api/v3/user/teams":          `403|{"message":"Forbidden"}`,
-	})
-
-	var logged []string
-	client := discoveryClient(t, srv)
-	WithLogger(func(format string, args ...any) { logged = append(logged, format) })(client)
-
-	got, err := client.DiscoverUserLogins(context.Background())
-	if err != nil {
-		t.Fatalf("partial failures must not fail discovery, got: %v", err)
-	}
-	want := []string{"alice", "octocat"}
-	if !reflect.DeepEqual(got, want) {
-		t.Fatalf("logins = %v, want %v", got, want)
-	}
-	if len(logged) == 0 {
-		t.Fatal("expected the skipped org/team to be logged")
-	}
-}
-
-func TestDiscoverUserLogins_ViewerFailureIsFatal(t *testing.T) {
-	srv := restServer(t, map[string]string{})
-
-	_, err := discoveryClient(t, srv).DiscoverUserLogins(context.Background())
+	_, err := peopleClient(t, failingGraphQL(t).URL, rest.URL).DiscoverPeople(context.Background())
 	if err == nil {
 		t.Fatal("expected an error when the viewer lookup fails")
 	}
@@ -117,12 +66,12 @@ func TestDiscoverUserLogins_ViewerFailureIsFatal(t *testing.T) {
 	}
 }
 
-func TestDiscoverUserLogins_OrgListFailureIsFatal(t *testing.T) {
-	srv := restServer(t, map[string]string{
+func TestRESTFallback_OrgListFailureIsFatal(t *testing.T) {
+	rest := restServer(t, map[string]string{
 		"/api/v3/user": `{"login":"octocat"}`,
 	})
 
-	_, err := discoveryClient(t, srv).DiscoverUserLogins(context.Background())
+	_, err := peopleClient(t, failingGraphQL(t).URL, rest.URL).DiscoverPeople(context.Background())
 	if err == nil {
 		t.Fatal("expected an error when the org listing fails")
 	}
@@ -131,10 +80,42 @@ func TestDiscoverUserLogins_OrgListFailureIsFatal(t *testing.T) {
 	}
 }
 
-func TestDiscoverUserLogins_FallsBackToNextTokenOn401(t *testing.T) {
+func TestRESTFallback_SkipsUnreadableOrgs(t *testing.T) {
+	rest := restServer(t, map[string]string{
+		"/api/v3/user":                `{"login":"octocat"}`,
+		"/api/v3/user/orgs":           `[{"login":"acme"},{"login":"secret"}]`,
+		"/api/v3/orgs/acme/members":   `[{"login":"alice"}]`,
+		"/api/v3/orgs/secret/members": `403|{"message":"Forbidden"}`,
+		"/api/v3/user/teams":          `[]`,
+	})
+
+	var logged []string
+	client := peopleClient(t, failingGraphQL(t).URL, rest.URL)
+	WithLogger(func(format string, args ...any) { logged = append(logged, format) })(client)
+
+	people, err := client.DiscoverPeople(context.Background())
+	if err != nil {
+		t.Fatalf("partial failures must not fail discovery, got: %v", err)
+	}
+
+	got := make([]string, 0, len(people))
+	for _, p := range people {
+		got = append(got, p.Login)
+	}
+	if !reflect.DeepEqual(got, []string{"alice", "octocat"}) {
+		t.Fatalf("logins = %v, want the readable org plus the viewer", got)
+	}
+	if len(logged) == 0 {
+		t.Fatal("expected the skipped org to be logged")
+	}
+}
+
+func TestDiscoverPeople_FallsBackToNextTokenOn401(t *testing.T) {
 	calls := 0
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/api/v3/user" {
+	rest := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch r.URL.Path {
+		case "/api/v3/user":
 			calls++
 			if strings.Contains(r.Header.Get("Authorization"), "bad") {
 				w.WriteHeader(http.StatusUnauthorized)
@@ -142,22 +123,23 @@ func TestDiscoverUserLogins_FallsBackToNextTokenOn401(t *testing.T) {
 				return
 			}
 			io.WriteString(w, `{"login":"octocat"}`)
-			return
-		}
-		if r.URL.Path == "/api/v3/user/orgs" {
+		default:
 			io.WriteString(w, `[]`)
-			return
 		}
-		io.WriteString(w, `[]`)
 	}))
-	t.Cleanup(srv.Close)
+	t.Cleanup(rest.Close)
 
-	got, err := discoveryClient(t, srv, "bad", "good").DiscoverUserLogins(context.Background())
+	client := New(
+		WithConfig(testConfig(failingGraphQL(t).URL, rest.URL)),
+		WithTokenResolver(staticTokens("bad", "good")),
+	)
+
+	people, err := client.DiscoverPeople(context.Background())
 	if err != nil {
 		t.Fatalf("expected fallback to the second token, got: %v", err)
 	}
-	if !reflect.DeepEqual(got, []string{"octocat"}) {
-		t.Fatalf("logins = %v", got)
+	if len(people) != 1 || people[0].Login != "octocat" {
+		t.Fatalf("people = %+v", people)
 	}
 	if calls != 2 {
 		t.Fatalf("viewer lookups = %d, want 2 (one per token)", calls)

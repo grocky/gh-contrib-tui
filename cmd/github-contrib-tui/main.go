@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
@@ -100,6 +102,13 @@ func main() {
 	app := tview.NewApplication()
 	status := tview.NewTextView().SetDynamicColors(true)
 	status.SetBorder(true).SetTitle("Status")
+	logView := tview.NewTextView().SetDynamicColors(true).SetScrollable(true)
+	logView.SetBorder(true).SetTitle("Logs")
+	logView.SetChangedFunc(func() { app.Draw() })
+
+	logf := func(format string, args ...any) {
+		fmt.Fprintf(logView, "%s %s\n", time.Now().Format("15:04:05"), fmt.Sprintf(format, args...))
+	}
 
 	userField := tview.NewInputField().SetLabel("User: ")
 	fromField := tview.NewInputField().SetLabel("From (YYYY-MM-DD): ")
@@ -124,18 +133,22 @@ func main() {
 		to := strings.TrimSpace(toField.GetText())
 		if username == "" {
 			status.SetText("[red]user is required")
+			logf("[red]validation failed: username is empty[-]")
 			return
 		}
 		fromTS, toTS, err := parseRange(from, to)
 		if err != nil {
 			status.SetText("[red]" + err.Error())
+			logf("[red]validation failed: %v[-]", err)
 			return
 		}
 
 		status.SetText("[yellow]loading contributions...")
-		resp, err := fetchContributions(context.Background(), username, fromTS, toTS)
+		logf("[yellow]fetch start user=%s from=%s to=%s[-]", username, fromTS, toTS)
+		resp, err := fetchContributions(context.Background(), username, fromTS, toTS, logf)
 		if err != nil {
 			status.SetText("[red]" + err.Error())
+			logf("[red]fetch failed: %v[-]", err)
 			return
 		}
 		renderSummary(summary, resp)
@@ -143,6 +156,7 @@ func main() {
 		prs := collectPRs(resp)
 		renderPRList(prList, prDetail, prs)
 		status.SetText(fmt.Sprintf("[green]loaded %d PR references", len(prs)))
+		logf("[green]fetch complete total=%d prs=%d[-]", resp.Data.User.ContributionsCollection.ContributionCalendar.TotalContributions, len(prs))
 	}
 
 	form := tview.NewForm().
@@ -155,7 +169,8 @@ func main() {
 	left := tview.NewFlex().SetDirection(tview.FlexRow).
 		AddItem(form, 11, 0, true).
 		AddItem(summary, 10, 0, false).
-		AddItem(status, 3, 0, false)
+		AddItem(status, 3, 0, false).
+		AddItem(logView, 0, 1, false)
 
 	right := tview.NewFlex().SetDirection(tview.FlexRow).
 		AddItem(heatmap, 0, 3, false).
@@ -216,33 +231,23 @@ func main() {
 	}
 }
 
-func fetchContributions(ctx context.Context, username, fromISO, toISO string) (*contributionResponse, error) {
-	token := strings.TrimSpace(os.Getenv("GITHUB_TOKEN"))
-	if token == "" {
-		return nil, errors.New("set GITHUB_TOKEN for api access")
-	}
-	baseURL := strings.TrimSpace(os.Getenv("GITHUB_BASE_URL"))
-	uploadURL := strings.TrimSpace(os.Getenv("GITHUB_UPLOAD_URL"))
-	if baseURL == "" {
-		baseURL = "https://github.com/api/v3/"
-	}
-	if uploadURL == "" {
-		uploadURL = "https://github.com/api/uploads/"
-	}
-	if !strings.HasSuffix(baseURL, "/") {
-		baseURL += "/"
-	}
-	if !strings.HasSuffix(uploadURL, "/") {
-		uploadURL += "/"
-	}
-
-	src := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	httpClient := oauth2.NewClient(ctx, src)
-
-	client, err := github.NewEnterpriseClient(baseURL, uploadURL, httpClient)
+func fetchContributions(ctx context.Context, username, fromISO, toISO string, logf func(string, ...any)) (*contributionResponse, error) {
+	tokens, err := resolveTokenCandidates()
 	if err != nil {
-		return nil, fmt.Errorf("enterprise client setup failed: %w", err)
+		return nil, err
 	}
+	host := strings.TrimSpace(os.Getenv("GITHUB_HOSTNAME"))
+	if host == "" {
+		host = resolveGitHubHost()
+	}
+	if host == "" {
+		host = "github.com"
+	}
+	baseURL, uploadURL, graphqlURL := buildGitHubEndpoints(host)
+	logf("[gray]rest base=%s[-]", baseURL)
+	logf("[gray]upload base=%s[-]", uploadURL)
+	logf("[gray]graphql endpoint=%s[-]", graphqlURL)
+	logf("[gray]host source=%s[-]", host)
 
 	query := `query($login: String!, $from: DateTime!, $to: DateTime!) {
   user(login: $login) {
@@ -306,24 +311,180 @@ func fetchContributions(ctx context.Context, username, fromISO, toISO string) (*
 		return nil, err
 	}
 
-	req, err := client.NewRequest("POST", "graphql", bytes.NewReader(payload))
-	if err != nil {
-		return nil, err
+	schemes := []authScheme{
+		{Name: "Bearer", Prefix: "Bearer "},
+		{Name: "token", Prefix: "token "},
 	}
-	req.Header.Set("Content-Type", "application/json")
+	for i, candidate := range tokens {
+		logf("[gray]token source=%s (attempt %d/%d) fingerprint=%s[-]", candidate.Source, i+1, len(tokens), tokenFingerprint(candidate.Token))
+		src := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: candidate.Token})
+		httpClient := oauth2.NewClient(ctx, src)
+		_, err = github.NewEnterpriseClient(baseURL, uploadURL, httpClient)
+		if err != nil {
+			return nil, fmt.Errorf("enterprise client setup failed: %w", err)
+		}
 
-	resp := &contributionResponse{}
-	_, err = client.Do(ctx, req, resp)
-	if err != nil {
-		return nil, err
+		for j, scheme := range schemes {
+			req, err := http.NewRequestWithContext(ctx, http.MethodPost, graphqlURL, bytes.NewReader(payload))
+			if err != nil {
+				return nil, err
+			}
+			req.Header.Set("Authorization", scheme.Prefix+candidate.Token)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("User-Agent", "gh-contribs-tui")
+
+			resp := &contributionResponse{}
+			httpResp, err := httpClient.Do(req)
+			if err != nil {
+				return nil, fmt.Errorf("graphql request failed: %w", err)
+			}
+			body, readErr := io.ReadAll(httpResp.Body)
+			httpResp.Body.Close()
+			if readErr != nil {
+				return nil, fmt.Errorf("reading graphql response failed: %w", readErr)
+			}
+
+			logf("[gray]auth=%s http status=%d[-]", scheme.Name, httpResp.StatusCode)
+			if httpResp.StatusCode == http.StatusUnauthorized && (j < len(schemes)-1 || i < len(tokens)-1) {
+				logf("[yellow]401 with %s/%s, trying next auth source[-]", candidate.Source, scheme.Name)
+				continue
+			}
+			if httpResp.StatusCode >= 300 {
+				msg := strings.TrimSpace(string(body))
+				if len(msg) > 400 {
+					msg = msg[:400] + "...(truncated)"
+				}
+				return nil, fmt.Errorf("graphql http %d: %s", httpResp.StatusCode, msg)
+			}
+			if err := json.Unmarshal(body, resp); err != nil {
+				return nil, fmt.Errorf("decode graphql response failed: %w", err)
+			}
+			if len(resp.Errors) > 0 {
+				return nil, errors.New(resp.Errors[0].Message)
+			}
+			if resp.Data.User.Login == "" {
+				return nil, errors.New("user not found or inaccessible")
+			}
+			return resp, nil
+		}
 	}
-	if len(resp.Errors) > 0 {
-		return nil, errors.New(resp.Errors[0].Message)
+	return nil, errors.New("all token sources failed with 401; refresh credentials")
+}
+
+type tokenCandidate struct {
+	Source string
+	Token  string
+}
+
+type authScheme struct {
+	Name   string
+	Prefix string
+}
+
+func resolveTokenCandidates() ([]tokenCandidate, error) {
+	candidates := make([]tokenCandidate, 0, 3)
+	if tok := strings.TrimSpace(os.Getenv("GITHUB_TOKEN")); tok != "" {
+		candidates = append(candidates, tokenCandidate{Source: "GITHUB_TOKEN", Token: tok})
 	}
-	if resp.Data.User.Login == "" {
-		return nil, errors.New("user not found or inaccessible")
+	if tok := strings.TrimSpace(os.Getenv("GH_TOKEN")); tok != "" {
+		candidates = append(candidates, tokenCandidate{Source: "GH_TOKEN", Token: tok})
 	}
-	return resp, nil
+	if _, err := exec.LookPath("gh"); err == nil {
+		out, err := exec.Command("gh", "auth", "token").Output()
+		if err == nil {
+			tok := strings.TrimSpace(string(out))
+			if tok != "" {
+				candidates = append(candidates, tokenCandidate{Source: "gh auth token", Token: tok})
+			}
+		}
+	}
+	if len(candidates) == 0 {
+		return nil, errors.New("no token found; set GITHUB_TOKEN or GH_TOKEN, or run `gh auth login`")
+	}
+	return dedupeTokenCandidates(candidates), nil
+}
+
+func dedupeTokenCandidates(in []tokenCandidate) []tokenCandidate {
+	seen := map[string]struct{}{}
+	out := make([]tokenCandidate, 0, len(in))
+	for _, c := range in {
+		if _, ok := seen[c.Token]; ok {
+			continue
+		}
+		seen[c.Token] = struct{}{}
+		out = append(out, c)
+	}
+	return out
+}
+
+func tokenFingerprint(token string) string {
+	if len(token) <= 8 {
+		return fmt.Sprintf("len:%d", len(token))
+	}
+	return fmt.Sprintf("%s...%s(len:%d)", token[:4], token[len(token)-4:], len(token))
+}
+
+func resolveGitHubHost() string {
+	if h := strings.TrimSpace(os.Getenv("GH_HOST")); h != "" {
+		return h
+	}
+	if _, err := exec.LookPath("gh"); err == nil {
+		out, err := exec.Command("gh", "auth", "status").CombinedOutput()
+		if err == nil {
+			clean := stripANSICodes(string(out))
+			lines := strings.Split(clean, "\n")
+			for _, line := range lines {
+				line = strings.TrimSpace(line)
+				if line == "" || strings.HasPrefix(line, "✓") || strings.HasPrefix(line, "-") {
+					continue
+				}
+				if strings.Contains(line, ".") && !strings.Contains(line, " ") {
+					return line
+				}
+			}
+		}
+	}
+	return ""
+}
+
+func buildGitHubEndpoints(host string) (string, string, string) {
+	host = strings.TrimSpace(strings.ToLower(host))
+	host = strings.TrimPrefix(host, "https://")
+	host = strings.TrimPrefix(host, "http://")
+	host = strings.TrimSuffix(host, "/")
+
+	switch host {
+	case "github.com", "www.github.com", "api.github.com":
+		return "https://api.github.com/", "https://uploads.github.com/", "https://api.github.com/graphql"
+	default:
+		return fmt.Sprintf("https://%s/api/v3/", host),
+			fmt.Sprintf("https://%s/api/uploads/", host),
+			fmt.Sprintf("https://%s/api/graphql", host)
+	}
+}
+
+func stripANSICodes(s string) string {
+	var b strings.Builder
+	b.Grow(len(s))
+	i := 0
+	for i < len(s) {
+		if s[i] == 0x1b && i+1 < len(s) && s[i+1] == '[' {
+			i += 2
+			for i < len(s) {
+				c := s[i]
+				if (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') {
+					i++
+					break
+				}
+				i++
+			}
+			continue
+		}
+		b.WriteByte(s[i])
+		i++
+	}
+	return b.String()
 }
 
 func parseRange(from, to string) (string, string, error) {

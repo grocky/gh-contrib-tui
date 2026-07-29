@@ -34,6 +34,12 @@ type Event struct {
 // palette adapts to the user instead of assuming a fixed daily volume.
 var heatLevels = []string{"#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"}
 
+// HeatLevels returns the calendar shades in order, lightest first, so a
+// renderer can draw a legend that matches the days it is drawing.
+func HeatLevels() []string {
+	return append([]string(nil), heatLevels...)
+}
+
 // NewCollection folds raw events into a report collection: deduplicated and
 // sorted newest first, counted by kind, and laid out as a calendar covering
 // the whole queried window.

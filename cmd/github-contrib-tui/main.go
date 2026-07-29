@@ -24,6 +24,7 @@ func run() error {
 	client := ghapi.New(ghapi.WithLogger(app.Logf))
 
 	app.SetService(client)
+	app.SetHost(client.Config().Host)
 	app.SetDirectoryCache(directorycache.Open(client.Config().Host))
 	return app.Run()
 }

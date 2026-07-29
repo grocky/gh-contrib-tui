@@ -10,7 +10,9 @@ import (
 
 const (
 	// maxSuggestions caps how many autocomplete entries the input field offers.
-	maxSuggestions = 50
+	// The dropdown grows to fit its contents, so this is kept small enough that
+	// it never swallows the rest of the layout.
+	maxSuggestions = 10
 
 	// entrySeparator joins a login to its display name in a dropdown entry.
 	// Logins cannot contain spaces, so the login is always the first field.
@@ -43,7 +45,15 @@ func (s *suggestionStore) len() int {
 
 // entries returns dropdown labels for the query. tview inserts the selected
 // label verbatim, so loginFromEntry is used to recover the bare login.
+//
+// An empty query yields nothing: a directory of hundreds of colleagues would
+// otherwise pop open over the whole layout the moment the field takes focus.
+// The list appears once the user starts typing.
 func (s *suggestionStore) entries(query string) []string {
+	if strings.TrimSpace(query) == "" {
+		return nil
+	}
+
 	s.mu.RLock()
 	directory := s.directory
 	s.mu.RUnlock()

@@ -287,7 +287,8 @@ func (a *App) refreshDirectory(forced bool) {
 // The refresh matters: tview only invokes the autocomplete callback when the
 // field text changes, on the down arrow, or when Autocomplete is called
 // explicitly. Without this call, suggestions that arrive after the widget was
-// built stay invisible until the user edits the field.
+// built stay invisible until the user edits the field. When the field is still
+// empty the callback returns nothing, so this is a no-op -- as intended.
 func (a *App) applyPeople(people []contrib.Person, source string) {
 	directory := contrib.NewDirectory(people)
 	a.suggest.set(directory)

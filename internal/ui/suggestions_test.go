@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -101,15 +102,29 @@ func TestSuggestionStore_EntriesAreRenderedAndRanked(t *testing.T) {
 	}
 }
 
-func TestSuggestionStore_EmptyQueryListsDirectory(t *testing.T) {
+// Nothing is offered until the user types: an unfiltered directory would cover
+// the layout as soon as the field takes focus.
+func TestSuggestionStore_EmptyQueryOffersNothing(t *testing.T) {
 	var store suggestionStore
 	store.set(contrib.NewDirectory(testPeople()))
 
-	got := store.entries("")
-	if len(got) != 3 {
-		t.Fatalf("entries = %v, want all three people", got)
+	for _, query := range []string{"", " ", "\t"} {
+		if got := store.entries(query); got != nil {
+			t.Fatalf("entries(%q) = %v, want no suggestions", query, got)
+		}
 	}
-	// Active people sort ahead of the suspended account.
+}
+
+func TestSuggestionStore_RanksSuspendedAccountsLast(t *testing.T) {
+	var store suggestionStore
+	store.set(contrib.NewDirectory(testPeople()))
+
+	// Every test person's name contains a comma-separated surname, so "a"
+	// matches all three: enough to compare their order.
+	got := store.entries("a")
+	if len(got) != 3 {
+		t.Fatalf("entries(\"a\") = %v, want all three people", got)
+	}
 	if got[len(got)-1] != "Bianchi-Priya — Bianchi, Priya [USA] (suspended)" {
 		t.Fatalf("expected the suspended account last, got %v", got)
 	}
@@ -130,14 +145,15 @@ func TestSuggestionStore_RespectsMaxSuggestions(t *testing.T) {
 	people := make([]contrib.Person, 0, maxSuggestions+10)
 	for i := 0; i < maxSuggestions+10; i++ {
 		people = append(people, contrib.Person{
-			Login:  string(rune('a'+i%26)) + "-user-" + string(rune('a'+i/26)) + string(rune('a'+i%26)),
+			Login:  fmt.Sprintf("user-%02d", i),
 			Active: true,
 		})
 	}
 	var store suggestionStore
 	store.set(contrib.NewDirectory(people))
 
-	if got := len(store.entries("")); got != maxSuggestions {
+	// Every login shares the "user-" prefix, so the query matches all of them.
+	if got := len(store.entries("user-")); got != maxSuggestions {
 		t.Fatalf("entries = %d, want the %d cap", got, maxSuggestions)
 	}
 }

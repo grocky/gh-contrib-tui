@@ -114,7 +114,7 @@ func main() {
 	heatmap.SetBorder(true).SetTitle("Contribution Calendar")
 
 	prList := tview.NewList().ShowSecondaryText(true)
-	prList.SetBorder(true).SetTitle("PR References (Enter=open, y=copy URL)")
+	prList.SetBorder(true).SetTitle("PR References (Enter=open, Ctrl+Y=copy URL)")
 	prDetail := tview.NewTextView().SetDynamicColors(true)
 	prDetail.SetBorder(true).SetTitle("Selected PR URL")
 
@@ -187,15 +187,13 @@ func main() {
 		case tcell.KeyCtrlC:
 			app.Stop()
 			return nil
-		}
-		switch ev.Rune() {
-		case 'q':
+		case tcell.KeyCtrlQ:
 			app.Stop()
 			return nil
-		case 'r':
+		case tcell.KeyCtrlR:
 			fetchAndRender()
 			return nil
-		case 'y':
+		case tcell.KeyCtrlY:
 			url := strings.TrimSpace(prDetail.GetText(false))
 			if url == "" {
 				status.SetText("[red]no PR selected")

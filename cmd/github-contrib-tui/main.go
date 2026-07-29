@@ -1,23 +1,22 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/google/go-github/v66/github"
 	"github.com/rivo/tview"
+	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
 )
 
@@ -25,69 +24,62 @@ const (
 	dateFormat = "2006-01-02"
 )
 
-type graphQLRequest struct {
-	Query     string            `json:"query"`
-	Variables map[string]string `json:"variables"`
-}
-
-type graphQLError struct {
-	Message string `json:"message"`
-}
-
 type contributionResponse struct {
-	Data struct {
-		User struct {
-			Login                   string `json:"login"`
-			Name                    string `json:"name"`
-			ContributionsCollection struct {
-				StartedAt                         time.Time `json:"startedAt"`
-				EndedAt                           time.Time `json:"endedAt"`
-				TotalCommitContributions          int       `json:"totalCommitContributions"`
-				TotalIssueContributions           int       `json:"totalIssueContributions"`
-				TotalPullRequestContributions     int       `json:"totalPullRequestContributions"`
-				TotalPullRequestReviewContributions int     `json:"totalPullRequestReviewContributions"`
-				ContributionCalendar              struct {
-					TotalContributions int `json:"totalContributions"`
-					Weeks              []struct {
-						ContributionDays []struct {
-							Date              string `json:"date"`
-							ContributionCount int    `json:"contributionCount"`
-							Color             string `json:"color"`
-						} `json:"contributionDays"`
-					} `json:"weeks"`
-				} `json:"contributionCalendar"`
-				PullRequestContributionsByRepository []struct {
-					Repository struct {
-						NameWithOwner string `json:"nameWithOwner"`
-					} `json:"repository"`
-					Contributions struct {
-						Nodes []struct {
-							PullRequest struct {
-								Title string `json:"title"`
-								URL   string `json:"url"`
-							} `json:"pullRequest"`
-							OccurredAt time.Time `json:"occurredAt"`
-						} `json:"nodes"`
-					} `json:"contributions"`
-				} `json:"pullRequestContributionsByRepository"`
-				PullRequestReviewContributionsByRepository []struct {
-					Repository struct {
-						NameWithOwner string `json:"nameWithOwner"`
-					} `json:"repository"`
-					Contributions struct {
-						Nodes []struct {
-							PullRequest struct {
-								Title string `json:"title"`
-								URL   string `json:"url"`
-							} `json:"pullRequest"`
-							OccurredAt time.Time `json:"occurredAt"`
-						} `json:"nodes"`
-					} `json:"contributions"`
-				} `json:"pullRequestReviewContributionsByRepository"`
-			} `json:"contributionsCollection"`
-		} `json:"user"`
-	} `json:"data"`
-	Errors []graphQLError `json:"errors"`
+	Data contributionData
+}
+
+type contributionData struct {
+	User contributionUser
+}
+
+type contributionUser struct {
+	Login                   string
+	Name                    string
+	ContributionsCollection contributionCollection
+}
+
+type contributionCollection struct {
+	StartedAt                             time.Time
+	EndedAt                               time.Time
+	TotalCommitContributions              int
+	TotalIssueContributions               int
+	TotalPullRequestContributions         int
+	TotalPullRequestReviewContributions   int
+	ContributionCalendar                  contributionCalendar
+	PullRequestContributionsByRepository  []prContributionByRepo
+	PullRequestReviewContributionsByRepository []prContributionByRepo
+}
+
+type contributionCalendar struct {
+	TotalContributions int
+	Weeks              []contributionWeek
+}
+
+type contributionWeek struct {
+	ContributionDays []contributionDay
+}
+
+type contributionDay struct {
+	Date              string
+	ContributionCount int
+	Color             string
+}
+
+type prContributionByRepo struct {
+	Repository struct {
+		NameWithOwner string
+	}
+	Contributions struct {
+		Nodes []prContributionNode
+	}
+}
+
+type prContributionNode struct {
+	PullRequest struct {
+		Title string
+		URL   string
+	}
+	OccurredAt time.Time
 }
 
 type prItem struct {
@@ -96,6 +88,13 @@ type prItem struct {
 	Repo       string
 	Title      string
 	URL        string
+}
+
+type appConfig struct {
+	Host       string
+	RestBase   string
+	UploadBase string
+	GraphQLURL string
 }
 
 func main() {
@@ -114,6 +113,33 @@ func main() {
 	fromField := tview.NewInputField().SetLabel("From (YYYY-MM-DD): ")
 	toField := tview.NewInputField().SetLabel("To (YYYY-MM-DD): ")
 	userField.SetText(os.Getenv("GH_USER"))
+	userSuggestions := make([]string, 0)
+	var suggestionsMu sync.RWMutex
+	userField.SetAutocompleteFunc(func(currentText string) (entries []string) {
+		q := strings.ToLower(strings.TrimSpace(currentText))
+		suggestionsMu.RLock()
+		defer suggestionsMu.RUnlock()
+		if len(userSuggestions) == 0 {
+			return nil
+		}
+		if q == "" {
+			limit := 25
+			if len(userSuggestions) < limit {
+				limit = len(userSuggestions)
+			}
+			return append([]string(nil), userSuggestions[:limit]...)
+		}
+		out := make([]string, 0, 25)
+		for _, u := range userSuggestions {
+			if strings.Contains(strings.ToLower(u), q) {
+				out = append(out, u)
+				if len(out) >= 25 {
+					break
+				}
+			}
+		}
+		return out
+	})
 
 	summary := tview.NewTextView().SetDynamicColors(true)
 	summary.SetBorder(true).SetTitle("Contribution Summary")
@@ -225,6 +251,22 @@ func main() {
 	})
 
 	prDetail.SetText("")
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		users, err := discoverTeammateLogins(ctx, logf)
+		app.QueueUpdateDraw(func() {
+			if err != nil {
+				logf("[yellow]user discovery unavailable: %v[-]", err)
+				return
+			}
+			suggestionsMu.Lock()
+			userSuggestions = users
+			suggestionsMu.Unlock()
+			logf("[green]loaded %d user suggestions[-]", len(users))
+		})
+	}()
+
 	if err := app.SetRoot(layout, true).Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "tui failed: %v\n", err)
 		os.Exit(1)
@@ -236,79 +278,17 @@ func fetchContributions(ctx context.Context, username, fromISO, toISO string, lo
 	if err != nil {
 		return nil, err
 	}
-	host := strings.TrimSpace(os.Getenv("GITHUB_HOSTNAME"))
-	if host == "" {
-		host = resolveGitHubHost()
-	}
-	if host == "" {
-		host = "github.com"
-	}
-	baseURL, uploadURL, graphqlURL := buildGitHubEndpoints(host)
-	logf("[gray]rest base=%s[-]", baseURL)
-	logf("[gray]upload base=%s[-]", uploadURL)
-	logf("[gray]graphql endpoint=%s[-]", graphqlURL)
-	logf("[gray]host source=%s[-]", host)
-
-	query := `query($login: String!, $from: DateTime!, $to: DateTime!) {
-  user(login: $login) {
-    login
-    name
-    contributionsCollection(from: $from, to: $to) {
-      startedAt
-      endedAt
-      totalCommitContributions
-      totalIssueContributions
-      totalPullRequestContributions
-      totalPullRequestReviewContributions
-      contributionCalendar {
-        totalContributions
-        weeks {
-          contributionDays {
-            date
-            contributionCount
-            color
-          }
-        }
-      }
-      pullRequestContributionsByRepository(maxRepositories: 100) {
-        repository { nameWithOwner }
-        contributions(first: 100) {
-          nodes {
-            occurredAt
-            pullRequest {
-              title
-              url
-            }
-          }
-        }
-      }
-      pullRequestReviewContributionsByRepository(maxRepositories: 100) {
-        repository { nameWithOwner }
-        contributions(first: 100) {
-          nodes {
-            occurredAt
-            pullRequest {
-              title
-              url
-            }
-          }
-        }
-      }
-    }
-  }
-}`
-
-	reqBody := graphQLRequest{
-		Query: query,
-		Variables: map[string]string{
-			"login": username,
-			"from":  fromISO,
-			"to":    toISO,
-		},
-	}
-	payload, err := json.Marshal(reqBody)
+	cfg := resolveAppConfig()
+	logf("[gray]rest base=%s[-]", cfg.RestBase)
+	logf("[gray]graphql endpoint=%s[-]", cfg.GraphQLURL)
+	logf("[gray]host source=%s[-]", cfg.Host)
+	fromTime, err := time.Parse(time.RFC3339, fromISO)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid from timestamp: %w", err)
+	}
+	toTime, err := time.Parse(time.RFC3339, toISO)
+	if err != nil {
+		return nil, fmt.Errorf("invalid to timestamp: %w", err)
 	}
 
 	schemes := []authScheme{
@@ -319,50 +299,82 @@ func fetchContributions(ctx context.Context, username, fromISO, toISO string, lo
 		logf("[gray]token source=%s (attempt %d/%d) fingerprint=%s[-]", candidate.Source, i+1, len(tokens), tokenFingerprint(candidate.Token))
 		src := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: candidate.Token})
 		httpClient := oauth2.NewClient(ctx, src)
-		_, err = github.NewEnterpriseClient(baseURL, uploadURL, httpClient)
-		if err != nil {
-			return nil, fmt.Errorf("enterprise client setup failed: %w", err)
-		}
-
 		for j, scheme := range schemes {
-			req, err := http.NewRequestWithContext(ctx, http.MethodPost, graphqlURL, bytes.NewReader(payload))
+			client, err := newGraphQLClient(cfg.GraphQLURL, httpClient)
 			if err != nil {
 				return nil, err
 			}
-			req.Header.Set("Authorization", scheme.Prefix+candidate.Token)
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Accept", "application/json")
-			req.Header.Set("User-Agent", "gh-contribs-tui")
 
-			resp := &contributionResponse{}
-			httpResp, err := httpClient.Do(req)
+			var q struct {
+				User struct {
+					Login                   githubv4.String
+					Name                    githubv4.String
+					ContributionsCollection struct {
+						StartedAt                           githubv4.DateTime
+						EndedAt                             githubv4.DateTime
+						TotalCommitContributions            githubv4.Int
+						TotalIssueContributions             githubv4.Int
+						TotalPullRequestContributions       githubv4.Int
+						TotalPullRequestReviewContributions githubv4.Int
+						ContributionCalendar                struct {
+							TotalContributions githubv4.Int
+							Weeks              []struct {
+								ContributionDays []struct {
+									Date              githubv4.String
+									ContributionCount githubv4.Int
+									Color             githubv4.String
+								}
+							}
+						}
+						PullRequestContributionsByRepository []struct {
+							Repository struct {
+								NameWithOwner githubv4.String
+							}
+							Contributions struct {
+								Nodes []struct {
+									OccurredAt  githubv4.DateTime
+									PullRequest struct {
+										Title githubv4.String
+										URL   githubv4.URI
+									}
+								}
+							} `graphql:"contributions(first: 100)"`
+						} `graphql:"pullRequestContributionsByRepository(maxRepositories: 100)"`
+						PullRequestReviewContributionsByRepository []struct {
+							Repository struct {
+								NameWithOwner githubv4.String
+							}
+							Contributions struct {
+								Nodes []struct {
+									OccurredAt  githubv4.DateTime
+									PullRequest struct {
+										Title githubv4.String
+										URL   githubv4.URI
+									}
+								}
+							} `graphql:"contributions(first: 100)"`
+						} `graphql:"pullRequestReviewContributionsByRepository(maxRepositories: 100)"`
+					} `graphql:"contributionsCollection(from: $from, to: $to)"`
+				} `graphql:"user(login: $login)"`
+			}
+
+			vars := map[string]any{
+				"login": githubv4.String(username),
+				"from":  githubv4.DateTime{Time: fromTime},
+				"to":    githubv4.DateTime{Time: toTime},
+			}
+
+			err = client.Query(ctx, &q, vars)
 			if err != nil {
-				return nil, fmt.Errorf("graphql request failed: %w", err)
-			}
-			body, readErr := io.ReadAll(httpResp.Body)
-			httpResp.Body.Close()
-			if readErr != nil {
-				return nil, fmt.Errorf("reading graphql response failed: %w", readErr)
+				logf("[gray]auth=%s graphql query failed: %v[-]", scheme.Name, err)
+				if isUnauthorizedErr(err) && (j < len(schemes)-1 || i < len(tokens)-1) {
+					logf("[yellow]401 with %s/%s, trying next auth source[-]", candidate.Source, scheme.Name)
+					continue
+				}
+				return nil, fmt.Errorf("graphql query failed: %w", err)
 			}
 
-			logf("[gray]auth=%s http status=%d[-]", scheme.Name, httpResp.StatusCode)
-			if httpResp.StatusCode == http.StatusUnauthorized && (j < len(schemes)-1 || i < len(tokens)-1) {
-				logf("[yellow]401 with %s/%s, trying next auth source[-]", candidate.Source, scheme.Name)
-				continue
-			}
-			if httpResp.StatusCode >= 300 {
-				msg := strings.TrimSpace(string(body))
-				if len(msg) > 400 {
-					msg = msg[:400] + "...(truncated)"
-				}
-				return nil, fmt.Errorf("graphql http %d: %s", httpResp.StatusCode, msg)
-			}
-			if err := json.Unmarshal(body, resp); err != nil {
-				return nil, fmt.Errorf("decode graphql response failed: %w", err)
-			}
-			if len(resp.Errors) > 0 {
-				return nil, errors.New(resp.Errors[0].Message)
-			}
+			resp := mapGraphQLResult(q)
 			if resp.Data.User.Login == "" {
 				return nil, errors.New("user not found or inaccessible")
 			}
@@ -425,6 +437,123 @@ func tokenFingerprint(token string) string {
 	return fmt.Sprintf("%s...%s(len:%d)", token[:4], token[len(token)-4:], len(token))
 }
 
+func newGraphQLClient(graphqlURL string, httpClient *http.Client) (*githubv4.Client, error) {
+	if graphqlURL == "https://api.github.com/graphql" {
+		return githubv4.NewClient(httpClient), nil
+	}
+	return githubv4.NewEnterpriseClient(graphqlURL, httpClient), nil
+}
+
+func isUnauthorizedErr(err error) bool {
+	s := strings.ToLower(err.Error())
+	return strings.Contains(s, "401") || strings.Contains(s, "unauthorized") || strings.Contains(s, "bad credentials")
+}
+
+func mapGraphQLResult(q struct {
+	User struct {
+		Login                   githubv4.String
+		Name                    githubv4.String
+		ContributionsCollection struct {
+			StartedAt                           githubv4.DateTime
+			EndedAt                             githubv4.DateTime
+			TotalCommitContributions            githubv4.Int
+			TotalIssueContributions             githubv4.Int
+			TotalPullRequestContributions       githubv4.Int
+			TotalPullRequestReviewContributions githubv4.Int
+			ContributionCalendar                struct {
+				TotalContributions githubv4.Int
+				Weeks              []struct {
+					ContributionDays []struct {
+						Date              githubv4.String
+						ContributionCount githubv4.Int
+						Color             githubv4.String
+					}
+				}
+			}
+			PullRequestContributionsByRepository []struct {
+				Repository struct {
+					NameWithOwner githubv4.String
+				}
+				Contributions struct {
+					Nodes []struct {
+						OccurredAt  githubv4.DateTime
+						PullRequest struct {
+							Title githubv4.String
+							URL   githubv4.URI
+						}
+					}
+				} `graphql:"contributions(first: 100)"`
+			} `graphql:"pullRequestContributionsByRepository(maxRepositories: 100)"`
+			PullRequestReviewContributionsByRepository []struct {
+				Repository struct {
+					NameWithOwner githubv4.String
+				}
+				Contributions struct {
+					Nodes []struct {
+						OccurredAt  githubv4.DateTime
+						PullRequest struct {
+							Title githubv4.String
+							URL   githubv4.URI
+						}
+					}
+				} `graphql:"contributions(first: 100)"`
+			} `graphql:"pullRequestReviewContributionsByRepository(maxRepositories: 100)"`
+		} `graphql:"contributionsCollection(from: $from, to: $to)"`
+	} `graphql:"user(login: $login)"`
+}) *contributionResponse {
+	resp := &contributionResponse{}
+	resp.Data.User.Login = string(q.User.Login)
+	resp.Data.User.Name = string(q.User.Name)
+	resp.Data.User.ContributionsCollection.StartedAt = q.User.ContributionsCollection.StartedAt.Time
+	resp.Data.User.ContributionsCollection.EndedAt = q.User.ContributionsCollection.EndedAt.Time
+	resp.Data.User.ContributionsCollection.TotalCommitContributions = int(q.User.ContributionsCollection.TotalCommitContributions)
+	resp.Data.User.ContributionsCollection.TotalIssueContributions = int(q.User.ContributionsCollection.TotalIssueContributions)
+	resp.Data.User.ContributionsCollection.TotalPullRequestContributions = int(q.User.ContributionsCollection.TotalPullRequestContributions)
+	resp.Data.User.ContributionsCollection.TotalPullRequestReviewContributions = int(q.User.ContributionsCollection.TotalPullRequestReviewContributions)
+	resp.Data.User.ContributionsCollection.ContributionCalendar.TotalContributions = int(q.User.ContributionsCollection.ContributionCalendar.TotalContributions)
+
+	for _, week := range q.User.ContributionsCollection.ContributionCalendar.Weeks {
+		w := contributionWeek{}
+		for _, day := range week.ContributionDays {
+			parsedDate, err := parseContributionDate(string(day.Date))
+			if err != nil {
+				continue
+			}
+			w.ContributionDays = append(w.ContributionDays, contributionDay{
+				Date:              parsedDate,
+				ContributionCount: int(day.ContributionCount),
+				Color:             string(day.Color),
+			})
+		}
+		resp.Data.User.ContributionsCollection.ContributionCalendar.Weeks = append(resp.Data.User.ContributionsCollection.ContributionCalendar.Weeks, w)
+	}
+
+	for _, repoGroup := range q.User.ContributionsCollection.PullRequestContributionsByRepository {
+		g := prContributionByRepo{}
+		g.Repository.NameWithOwner = string(repoGroup.Repository.NameWithOwner)
+		for _, n := range repoGroup.Contributions.Nodes {
+			node := prContributionNode{OccurredAt: n.OccurredAt.Time}
+			node.PullRequest.Title = string(n.PullRequest.Title)
+			node.PullRequest.URL = n.PullRequest.URL.String()
+			g.Contributions.Nodes = append(g.Contributions.Nodes, node)
+		}
+		resp.Data.User.ContributionsCollection.PullRequestContributionsByRepository = append(resp.Data.User.ContributionsCollection.PullRequestContributionsByRepository, g)
+	}
+
+	for _, repoGroup := range q.User.ContributionsCollection.PullRequestReviewContributionsByRepository {
+		g := prContributionByRepo{}
+		g.Repository.NameWithOwner = string(repoGroup.Repository.NameWithOwner)
+		for _, n := range repoGroup.Contributions.Nodes {
+			node := prContributionNode{OccurredAt: n.OccurredAt.Time}
+			node.PullRequest.Title = string(n.PullRequest.Title)
+			node.PullRequest.URL = n.PullRequest.URL.String()
+			g.Contributions.Nodes = append(g.Contributions.Nodes, node)
+		}
+		resp.Data.User.ContributionsCollection.PullRequestReviewContributionsByRepository = append(resp.Data.User.ContributionsCollection.PullRequestReviewContributionsByRepository, g)
+	}
+	return resp
+}
+
 func resolveGitHubHost() string {
 	if h := strings.TrimSpace(os.Getenv("GH_HOST")); h != "" {
 		return h
@@ -464,6 +593,128 @@ func buildGitHubEndpoints(host string) (string, string, string) {
 	}
 }
 
+func resolveAppConfig() appConfig {
+	host := strings.TrimSpace(os.Getenv("GITHUB_HOSTNAME"))
+	if host == "" {
+		host = resolveGitHubHost()
+	}
+	if host == "" {
+		host = "github.com"
+	}
+	rest, upload, gql := buildGitHubEndpoints(host)
+	return appConfig{
+		Host:       host,
+		RestBase:   rest,
+		UploadBase: upload,
+		GraphQLURL: gql,
+	}
+}
+
+func discoverTeammateLogins(ctx context.Context, logf func(string, ...any)) ([]string, error) {
+	tokens, err := resolveTokenCandidates()
+	if err != nil {
+		return nil, err
+	}
+	cfg := resolveAppConfig()
+	for i, candidate := range tokens {
+		logf("[gray]discovery token source=%s (%d/%d)[-]", candidate.Source, i+1, len(tokens))
+		client, err := newRESTClient(ctx, cfg, candidate.Token)
+		if err != nil {
+			return nil, err
+		}
+		users, err := loadDiscoveryUsers(ctx, client, logf)
+		if err != nil {
+			if isUnauthorizedErr(err) && i < len(tokens)-1 {
+				logf("[yellow]discovery 401 with %s, trying next token[-]", candidate.Source)
+				continue
+			}
+			return nil, err
+		}
+		return users, nil
+	}
+	return nil, errors.New("user discovery failed for all token sources")
+}
+
+func newRESTClient(ctx context.Context, cfg appConfig, token string) (*github.Client, error) {
+	src := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+	httpClient := oauth2.NewClient(ctx, src)
+	if cfg.Host == "github.com" || cfg.Host == "www.github.com" || cfg.Host == "api.github.com" {
+		return github.NewClient(httpClient), nil
+	}
+	return github.NewEnterpriseClient(cfg.RestBase, cfg.UploadBase, httpClient)
+}
+
+func loadDiscoveryUsers(ctx context.Context, client *github.Client, logf func(string, ...any)) ([]string, error) {
+	set := map[string]struct{}{}
+	self, _, err := client.Users.Get(ctx, "")
+	if err != nil {
+		return nil, fmt.Errorf("discover viewer failed: %w", err)
+	}
+	if self.GetLogin() != "" {
+		set[self.GetLogin()] = struct{}{}
+	}
+
+	orgs, _, err := client.Organizations.List(ctx, "", &github.ListOptions{PerPage: 100})
+	if err != nil {
+		return nil, fmt.Errorf("discover orgs failed: %w", err)
+	}
+	for _, org := range orgs {
+		if org.GetLogin() == "" {
+			continue
+		}
+		members, _, err := client.Organizations.ListMembers(ctx, org.GetLogin(), &github.ListMembersOptions{
+			ListOptions: github.ListOptions{PerPage: 100},
+		})
+		if err != nil {
+			logf("[yellow]skipping org %s members: %v[-]", org.GetLogin(), err)
+			continue
+		}
+		for _, m := range members {
+			if m.GetLogin() != "" {
+				set[m.GetLogin()] = struct{}{}
+			}
+		}
+	}
+
+	teams, _, err := client.Teams.ListUserTeams(ctx, &github.ListOptions{PerPage: 100})
+	if err != nil {
+		logf("[yellow]team discovery unavailable: %v[-]", err)
+	} else {
+		for _, team := range teams {
+			orgID := int64(0)
+			if team.Organization != nil {
+				orgID = team.Organization.GetID()
+			}
+			teamID := team.GetID()
+			if orgID == 0 || teamID == 0 {
+				continue
+			}
+			members, _, err := client.Teams.ListTeamMembersByID(ctx, orgID, teamID, &github.TeamListTeamMembersOptions{
+				Role: "all",
+				ListOptions: github.ListOptions{
+					PerPage: 100,
+				},
+			})
+			if err != nil {
+				logf("[yellow]skipping team %s members: %v[-]", team.GetName(), err)
+				continue
+			}
+			for _, m := range members {
+				if m.GetLogin() != "" {
+					set[m.GetLogin()] = struct{}{}
+				}
+			}
+		}
+	}
+
+	users := make([]string, 0, len(set))
+	for login := range set {
+		users = append(users, login)
+	}
+	sort.Strings(users)
+	return users, nil
+}
+
 func stripANSICodes(s string) string {
 	var b strings.Builder
 	b.Grow(len(s))
@@ -485,6 +736,21 @@ func stripANSICodes(s string) string {
 		i++
 	}
 	return b.String()
+}
+
+func parseContributionDate(raw string) (string, error) {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return "", errors.New("empty contribution date")
+	}
+	if t, err := time.Parse(dateFormat, raw); err == nil {
+		return t.Format(dateFormat), nil
+	}
+	t, err := time.Parse(time.RFC3339, raw)
+	if err != nil {
+		return "", err
+	}
+	return t.UTC().Format(dateFormat), nil
 }
 
 func parseRange(from, to string) (string, string, error) {

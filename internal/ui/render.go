@@ -20,7 +20,7 @@ func renderSummary(v *tview.TextView, report *contrib.Report) {
 	}
 	cc := report.Collection
 	fmt.Fprintf(v,
-		"[::b]%s[::-]\nRange: %s -> %s\nTotal: [green]%d[-]\nCommits: %d  Issues: %d  PRs: %d  Reviews: %d",
+		"[::b]%s[::-]\nRange: %s -> %s\nTotal: [green]%d[-]\nCommits: %d  Issues: %d  PRs: %d (%d merged)  Reviews: %d",
 		report.DisplayName(),
 		cc.StartedAt.Format(contrib.DateFormat),
 		cc.EndedAt.Format(contrib.DateFormat),
@@ -28,8 +28,12 @@ func renderSummary(v *tview.TextView, report *contrib.Report) {
 		cc.TotalCommits,
 		cc.TotalIssues,
 		cc.TotalPullRequests,
+		cc.TotalMergedPullRequests,
 		cc.TotalReviews,
 	)
+	for _, warning := range report.Warnings {
+		fmt.Fprintf(v, "\n[yellow]! %s[-]", warning)
+	}
 }
 
 // renderHeatmap lays the contribution calendar out as weekday rows by week
@@ -56,27 +60,46 @@ func renderHeatmap(table *tview.Table, report *contrib.Report) {
 	}
 }
 
-// renderPRList fills the PR list and seeds the detail pane with the first URL.
-func renderPRList(list *tview.List, detail *tview.TextView, prs []contrib.PRItem) {
+// renderEventList fills the activity list and seeds the detail pane with the
+// first URL.
+func renderEventList(list *tview.List, detail *tview.TextView, events []contrib.Event) {
 	list.Clear()
 	detail.Clear()
-	for _, item := range prs {
-		url := item.URL
-		list.AddItem(prTitle(item), prSubtitle(item), 0, func() {
+	for _, event := range events {
+		url := event.URL
+		list.AddItem(eventTitle(event), eventSubtitle(event), 0, func() {
 			detail.SetText(url)
 		})
 	}
-	if len(prs) > 0 {
-		detail.SetText(prs[0].URL)
+	if len(events) > 0 {
+		detail.SetText(events[0].URL)
 	}
 }
 
-func prTitle(item contrib.PRItem) string {
-	return fmt.Sprintf("[%s] %s", item.Kind, item.Title)
+// eventTitle prefixes the title with the kind. tview parses square brackets in
+// list items as color tags even though lists have no dynamic-color switch, so
+// a bracketed label like "[review]" would be swallowed whole; the label is
+// padded into a column instead.
+func eventTitle(event contrib.Event) string {
+	return fmt.Sprintf("%-9s %s", eventLabel(event), event.Title)
 }
 
-func prSubtitle(item contrib.PRItem) string {
-	return fmt.Sprintf("%s | %s", item.OccurredAt.Format(contrib.DateFormat), item.Repo)
+func eventLabel(event contrib.Event) string {
+	switch event.Kind {
+	case contrib.KindAuthored:
+		if event.Merged {
+			return "pr merged"
+		}
+		return "pr"
+	case contrib.KindReviewed:
+		return "review"
+	default:
+		return event.Kind
+	}
+}
+
+func eventSubtitle(event contrib.Event) string {
+	return fmt.Sprintf("%s | %s", event.OccurredAt.Format(contrib.DateFormat), event.Repo)
 }
 
 // normalizeWeekday maps a weekday onto a Monday-first row index.

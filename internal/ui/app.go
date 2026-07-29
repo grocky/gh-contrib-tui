@@ -151,11 +151,11 @@ func (a *App) buildWidgets() {
 	a.heatmap.SetBorder(true).SetTitle("Contribution Calendar")
 
 	a.prList = tview.NewList().ShowSecondaryText(true)
-	a.prList.SetBorder(true).SetTitle("PR References (Enter=open, Ctrl+Y=copy URL)")
+	a.prList.SetBorder(true).SetTitle("Contributions (Enter=open, Ctrl+Y=copy URL)")
 	a.prList.SetSelectedFunc(a.openSelectedPR)
 
 	a.prDetail = tview.NewTextView().SetDynamicColors(true)
-	a.prDetail.SetBorder(true).SetTitle("Selected PR URL")
+	a.prDetail.SetBorder(true).SetTitle("Selected URL")
 
 	a.app.SetInputCapture(a.handleKey)
 }
@@ -227,12 +227,12 @@ func (a *App) fetchAndRender() {
 		return
 	}
 
-	prs := contrib.CollectPRs(report)
+	events := contrib.Events(report)
 	renderSummary(a.summary, report)
 	renderHeatmap(a.heatmap, report)
-	renderPRList(a.prList, a.prDetail, prs)
-	a.status.SetText(fmt.Sprintf("[green]loaded %d PR references", len(prs)))
-	a.Logf("[green]fetch complete total=%d prs=%d[-]", report.Collection.Calendar.Total, len(prs))
+	renderEventList(a.prList, a.prDetail, events)
+	a.status.SetText(fmt.Sprintf("[green]loaded %d contributions", len(events)))
+	a.Logf("[green]fetch complete total=%d[-]", len(events))
 }
 
 // loadSuggestions serves cached suggestions immediately, then refreshes them

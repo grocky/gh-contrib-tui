@@ -16,7 +16,6 @@ import (
 
 	"gh-contribs/internal/auth"
 	"gh-contribs/internal/config"
-	"gh-contribs/internal/contrib"
 	"gh-contribs/internal/logging"
 )
 
@@ -68,31 +67,6 @@ func New(opts ...Option) *Client {
 
 // Config reports the resolved GitHub deployment.
 func (c *Client) Config() config.Config { return c.cfg }
-
-// FetchContributions returns the contribution report for a user over a range.
-func (c *Client) FetchContributions(ctx context.Context, username string, window contrib.Range) (*contrib.Report, error) {
-	c.logf("[gray]rest base=%s[-]", c.cfg.RestBase)
-	c.logf("[gray]graphql endpoint=%s[-]", c.cfg.GraphQLURL)
-	c.logf("[gray]host source=%s[-]", c.cfg.Host)
-
-	vars := map[string]any{
-		"login": githubv4.String(username),
-		"from":  githubv4.DateTime{Time: window.From},
-		"to":    githubv4.DateTime{Time: window.To},
-	}
-
-	report, err := withTokens(c, ctx, "contributions", func(httpClient *http.Client) (*contrib.Report, error) {
-		var q contributionsQuery
-		if err := c.newGraphQLClient(httpClient).Query(ctx, &q, vars); err != nil {
-			return nil, fmt.Errorf("graphql query failed: %w", err)
-		}
-		if q.User.Login == "" {
-			return nil, ErrUserNotFound
-		}
-		return q.toReport(), nil
-	})
-	return report, err
-}
 
 // withTokens runs call against each token candidate in turn, advancing to the
 // next candidate only when the failure looks like an authentication problem.

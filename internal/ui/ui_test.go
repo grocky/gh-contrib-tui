@@ -62,21 +62,24 @@ func sampleReport() *contrib.Report {
 		Login: "octocat",
 		Name:  "Mona",
 		Collection: contrib.Collection{
-			StartedAt:         time.Date(2026, 7, 1, 0, 0, 0, 0, time.UTC),
-			EndedAt:           time.Date(2026, 7, 29, 23, 59, 59, 0, time.UTC),
-			TotalCommits:      11,
-			TotalIssues:       2,
-			TotalPullRequests: 5,
-			TotalReviews:      7,
+			StartedAt:               time.Date(2026, 7, 1, 0, 0, 0, 0, time.UTC),
+			EndedAt:                 time.Date(2026, 7, 29, 23, 59, 59, 0, time.UTC),
+			TotalCommits:            11,
+			TotalIssues:             2,
+			TotalPullRequests:       5,
+			TotalMergedPullRequests: 4,
+			TotalReviews:            7,
 			Calendar: contrib.Calendar{
 				Total: 25,
 				Weeks: []contrib.Week{{Days: []contrib.Day{{Date: day, Count: 3, Color: "#216e39"}}}},
 			},
-			AuthoredPullRequests: []contrib.RepoContributions{{
-				Repository: "acme/repo1",
-				Nodes: []contrib.PullRequestContribution{
-					{OccurredAt: day, Title: "Add feature", URL: "https://example.com/pr/1"},
-				},
+			Events: []contrib.Event{{
+				OccurredAt: day,
+				Kind:       contrib.KindAuthored,
+				Repo:       "acme/repo1",
+				Title:      "Add feature",
+				URL:        "https://example.com/pr/1",
+				Merged:     true,
 			}},
 		},
 	}
@@ -99,10 +102,25 @@ func TestRenderSummary(t *testing.T) {
 	renderSummary(v, sampleReport())
 
 	text := v.GetText(true)
-	for _, want := range []string{"Mona", "2026-07-01 -> 2026-07-29", "Total: 25", "Commits: 11", "Issues: 2", "PRs: 5", "Reviews: 7"} {
+	for _, want := range []string{
+		"Mona", "2026-07-01 -> 2026-07-29", "Total: 25",
+		"Commits: 11", "Issues: 2", "PRs: 5 (4 merged)", "Reviews: 7",
+	} {
 		if !strings.Contains(text, want) {
 			t.Errorf("summary missing %q\ngot: %s", want, text)
 		}
+	}
+}
+
+func TestRenderSummary_ShowsWarnings(t *testing.T) {
+	report := sampleReport()
+	report.Warnings = []string{"commits unavailable: search is disabled"}
+
+	v := tview.NewTextView().SetDynamicColors(true)
+	renderSummary(v, report)
+
+	if !strings.Contains(v.GetText(true), "commits unavailable") {
+		t.Fatalf("expected the gap to be visible in the summary, got: %s", v.GetText(true))
 	}
 }
 
@@ -162,18 +180,17 @@ func TestRenderHeatmap_ClearsPreviousData(t *testing.T) {
 	}
 }
 
-func TestRenderPRList(t *testing.T) {
+func TestRenderEventList(t *testing.T) {
 	list := tview.NewList()
 	detail := tview.NewTextView()
-	prs := contrib.CollectPRs(sampleReport())
 
-	renderPRList(list, detail, prs)
+	renderEventList(list, detail, contrib.Events(sampleReport()))
 
 	if got := list.GetItemCount(); got != 1 {
 		t.Fatalf("item count = %d, want 1", got)
 	}
 	main, secondary := list.GetItemText(0)
-	if main != "[authored] Add feature" {
+	if main != "pr merged Add feature" {
 		t.Fatalf("primary text = %q", main)
 	}
 	if secondary != "2026-07-01 | acme/repo1" {
@@ -184,12 +201,36 @@ func TestRenderPRList(t *testing.T) {
 	}
 }
 
-func TestRenderPRList_EmptyClearsDetail(t *testing.T) {
+// Square brackets would be eaten by tview's color-tag parser, so every kind
+// has to survive as plain text.
+func TestEventTitle_LabelsEachKind(t *testing.T) {
+	tests := []struct {
+		event contrib.Event
+		want  string
+	}{
+		{contrib.Event{Kind: contrib.KindCommit, Title: "Fix it"}, "commit    Fix it"},
+		{contrib.Event{Kind: contrib.KindIssue, Title: "Broken"}, "issue     Broken"},
+		{contrib.Event{Kind: contrib.KindAuthored, Title: "Add it"}, "pr        Add it"},
+		{contrib.Event{Kind: contrib.KindAuthored, Title: "Add it", Merged: true}, "pr merged Add it"},
+		{contrib.Event{Kind: contrib.KindReviewed, Title: "Review"}, "review    Review"},
+	}
+	for _, tc := range tests {
+		got := eventTitle(tc.event)
+		if got != tc.want {
+			t.Errorf("eventTitle(%+v) = %q, want %q", tc.event, got, tc.want)
+		}
+		if strings.ContainsAny(got, "[]") {
+			t.Errorf("eventTitle(%+v) = %q, which tview would parse as a color tag", tc.event, got)
+		}
+	}
+}
+
+func TestRenderEventList_EmptyClearsDetail(t *testing.T) {
 	list := tview.NewList()
 	detail := tview.NewTextView()
 	detail.SetText("https://stale.example.com")
 
-	renderPRList(list, detail, nil)
+	renderEventList(list, detail, nil)
 
 	if got := list.GetItemCount(); got != 0 {
 		t.Fatalf("item count = %d, want 0", got)
@@ -217,9 +258,9 @@ func TestFetchAndRender_PopulatesViews(t *testing.T) {
 		t.Fatalf("summary not rendered: %s", app.summary.GetText(true))
 	}
 	if got := app.prList.GetItemCount(); got != 1 {
-		t.Fatalf("PR list count = %d, want 1", got)
+		t.Fatalf("contribution list count = %d, want 1", got)
 	}
-	if got := app.status.GetText(true); !strings.Contains(got, "loaded 1 PR references") {
+	if got := app.status.GetText(true); !strings.Contains(got, "loaded 1 contributions") {
 		t.Fatalf("status = %q", got)
 	}
 }
@@ -275,7 +316,7 @@ func TestFetchAndRender_ReportsServiceError(t *testing.T) {
 		t.Fatalf("status = %q, want the service error surfaced", got)
 	}
 	if got := app.prList.GetItemCount(); got != 0 {
-		t.Fatalf("expected no PR items on failure, got %d", got)
+		t.Fatalf("expected no contribution items on failure, got %d", got)
 	}
 }
 

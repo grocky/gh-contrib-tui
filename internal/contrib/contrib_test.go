@@ -106,63 +106,6 @@ func TestParseRange_InvalidDates(t *testing.T) {
 	}
 }
 
-func TestCollectPRs_DedupesAndSorts(t *testing.T) {
-	now := time.Now().UTC()
-	report := &Report{Collection: Collection{
-		AuthoredPullRequests: []RepoContributions{{
-			Repository: "acme/repo1",
-			Nodes: []PullRequestContribution{
-				{OccurredAt: now, Title: "A", URL: "https://example/pr/1"},
-				{OccurredAt: now.Add(-2 * time.Hour), Title: "A dup", URL: "https://example/pr/1"},
-			},
-		}},
-		ReviewedPullRequests: []RepoContributions{{
-			Repository: "acme/repo1",
-			Nodes: []PullRequestContribution{
-				{OccurredAt: now.Add(-24 * time.Hour), Title: "A", URL: "https://example/pr/1"},
-				{OccurredAt: now.Add(-time.Hour), Title: "B", URL: "https://example/pr/2"},
-			},
-		}},
-	}}
-
-	got := CollectPRs(report)
-	if len(got) != 3 {
-		t.Fatalf("expected 3 items (authored dup collapsed, same URL kept per kind), got %d: %+v", len(got), got)
-	}
-	if got[0].URL != "https://example/pr/1" || got[0].Kind != KindAuthored {
-		t.Fatalf("expected newest authored PR first, got %+v", got[0])
-	}
-	if got[1].URL != "https://example/pr/2" || got[1].Kind != KindReviewed {
-		t.Fatalf("expected second newest to be the reviewed PR, got %+v", got[1])
-	}
-	if got[2].Kind != KindReviewed || got[2].URL != "https://example/pr/1" {
-		t.Fatalf("expected oldest reviewed duplicate last, got %+v", got[2])
-	}
-	if got[0].Repo != "acme/repo1" {
-		t.Fatalf("expected repo to be carried through, got %q", got[0].Repo)
-	}
-}
-
-func TestCollectPRs_SkipsEmptyURLs(t *testing.T) {
-	report := &Report{Collection: Collection{
-		AuthoredPullRequests: []RepoContributions{{
-			Repository: "acme/repo1",
-			Nodes: []PullRequestContribution{
-				{OccurredAt: time.Now(), Title: "hidden", URL: ""},
-			},
-		}},
-	}}
-	if got := CollectPRs(report); len(got) != 0 {
-		t.Fatalf("expected URL-less contributions to be skipped, got %+v", got)
-	}
-}
-
-func TestCollectPRs_NilReport(t *testing.T) {
-	if got := CollectPRs(nil); got != nil {
-		t.Fatalf("expected nil for nil report, got %+v", got)
-	}
-}
-
 func TestReportDisplayName(t *testing.T) {
 	if got := (Report{Login: "octocat", Name: "Mona"}).DisplayName(); got != "Mona" {
 		t.Fatalf("expected name, got %q", got)

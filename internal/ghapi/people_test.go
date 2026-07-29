@@ -3,6 +3,7 @@ package ghapi
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -401,5 +402,40 @@ func TestDiscoverPeople_RESTPaginationIsFollowed(t *testing.T) {
 	}
 	if !found["page1-user"] || !found["page2-user"] {
 		t.Fatalf("expected both member pages, got %+v", people)
+	}
+}
+
+func TestDiscoverPeople_LogsWhenNoOrgsAreVisible(t *testing.T) {
+	// A token without read:org yields a valid viewer and an empty org list --
+	// no error, just nobody but yourself. That must be called out, because it
+	// is otherwise indistinguishable from genuinely having no teammates.
+	payload := `{"data":{"viewer":{
+		"login":"nash-robin","name":"Nash, Robin [USA]",
+		"organizations":{"pageInfo":{"hasNextPage":false,"endCursor":""},"nodes":[]}
+	}}}`
+	script := &scriptedGraphQL{payloads: []string{payload}}
+	srv := httptest.NewServer(http.HandlerFunc(script.handler))
+	t.Cleanup(srv.Close)
+
+	var logged []string
+	client := peopleClient(t, srv.URL, "")
+	WithLogger(func(format string, args ...any) {
+		logged = append(logged, fmt.Sprintf(format, args...))
+	})(client)
+
+	people, err := client.DiscoverPeople(context.Background())
+	if err != nil {
+		t.Fatalf("DiscoverPeople returned error: %v", err)
+	}
+	if len(people) != 1 {
+		t.Fatalf("people = %+v, want just the viewer", people)
+	}
+
+	all := strings.Join(logged, "\n")
+	if !strings.Contains(all, "organizations=0") {
+		t.Errorf("expected the org count to be logged, got:\n%s", all)
+	}
+	if !strings.Contains(all, "read:org") || !strings.Contains(all, "GITHUB_TOKEN") {
+		t.Errorf("expected a hint naming the scope and the token precedence, got:\n%s", all)
 	}
 }

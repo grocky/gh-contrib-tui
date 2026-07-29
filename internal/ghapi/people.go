@@ -12,12 +12,9 @@ import (
 	"gh-contribs/internal/contrib"
 )
 
+// GraphQL connection page sizes live in the struct tags below, which must be
+// literals; 100 is the maximum GitHub allows for a single connection.
 const (
-	// orgPageSize and memberPageSize are the GraphQL connection page sizes. 100
-	// is the maximum GitHub allows for a single connection.
-	orgPageSize    = 25
-	memberPageSize = 100
-
 	// restPageSize is the REST per_page value for the fallback and team walks.
 	restPageSize = 100
 
@@ -127,6 +124,7 @@ func (c *Client) graphqlDirectory(ctx context.Context) ([]contrib.Person, error)
 		people := make([]contrib.Person, 0, 128)
 
 		orgCursor := (*githubv4.String)(nil)
+		firstPage := true
 		for {
 			var q viewerDirectoryQuery
 			if err := client.Query(ctx, &q, map[string]any{"orgCursor": orgCursor}); err != nil {
@@ -139,6 +137,17 @@ func (c *Client) graphqlDirectory(ctx context.Context) ([]contrib.Person, error)
 					Name:   string(q.Viewer.Name),
 					Active: true,
 				})
+			}
+
+			if firstPage {
+				firstPage = false
+				c.logf("[gray]directory: viewer=%s organizations=%d[-]",
+					q.Viewer.Login, len(q.Viewer.Organizations.Nodes))
+				if len(q.Viewer.Organizations.Nodes) == 0 {
+					c.logf("[yellow]this token can see no organizations. Env GITHUB_TOKEN and " +
+						"GH_TOKEN take precedence over 'gh auth token', so check the token source " +
+						"logged above; org listings need the read:org scope[-]")
+				}
 			}
 
 			for _, org := range q.Viewer.Organizations.Nodes {

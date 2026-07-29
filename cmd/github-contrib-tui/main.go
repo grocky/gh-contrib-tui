@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 
+	"gh-contribs/internal/directorycache"
 	"gh-contribs/internal/ghapi"
 	"gh-contribs/internal/ui"
 )
@@ -20,6 +21,9 @@ func main() {
 
 func run() error {
 	app := ui.New(ui.WithDefaultUser(os.Getenv("GH_USER")))
-	app.SetService(ghapi.New(ghapi.WithLogger(app.Logf)))
+	client := ghapi.New(ghapi.WithLogger(app.Logf))
+
+	app.SetService(client)
+	app.SetDirectoryCache(directorycache.Open(client.Config().Host))
 	return app.Run()
 }

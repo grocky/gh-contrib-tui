@@ -23,13 +23,22 @@ const discoveryTimeout = 30 * time.Second
 // ghapi.Client satisfies it.
 type ContributionService interface {
 	FetchContributions(ctx context.Context, username string, window contrib.Range) (*contrib.Report, error)
-	DiscoverUserLogins(ctx context.Context) ([]string, error)
+	DiscoverPeople(ctx context.Context) ([]contrib.Person, error)
+}
+
+// DirectoryCache persists the user directory between runs. It is bound to a
+// host by the caller, so the UI never needs to know which GitHub it is talking
+// to. directorycache.Cache satisfies it.
+type DirectoryCache interface {
+	Load() ([]contrib.Person, bool)
+	Store(people []contrib.Person) error
 }
 
 // App is the terminal application.
 type App struct {
 	app     *tview.Application
 	svc     ContributionService
+	cache   DirectoryCache
 	suggest suggestionStore
 	running atomic.Bool
 
@@ -59,6 +68,11 @@ func WithService(svc ContributionService) Option {
 	return func(a *App) { a.svc = svc }
 }
 
+// WithDirectoryCache supplies a cache for user suggestions.
+func WithDirectoryCache(cache DirectoryCache) Option {
+	return func(a *App) { a.cache = cache }
+}
+
 // New builds the App and its widget tree. The service may be supplied here or
 // later via SetService, which lets callers construct a service that logs into
 // this App's log pane.
@@ -74,6 +88,9 @@ func New(opts ...Option) *App {
 
 // SetService attaches the GitHub-facing service after construction.
 func (a *App) SetService(svc ContributionService) { a.svc = svc }
+
+// SetDirectoryCache attaches a suggestion cache after construction.
+func (a *App) SetDirectoryCache(cache DirectoryCache) { a.cache = cache }
 
 // Logf appends a timestamped line to the log pane. It is safe to call from any
 // goroutine and is intended to be handed to collaborators as their logger.
@@ -101,6 +118,17 @@ func (a *App) redraw() {
 	}
 }
 
+// onUIThread runs fn on the tview event loop and redraws. Queued updates block
+// until the loop picks them up, so before Run (and after it returns) fn is
+// invoked directly -- there is no loop to hand it to, and no screen to race.
+func (a *App) onUIThread(fn func()) {
+	if a.running.Load() {
+		a.app.QueueUpdateDraw(fn)
+		return
+	}
+	fn()
+}
+
 func (a *App) buildWidgets() {
 	a.status = tview.NewTextView().SetDynamicColors(true)
 	a.status.SetBorder(true).SetTitle("Status")
@@ -110,7 +138,8 @@ func (a *App) buildWidgets() {
 	a.logView.SetChangedFunc(a.redraw)
 
 	a.userField = tview.NewInputField().SetLabel("User: ")
-	a.userField.SetAutocompleteFunc(a.suggest.match)
+	a.userField.SetAutocompleteFunc(a.suggest.entries)
+	a.userField.SetAutocompletedFunc(a.acceptSuggestion)
 	a.fromField = tview.NewInputField().SetLabel("From (YYYY-MM-DD): ")
 	a.toField = tview.NewInputField().SetLabel("To (YYYY-MM-DD): ")
 
@@ -166,6 +195,9 @@ func (a *App) handleKey(ev *tcell.EventKey) *tcell.EventKey {
 	case tcell.KeyCtrlY:
 		a.copySelectedPR()
 		return nil
+	case tcell.KeyCtrlU:
+		go a.refreshDirectory(true)
+		return nil
 	}
 	return ev
 }
@@ -203,21 +235,79 @@ func (a *App) fetchAndRender() {
 	a.Logf("[green]fetch complete total=%d prs=%d[-]", report.Collection.Calendar.Total, len(prs))
 }
 
-// loadSuggestions populates username autocomplete in the background; failure
-// is non-fatal and only degrades autocomplete.
+// loadSuggestions serves cached suggestions immediately, then refreshes them
+// from GitHub in the background. Failure is non-fatal and only degrades
+// autocomplete.
 func (a *App) loadSuggestions() {
+	if a.cache != nil {
+		if people, ok := a.cache.Load(); ok {
+			a.onUIThread(func() { a.applyPeople(people, "cache") })
+		}
+	}
+	a.refreshDirectory(false)
+}
+
+// refreshDirectory re-fetches the directory from GitHub. When forced (Ctrl+U)
+// the outcome is reported in the status line as well as the log.
+func (a *App) refreshDirectory(forced bool) {
+	if a.svc == nil {
+		return
+	}
+	if forced {
+		a.onUIThread(func() { a.status.SetText("[yellow]refreshing user list...") })
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), discoveryTimeout)
 	defer cancel()
+	people, err := a.svc.DiscoverPeople(ctx)
 
-	users, err := a.svc.DiscoverUserLogins(ctx)
-	a.app.QueueUpdateDraw(func() {
+	a.onUIThread(func() {
 		if err != nil {
 			a.Logf("[yellow]user discovery unavailable: %v[-]", err)
+			if forced {
+				a.status.SetText("[red]user list refresh failed: " + err.Error())
+			}
 			return
 		}
-		a.suggest.set(users)
-		a.Logf("[green]loaded %d user suggestions[-]", len(users))
+
+		a.applyPeople(people, "github")
+		if forced {
+			a.status.SetText(fmt.Sprintf("[green]%d users loaded", len(people)))
+		}
+		if a.cache != nil {
+			if err := a.cache.Store(people); err != nil {
+				a.Logf("[yellow]could not cache user list: %v[-]", err)
+			}
+		}
 	})
+}
+
+// applyPeople installs a new directory and refreshes the open dropdown.
+//
+// The refresh matters: tview only invokes the autocomplete callback when the
+// field text changes, on the down arrow, or when Autocomplete is called
+// explicitly. Without this call, suggestions that arrive after the widget was
+// built stay invisible until the user edits the field.
+func (a *App) applyPeople(people []contrib.Person, source string) {
+	directory := contrib.NewDirectory(people)
+	a.suggest.set(directory)
+	a.userField.Autocomplete()
+
+	a.Logf("[green]loaded %d user suggestions from %s[-]", directory.Len(), source)
+	if directory.Len() <= 1 && source != "cache" {
+		a.Logf("[yellow]only your own account was found; if you expect teammates, " +
+			"your token may lack the read:org scope - run 'gh auth refresh -s read:org'[-]")
+	}
+}
+
+// acceptSuggestion replaces the dropdown label with the bare login, since the
+// label also carries the display name and any suspended marker.
+func (a *App) acceptSuggestion(entry string, index, source int) bool {
+	if index < 0 || source == tview.AutocompletedNavigate {
+		return false
+	}
+	a.userField.SetText(loginFromEntry(entry))
+	return true
 }
 
 func (a *App) openSelectedPR(int, string, string, rune) {

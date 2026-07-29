@@ -3,7 +3,6 @@ package ui
 import (
 	"context"
 	"errors"
-	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -17,12 +16,13 @@ import (
 type fakeService struct {
 	report      *contrib.Report
 	fetchErr    error
-	logins      []string
+	people      []contrib.Person
 	discoverErr error
 
 	gotUser   string
 	gotWindow contrib.Range
 	fetches   int
+	discovers int
 }
 
 func (f *fakeService) FetchContributions(_ context.Context, username string, window contrib.Range) (*contrib.Report, error) {
@@ -32,8 +32,28 @@ func (f *fakeService) FetchContributions(_ context.Context, username string, win
 	return f.report, f.fetchErr
 }
 
-func (f *fakeService) DiscoverUserLogins(context.Context) ([]string, error) {
-	return f.logins, f.discoverErr
+func (f *fakeService) DiscoverPeople(context.Context) ([]contrib.Person, error) {
+	f.discovers++
+	return f.people, f.discoverErr
+}
+
+// fakeCache is an in-memory DirectoryCache.
+type fakeCache struct {
+	people   []contrib.Person
+	storeErr error
+
+	stored []contrib.Person
+	loads  int
+}
+
+func (c *fakeCache) Load() ([]contrib.Person, bool) {
+	c.loads++
+	return c.people, len(c.people) > 0
+}
+
+func (c *fakeCache) Store(people []contrib.Person) error {
+	c.stored = people
+	return c.storeErr
 }
 
 func sampleReport() *contrib.Report {
@@ -59,63 +79,6 @@ func sampleReport() *contrib.Report {
 				},
 			}},
 		},
-	}
-}
-
-func TestFilterSuggestions(t *testing.T) {
-	all := []string{"alice", "Bob", "carol", "dave"}
-
-	tests := []struct {
-		name  string
-		query string
-		limit int
-		want  []string
-	}{
-		{name: "empty query returns prefix of list", query: "", limit: 2, want: []string{"alice", "Bob"}},
-		{name: "empty query under limit", query: "  ", limit: 10, want: []string{"alice", "Bob", "carol", "dave"}},
-		{name: "case insensitive match", query: "bo", limit: 10, want: []string{"Bob"}},
-		{name: "substring match", query: "a", limit: 10, want: []string{"alice", "carol", "dave"}},
-		{name: "respects limit", query: "a", limit: 2, want: []string{"alice", "carol"}},
-		{name: "no matches", query: "zzz", limit: 10, want: []string{}},
-		{name: "zero limit", query: "a", limit: 0, want: nil},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			got := filterSuggestions(all, tc.query, tc.limit)
-			if len(got) == 0 && len(tc.want) == 0 {
-				return
-			}
-			if !reflect.DeepEqual(got, tc.want) {
-				t.Fatalf("filterSuggestions(%q, %d) = %v, want %v", tc.query, tc.limit, got, tc.want)
-			}
-		})
-	}
-}
-
-func TestFilterSuggestions_EmptySource(t *testing.T) {
-	if got := filterSuggestions(nil, "a", 10); got != nil {
-		t.Fatalf("expected nil for an empty source, got %v", got)
-	}
-}
-
-func TestFilterSuggestions_DoesNotAliasSource(t *testing.T) {
-	all := []string{"alice", "bob"}
-	got := filterSuggestions(all, "", 2)
-	got[0] = "mutated"
-	if all[0] != "alice" {
-		t.Fatal("filterSuggestions returned a slice aliasing its input")
-	}
-}
-
-func TestSuggestionStore(t *testing.T) {
-	var store suggestionStore
-	if got := store.match("a"); len(got) != 0 {
-		t.Fatalf("expected no matches before logins are set, got %v", got)
-	}
-	store.set([]string{"alice", "bob"})
-	if got := store.match("ali"); !reflect.DeepEqual(got, []string{"alice"}) {
-		t.Fatalf("match = %v", got)
 	}
 }
 

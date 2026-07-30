@@ -4,17 +4,18 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/lipgloss"
 
 	"gh-contribs/internal/contrib"
 )
 
-// Fixed vertical costs the list has to give way to.
+// Vertical costs the list has to give way to. Only the panels whose height is
+// fixed by construction are constants; the rest are measured in resize.
 const (
-	headerHeight = 2 // title row + blank
-	filterHeight = 4 // panel border, label row, input row, blank
-	footerHeight = 2 // status + help
-	minListRows  = 3
+	panelChrome    = 3  // border, panel title, border
+	calendarHeight = 12 // chrome, month row, seven weekdays, legend
+	minListRows    = 3
 )
 
 func (m model) View() string {
@@ -29,8 +30,11 @@ func (m model) View() string {
 	if rows := m.viewSuggestions(); rows != "" {
 		sections = append(sections, rows)
 	}
-	if m.report != nil {
-		sections = append(sections, m.viewSummary(), m.viewCalendar())
+	if m.showSummary {
+		sections = append(sections, m.viewSummary())
+	}
+	if m.showCalendar {
+		sections = append(sections, m.viewCalendar())
 	}
 	if m.showLogs {
 		sections = append(sections, m.viewLogs())
@@ -74,6 +78,11 @@ func (m model) viewFilters() string {
 	}
 
 	row := strings.Join(cells, mutedStyle.Render("   │   "))
+	if lipgloss.Width(row) > m.contentWidth()-2 {
+		// Too narrow for one row: stack the fields rather than let them wrap
+		// mid-input.
+		row = strings.Join(cells, "\n")
+	}
 	return panelStyle.Width(m.contentWidth()).Render(row)
 }
 
@@ -90,6 +99,11 @@ func (m model) viewSuggestions() string {
 	}
 	end := min(start+visibleSuggestions, len(m.suggestions))
 
+	// Two columns, sized to whatever room the terminal leaves.
+	inner := m.contentWidth() - 4
+	loginWidth := min(22, max(inner/2, 8))
+	nameWidth := inner - loginWidth - 2
+
 	lines := make([]string, 0, visibleSuggestions+1)
 	for i := start; i < end; i++ {
 		person := m.suggestions[i]
@@ -97,13 +111,13 @@ func (m model) viewSuggestions() string {
 		if !person.Active {
 			name = strings.TrimSpace(name + " (" + inactiveMarker + ")")
 		}
-		line := pad(login, 22) + faintStyle.Render(truncate(name, 40))
+		login = pad(truncate(login, loginWidth), loginWidth)
+		name = faintStyle.Render(truncate(name, nameWidth))
 		if i == m.suggestIndex {
-			line = suggestionSelectedStyle.Render("▸ "+pad(login, 22)) + faintStyle.Render(truncate(name, 40))
-		} else {
-			line = "  " + line
+			lines = append(lines, suggestionSelectedStyle.Render("▸ "+login)+name)
+			continue
 		}
-		lines = append(lines, line)
+		lines = append(lines, "  "+login+name)
 	}
 	if hidden := len(m.suggestions) - end; hidden > 0 {
 		lines = append(lines, faintStyle.Render(fmt.Sprintf("  +%d more", hidden)))
@@ -115,8 +129,12 @@ func (m model) viewSuggestions() string {
 // viewSummary is the headline card: who, over what window, and the totals.
 func (m model) viewSummary() string {
 	cc := m.report.Collection
+	who := m.report.DisplayName()
+	if m.report.Name != "" {
+		who += " " + faintStyle.Render("@"+m.report.Login)
+	}
 	head := fmt.Sprintf("%s  %s",
-		headlineStyle.Render(m.report.DisplayName()),
+		headlineStyle.Render(who),
 		faintStyle.Render(fmt.Sprintf("%s → %s",
 			cc.StartedAt.Format(contrib.DateFormat),
 			cc.EndedAt.Format(contrib.DateFormat))),
@@ -131,7 +149,7 @@ func (m model) viewSummary() string {
 		stat("reviews", cc.TotalReviews, "review"),
 	}
 
-	body := []string{head, strings.Join(stats, mutedStyle.Render("   ·   "))}
+	body := []string{head, strings.Join(stats, mutedStyle.Render(" · "))}
 	for _, warning := range m.report.Warnings {
 		body = append(body, warningStyle.Render("! "+warning))
 	}
@@ -158,17 +176,37 @@ func (m model) viewList() string {
 	title := panelTitleStyle.Render("Contributions")
 	body := m.list.View()
 
+	// The count follows what is on screen: with a filter applied, Items() is
+	// still the whole report but only VisibleItems() are listed.
+	visible := len(m.list.VisibleItems())
+
 	switch {
-	case m.focus == focusList && m.list.FilterState() != 0:
-		title += "  " + m.list.FilterInput.View()
-	case len(m.list.Items()) > 0:
-		title += faintStyle.Render(fmt.Sprintf("  %d of %d", m.list.Index()+1, len(m.list.Items())))
+	case m.focus == focusList && m.list.FilterState() != list.Unfiltered:
+		// The query is clamped rather than truncated after styling: a title
+		// wider than its panel makes lipgloss drop the border, and cutting an
+		// already-styled string would cut an ANSI escape in half.
+		query := truncate(m.list.FilterValue(), max(m.contentWidth()/3, 8))
+		title += labelStyle.Render("  filter: ") + query
+		title = appendIfItFits(m, title, fmt.Sprintf("  %d of %d", visible, len(m.list.Items())))
+	case visible > 0:
+		title = appendIfItFits(m, title, fmt.Sprintf("  %d of %d", m.list.Index()+1, visible))
 	default:
 		// The list's own empty text is "No items.", which says nothing about
-		// what to do next.
-		body = faintStyle.Render("  nothing loaded yet — type a user and press ctrl+r")
+		// what to do next. Pad to the list's height so the panel still fills
+		// the space it was given.
+		hint := truncate("nothing loaded yet — type a user and press ctrl+r", m.contentWidth()-6)
+		body = faintStyle.Render("  "+hint) + strings.Repeat("\n", max(m.list.Height()-1, 0))
 	}
 	return panelStyle.Width(m.contentWidth()).Render(title + "\n" + body)
+}
+
+// appendIfItFits adds a faint suffix to a panel title only when the panel has
+// room for it.
+func appendIfItFits(m model, title, suffix string) string {
+	if lipgloss.Width(title)+lipgloss.Width(suffix) > m.contentWidth()-4 {
+		return title
+	}
+	return title + faintStyle.Render(suffix)
 }
 
 func (m model) viewLogs() string {
@@ -183,8 +221,11 @@ func (m model) viewFooter() string {
 	}
 
 	bindings := keys.ShortHelp()
-	if m.showingSuggestions() {
+	switch {
+	case m.showingSuggestions():
 		bindings = suggestionHelp()
+	case m.showLogs:
+		bindings = logHelp()
 	}
 	return m.level.style().Render(truncate(status, m.width)) + "\n" + m.help.ShortHelpView(bindings)
 }
@@ -197,31 +238,51 @@ func (m model) contentWidth() int {
 	return m.width - 2
 }
 
-// resize recomputes the heights that flex: the list, and the log viewport that
-// replaces it.
+// resize decides what fits and sizes the panes that flex. A terminal too short
+// for everything drops the calendar first and then the summary, rather than
+// pushing the header off the top of the screen: the list is the part people
+// scroll, so it keeps its rows.
 func (m *model) resize() {
 	m.help.Width = m.width
 
-	used := headerHeight + filterHeight + footerHeight
-	if m.report != nil {
-		used += m.summaryHeight() + m.calendarHeight()
+	// The panels are measured rather than predicted: a long stat row, a wrapped
+	// warning, or a narrow terminal that stacks the filter fields all change
+	// their height, and a budget that guesses wrong scrolls the screen.
+	free := m.height - lipgloss.Height(m.viewHeader()) -
+		lipgloss.Height(m.viewFilters()) - lipgloss.Height(m.viewFooter())
+	if rows := m.viewSuggestions(); rows != "" {
+		free -= lipgloss.Height(rows)
 	}
-	rows := m.height - used - 3 // panel border and title
+	m.showSummary, m.showCalendar = false, false
+
+	if m.report != nil {
+		if summary := lipgloss.Height(m.viewSummary()); free-summary >= panelChrome+minListRows {
+			m.showSummary = true
+			free -= summary
+		}
+		if m.showSummary && free-calendarHeight >= panelChrome+minListRows {
+			m.showCalendar = true
+			free -= calendarHeight
+		}
+	}
+
+	rows := free - panelChrome
 	if rows < minListRows {
 		rows = minListRows
 	}
 
 	inner := m.contentWidth() - 4
 	m.list.SetSize(inner, rows)
+
+	// Collaborators log from their own goroutines, so the pane is refreshed
+	// from the buffer on every message rather than pushed to. It follows the
+	// tail unless the user has scrolled up to read something, which is the one
+	// moment an arriving line must not yank the view out from under them.
+	follow := m.logView.AtBottom()
 	m.logView.Width = inner
 	m.logView.Height = rows
 	m.logView.SetContent(m.logs.Render(inner))
-}
-
-func (m model) summaryHeight() int {
-	return 4 + len(m.report.Warnings) // border, headline, stats, warnings
-}
-
-func (m model) calendarHeight() int {
-	return 12 // border, title, month row, 7 weekdays, legend
+	if follow {
+		m.logView.GotoBottom()
+	}
 }

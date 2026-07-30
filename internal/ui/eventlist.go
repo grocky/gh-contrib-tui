@@ -110,11 +110,13 @@ func newEventList() list.Model {
 	l.SetShowTitle(false)
 	l.SetShowHelp(false)
 	l.SetShowStatusBar(false)
-	l.SetFilteringEnabled(true)
 	l.SetShowPagination(false)
+	l.SetFilteringEnabled(true)
+	// The panel draws the filter query in its own title, clamped to the width
+	// it has. Left to the list, the query renders at full length and wraps the
+	// panel -- and appears twice.
+	l.SetShowFilter(false)
 	l.Styles.NoItems = faintStyle.PaddingLeft(2)
-	l.FilterInput.Prompt = "filter: "
-	l.FilterInput.PromptStyle = labelStyle
 	return l
 }
 

@@ -74,6 +74,10 @@ type model struct {
 	width    int
 	height   int
 	ready    bool
+
+	// Set by resize: whether there is vertical room for these panels.
+	showSummary  bool
+	showCalendar bool
 }
 
 func newModel() model {
@@ -109,18 +113,21 @@ func (m model) Init() tea.Cmd {
 	return tea.Batch(textinput.Blink, m.loadCacheCmd(), m.discoverCmd(false))
 }
 
+// Update handles one message. Everything that can change the layout -- a
+// report arriving, the dropdown opening, the log pane toggling -- goes through
+// here, so the layout is recomputed once on the way out rather than at each of
+// the dozen places that could have invalidated it.
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	// Collaborators log from their own goroutines, so the pane is refreshed
-	// from the buffer on every message rather than pushed to.
-	if m.showLogs {
-		m.logView.SetContent(m.logs.Render(m.logView.Width))
-	}
+	next, cmd := m.update(msg)
+	next.resize()
+	return next, cmd
+}
 
+func (m model) update(msg tea.Msg) (model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = msg.Width, msg.Height
 		m.ready = true
-		m.resize()
 		return m, nil
 
 	case spinner.TickMsg:
@@ -140,12 +147,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		return m.handleKey(msg)
 	}
-	return m, nil
+
+	// Anything else belongs to the list: it filters asynchronously, so its own
+	// FilterMatchesMsg has to get back to it or "/" silently does nothing.
+	var cmd tea.Cmd
+	m.list, cmd = m.list.Update(msg)
+	return m, cmd
 }
 
 // handleKey routes a keystroke. Order matters: the open suggestion list and an
 // active filter both claim keys that mean something else elsewhere.
-func (m model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+func (m model) handleKey(msg tea.KeyMsg) (model, tea.Cmd) {
 	if key.Matches(msg, keys.Quit) {
 		return m, tea.Quit
 	}
@@ -178,14 +190,14 @@ func (m model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.copySelected(), nil
 	case key.Matches(msg, keys.Logs):
 		m.showLogs = !m.showLogs
-		m.resize()
 		if m.showLogs {
+			// Reopening lands on the newest lines even if the pane was closed
+			// halfway up the buffer.
 			m.logView.GotoBottom()
 		}
 		return m, nil
 	case key.Matches(msg, keys.Dismiss) && m.showLogs:
 		m.showLogs = false
-		m.resize()
 		return m, nil
 	case key.Matches(msg, keys.Open):
 		if m.focus == focusList {
@@ -194,13 +206,22 @@ func (m model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.startFetch()
 	}
 
-	if m.showLogs {
+	// The log pane replaces the list, but the filter fields stay on screen and
+	// keep their cursor, so it claims only the keys it needs to scroll. Handing
+	// it every keystroke swallows typing into a field the user can still see.
+	if m.showLogs && key.Matches(msg, keys.Scroll) {
 		var cmd tea.Cmd
 		m.logView, cmd = m.logView.Update(msg)
 		return m, cmd
 	}
 
 	if m.focus == focusList {
+		// The log pane has replaced the list. Left to it, "/" would open a
+		// filter and the arrow keys would move a selection on a list nobody can
+		// see, and closing the pane would reveal the damage.
+		if m.showLogs {
+			return m, nil
+		}
 		var cmd tea.Cmd
 		m.list, cmd = m.list.Update(msg)
 		return m, cmd
@@ -217,7 +238,7 @@ func (m model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 // handleSuggestionKey consumes the keys the autocomplete list owns while it is
 // open, reporting whether it took the keystroke.
-func (m model) handleSuggestionKey(msg tea.KeyMsg) (bool, tea.Model, tea.Cmd) {
+func (m model) handleSuggestionKey(msg tea.KeyMsg) (bool, model, tea.Cmd) {
 	switch {
 	case key.Matches(msg, keys.Down):
 		m.suggestIndex = (m.suggestIndex + 1) % len(m.suggestions)
@@ -277,7 +298,7 @@ func (m model) moveFocus(delta int) model {
 }
 
 // startFetch validates the filters and kicks off the request.
-func (m model) startFetch() (tea.Model, tea.Cmd) {
+func (m model) startFetch() (model, tea.Cmd) {
 	username := strings.TrimSpace(m.inputs[focusUser].Value())
 	if username == "" {
 		m.setStatus("user is required", statusError)
@@ -307,6 +328,11 @@ func (m model) applyFetched(msg fetchedMsg) model {
 	}
 
 	m.report = msg.report
+	// Echo the window that was actually used: an empty From means "trailing 30
+	// days", and leaving the fields blank hides which days those were.
+	m.inputs[focusFrom].SetValue(msg.report.Collection.StartedAt.Format(contrib.DateFormat))
+	m.inputs[focusTo].SetValue(msg.report.Collection.EndedAt.Format(contrib.DateFormat))
+
 	events := contrib.Events(msg.report)
 	m.list.SetItems(newEventItems(events))
 	m.list.ResetSelected()
@@ -321,7 +347,7 @@ func (m model) applyFetched(msg fetchedMsg) model {
 	return m
 }
 
-func (m model) applyDiscovered(msg discoveredMsg) (tea.Model, tea.Cmd) {
+func (m model) applyDiscovered(msg discoveredMsg) (model, tea.Cmd) {
 	if msg.forced {
 		m.busy = false
 	}

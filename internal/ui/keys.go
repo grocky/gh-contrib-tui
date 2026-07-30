@@ -14,6 +14,7 @@ type keyMap struct {
 	Logs    key.Binding
 	Up      key.Binding
 	Down    key.Binding
+	Scroll  key.Binding
 	Accept  key.Binding
 	Dismiss key.Binding
 	Quit    key.Binding
@@ -56,8 +57,18 @@ var keys = keyMap{
 		key.WithKeys("down", "ctrl+n"),
 		key.WithHelp("↓", "down"),
 	),
+	// Scroll moves the log pane. It is deliberately free of letter keys: the
+	// filter fields stay live behind the pane, so anything that could be typed
+	// into one has to reach it.
+	Scroll: key.NewBinding(
+		key.WithKeys("up", "down", "pgup", "pgdown", "home", "end"),
+		key.WithHelp("↑/↓", "scroll"),
+	),
+	// Accept deliberately does not include tab: tab is "next field" everywhere
+	// else in this UI, and having it mean two things depending on whether the
+	// dropdown happens to be open is worse than one extra keystroke.
 	Accept: key.NewBinding(
-		key.WithKeys("enter", "tab"),
+		key.WithKeys("enter"),
 		key.WithHelp("enter", "accept"),
 	),
 	Dismiss: key.NewBinding(
@@ -85,4 +96,10 @@ func (k keyMap) FullHelp() [][]key.Binding {
 // where enter and the arrow keys mean something different.
 func suggestionHelp() []key.Binding {
 	return []key.Binding{keys.Up, keys.Down, keys.Accept, keys.Dismiss}
+}
+
+// logHelp replaces the help line while the log pane is open, where the arrow
+// keys scroll it and escape closes it.
+func logHelp() []key.Binding {
+	return []key.Binding{keys.Scroll, keys.Dismiss, keys.Fetch, keys.Quit}
 }

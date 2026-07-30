@@ -21,6 +21,37 @@ const (
 
 var weekdayLabels = []string{"Mon", "", "Wed", "", "Fri", "", ""}
 
+// heatPalette is GitHub's calendar scale in both themes. The domain layer
+// assigns each day a shade by its share of the busiest day; that shade is a
+// light-theme hex, so it is mapped back to a level here and re-rendered in
+// whichever palette the terminal calls for. Without this, an empty day's near
+// white reads as a busy one against a dark background.
+var heatPalette = []lipgloss.AdaptiveColor{
+	{Light: "#ebedf0", Dark: "#21262d"},
+	{Light: "#9be9a8", Dark: "#0e4429"},
+	{Light: "#40c463", Dark: "#006d32"},
+	{Light: "#30a14e", Dark: "#26a641"},
+	{Light: "#216e39", Dark: "#39d353"},
+}
+
+// heatLevels indexes the domain's shades so a day can be re-coloured.
+var heatLevels = func() map[string]int {
+	levels := map[string]int{}
+	for i, color := range contrib.HeatLevels() {
+		levels[color] = i
+	}
+	return levels
+}()
+
+// cellStyle is the style for one calendar day.
+func cellStyle(day contrib.Day) lipgloss.Style {
+	level := heatLevels[day.Color]
+	if level >= len(heatPalette) {
+		level = len(heatPalette) - 1
+	}
+	return lipgloss.NewStyle().Foreground(heatPalette[level])
+}
+
 // renderHeatmap draws the contribution calendar as weekday rows by week
 // columns. When the terminal is too narrow for the whole window, the most
 // recent weeks win: the current stretch of activity is what people look at.
@@ -55,7 +86,7 @@ func renderHeatmap(cal contrib.Calendar, width int) string {
 				b.WriteString(" ")
 				continue
 			}
-			b.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color(day.Color)).Render(dayCell))
+			b.WriteString(cellStyle(*day).Render(dayCell))
 		}
 		if row < 6 {
 			b.WriteByte('\n')
@@ -91,8 +122,8 @@ func monthRow(weeks []contrib.Week) string {
 func renderLegend() string {
 	var b strings.Builder
 	b.WriteString(faintStyle.Render("less "))
-	for _, color := range contrib.HeatLevels() {
-		b.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color(color)).Render(dayCell))
+	for _, shade := range heatPalette {
+		b.WriteString(lipgloss.NewStyle().Foreground(shade).Render(dayCell))
 	}
 	b.WriteString(faintStyle.Render(" more"))
 	return b.String()
@@ -106,9 +137,14 @@ func weekdayRow(day contrib.Day) int {
 	return 6 // Sunday closes the week.
 }
 
+// pad right-pads to a display width. It measures the way truncate does rather
+// than counting bytes: a display name like "Grønvold, Åse" is wider in bytes
+// than on screen, and slicing it by byte both misaligns the column and cuts a
+// rune in half.
 func pad(s string, width int) string {
-	if len(s) >= width {
-		return s[:width]
+	w := lipgloss.Width(s)
+	if w >= width {
+		return truncate(s, width)
 	}
-	return s + strings.Repeat(" ", width-len(s))
+	return s + strings.Repeat(" ", width-w)
 }

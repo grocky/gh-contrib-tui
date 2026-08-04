@@ -325,3 +325,21 @@ func TestConvert_MixesDrawingAndTextInOneRun(t *testing.T) {
 		t.Errorf("text beside a border is misplaced: %q", span)
 	}
 }
+
+// The calendar's cell leaves the top sliver of its row empty, which is the gap
+// between one weekday row and the next. Drawn, that is a rectangle standing off
+// the top of its cell rather than filling it.
+func TestConvert_PartialHeightBlocks(t *testing.T) {
+	got := Convert("\x1b[38;2;0;255;0m▇\x1b[0m", Options{})
+	parse(t, got)
+
+	if strings.Contains(got, "▇") {
+		t.Fatalf("the block was typeset rather than drawn:\n%s", got)
+	}
+	if !strings.Contains(got, `height="`+ftoa(lineHeight*7/8)+`"`) {
+		t.Errorf("block does not fill seven eighths of its cell:\n%s", got)
+	}
+	if !strings.Contains(got, `y="`+ftoa(padY+lineHeight/8)+`"`) {
+		t.Errorf("block does not stand off the top of its cell:\n%s", got)
+	}
+}

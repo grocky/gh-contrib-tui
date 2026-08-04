@@ -1,293 +1,293 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1040" height="742" viewBox="0 0 1040 742" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace" font-size="14">
 <title>gh-contribs</title>
 <rect width="1040" height="742" rx="8" fill="#0d1117"/>
-<rect x="24.4" y="14.0" width="92.4" height="17.0" fill="#58a6ff"/>
-<text y="25.2" xml:space="preserve"><tspan x="24.4" fill="#ffffff" textLength="92.4" lengthAdjust="spacingAndGlyphs" font-weight="600">gh-contribs</tspan><tspan x="872.8" fill="#6e7681" textLength="151.2" lengthAdjust="spacingAndGlyphs">github.example.com</tspan></text>
-<text y="59.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="1008.0" lengthAdjust="spacingAndGlyphs">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
-<text y="76.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#8b939e" textLength="33.6" lengthAdjust="spacingAndGlyphs">User</tspan><tspan x="83.2" fill="#c9d1d9" textLength="84.0" lengthAdjust="spacingAndGlyphs">nash-robin</tspan><tspan x="318.4" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="352.0" fill="#8b939e" textLength="33.6" lengthAdjust="spacingAndGlyphs">From</tspan><tspan x="402.4" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">2</tspan><tspan x="410.8" fill="#6e7681" textLength="75.6" lengthAdjust="spacingAndGlyphs">026-05-04</tspan><tspan x="528.4" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="562.0" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">To</tspan><tspan x="595.6" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">2</tspan><tspan x="604.0" fill="#6e7681" textLength="75.6" lengthAdjust="spacingAndGlyphs">026-08-04</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="93.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="1008.0" lengthAdjust="spacingAndGlyphs">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
-<text y="110.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="1008.0" lengthAdjust="spacingAndGlyphs">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
-<text y="127.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#e6edf3" textLength="92.4" lengthAdjust="spacingAndGlyphs" font-weight="600">Nash, Robin</tspan><tspan x="133.6" fill="#6e7681" textLength="92.4" lengthAdjust="spacingAndGlyphs" font-weight="600">@nash-robin</tspan><tspan x="242.8" fill="#6e7681" textLength="193.2" lengthAdjust="spacingAndGlyphs">2026-05-04 → 2026-08-04</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="144.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#3fb950" textLength="25.2" lengthAdjust="spacingAndGlyphs" font-weight="600">154</tspan><tspan x="66.4" fill="#8b939e" textLength="109.2" lengthAdjust="spacingAndGlyphs">contributions</tspan><tspan x="184.0" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">·</tspan><tspan x="200.8" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">91</tspan><tspan x="226.0" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">commits</tspan><tspan x="293.2" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">·</tspan><tspan x="310.0" fill="#d29922" textLength="16.8" lengthAdjust="spacingAndGlyphs">20</tspan><tspan x="335.2" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">issues</tspan><tspan x="394.0" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">·</tspan><tspan x="410.8" fill="#3fb950" textLength="16.8" lengthAdjust="spacingAndGlyphs">22</tspan><tspan x="436.0" fill="#8b939e" textLength="117.6" lengthAdjust="spacingAndGlyphs">prs (4 merged)</tspan><tspan x="562.0" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">·</tspan><tspan x="578.8" fill="#58a6ff" textLength="16.8" lengthAdjust="spacingAndGlyphs">21</tspan><tspan x="604.0" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">reviews</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="161.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="1008.0" lengthAdjust="spacingAndGlyphs">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
-<text y="178.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="504.0" lengthAdjust="spacingAndGlyphs">╭──────────────────────────────────────────────────────────╮</tspan><tspan x="520.0" fill="#30363c" textLength="504.0" lengthAdjust="spacingAndGlyphs">╭──────────────────────────────────────────────────────────╮</tspan></text>
-<text y="195.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#8b939e" textLength="176.4" lengthAdjust="spacingAndGlyphs" font-weight="600">Contribution calendar</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="536.8" fill="#8b939e" textLength="100.8" lengthAdjust="spacingAndGlyphs" font-weight="600">Repositories</tspan><tspan x="654.4" fill="#6e7681" textLength="33.6" lengthAdjust="spacingAndGlyphs">bars</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="696.40" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="704.80" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="713.20" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="721.60" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="730.00" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="738.40" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="746.80" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="755.20" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="763.60" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="772.00" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="780.40" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="788.80" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="797.20" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="805.60" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="814.00" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="822.40" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="830.80" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="839.20" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="847.60" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="856.00" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="864.40" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="872.80" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="881.20" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="889.60" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="898.00" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="906.40" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="914.80" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="923.20" y="201.00" width="8.40" height="17.00" fill="#8b939e"/>
-<text y="212.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="66.4" fill="#6e7681" textLength="327.6" lengthAdjust="spacingAndGlyphs">May         Jun         Jul         Aug</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="536.8" fill="#c9d1d9" textLength="142.8" lengthAdjust="spacingAndGlyphs">acme/platform-api</tspan><tspan x="973.6" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">84</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="66.40" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="74.80" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="91.60" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="100.00" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="116.80" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="125.20" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="142.00" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="150.40" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="167.20" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="175.60" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="192.40" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="200.80" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="217.60" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="226.00" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="242.80" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="251.20" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="268.00" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="276.40" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="293.20" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="301.60" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="318.40" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="326.80" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="343.60" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="352.00" y="218.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="368.80" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="377.20" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="394.00" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="402.40" y="218.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="696.40" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="704.80" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="713.20" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="721.60" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="730.00" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="738.40" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="746.80" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="755.20" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="763.60" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="772.00" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="780.40" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="788.80" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="797.20" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="805.60" y="218.00" width="8.40" height="17.00" fill="#8b939e"/>
-<text y="229.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#6e7681" textLength="25.2" lengthAdjust="spacingAndGlyphs">Mon</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="536.8" fill="#c9d1d9" textLength="134.4" lengthAdjust="spacingAndGlyphs">acme/web-console</tspan><tspan x="973.6" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">41</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="696.40" y="235.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="704.80" y="235.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="713.20" y="235.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="721.60" y="235.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="730.00" y="235.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="738.40" y="235.00" width="8.40" height="17.00" fill="#8b939e"/>
-<text y="246.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="536.8" fill="#c9d1d9" textLength="151.2" lengthAdjust="spacingAndGlyphs">acme/terraform-mo…</tspan><tspan x="973.6" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">19</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="66.40" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="74.80" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="91.60" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="100.00" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="116.80" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="125.20" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="142.00" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="150.40" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="167.20" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="175.60" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="192.40" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="200.80" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="217.60" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="226.00" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="242.80" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="251.20" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="268.00" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="276.40" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="293.20" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="301.60" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="318.40" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="326.80" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="343.60" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="352.00" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="368.80" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="377.20" y="252.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="394.00" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="402.40" y="252.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="696.40" y="252.00" width="8.40" height="17.00" fill="#8b939e"/>
-<rect x="704.80" y="252.00" width="8.40" height="17.00" fill="#8b939e"/>
-<text y="263.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="536.8" fill="#c9d1d9" textLength="75.6" lengthAdjust="spacingAndGlyphs">acme/docs</tspan><tspan x="982.0" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">7</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="696.40" y="269.00" width="8.40" height="17.00" fill="#8b939e"/>
-<text y="280.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="536.8" fill="#c9d1d9" textLength="100.8" lengthAdjust="spacingAndGlyphs">acme/scripts</tspan><tspan x="982.0" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">3</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="66.40" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="74.80" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="91.60" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="100.00" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="116.80" y="286.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="125.20" y="286.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="142.00" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="150.40" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="167.20" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="175.60" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="192.40" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="200.80" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="217.60" y="286.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="226.00" y="286.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="242.80" y="286.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="251.20" y="286.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="268.00" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="276.40" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="293.20" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="301.60" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="318.40" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="326.80" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="343.60" y="286.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="352.00" y="286.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="368.80" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="377.20" y="286.00" width="8.40" height="17.00" fill="#30363c"/>
-<text y="297.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#6e7681" textLength="25.2" lengthAdjust="spacingAndGlyphs">Wed</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="314.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="66.40" y="320.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="74.80" y="320.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="91.60" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="100.00" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="116.80" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="125.20" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="142.00" y="320.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="150.40" y="320.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="167.20" y="320.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="175.60" y="320.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="192.40" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="200.80" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="217.60" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="226.00" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="242.80" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="251.20" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="268.00" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="276.40" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="293.20" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="301.60" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="318.40" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="326.80" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="343.60" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="352.00" y="320.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="368.80" y="320.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="377.20" y="320.00" width="8.40" height="17.00" fill="#7ee787"/>
-<text y="331.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="348.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="66.40" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="74.80" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="91.60" y="354.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="100.00" y="354.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="116.80" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="125.20" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="142.00" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="150.40" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="167.20" y="354.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="175.60" y="354.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="192.40" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="200.80" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="217.60" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="226.00" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="242.80" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="251.20" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="268.00" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="276.40" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="293.20" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="301.60" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="318.40" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="326.80" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="343.60" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="352.00" y="354.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="368.80" y="354.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="377.20" y="354.00" width="8.40" height="17.00" fill="#7ee787"/>
-<text y="365.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#6e7681" textLength="25.2" lengthAdjust="spacingAndGlyphs">Fri</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="382.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="66.40" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="74.80" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="91.60" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="100.00" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="116.80" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="125.20" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="142.00" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="150.40" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="167.20" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="175.60" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="192.40" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="200.80" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="217.60" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="226.00" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="242.80" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="251.20" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="268.00" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="276.40" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="293.20" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="301.60" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="318.40" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="326.80" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="343.60" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="352.00" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="368.80" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="377.20" y="388.00" width="8.40" height="17.00" fill="#30363c"/>
-<text y="399.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="416.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="66.40" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="74.80" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="91.60" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="100.00" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="116.80" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="125.20" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="142.00" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="150.40" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="167.20" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="175.60" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="192.40" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="200.80" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="217.60" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="226.00" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="242.80" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="251.20" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="268.00" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="276.40" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="293.20" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="301.60" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="318.40" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="326.80" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="343.60" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="352.00" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="368.80" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="377.20" y="422.00" width="8.40" height="17.00" fill="#30363c"/>
-<text y="433.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="450.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="74.80" y="456.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="83.20" y="456.00" width="8.40" height="17.00" fill="#30363c"/>
-<rect x="100.00" y="456.00" width="8.40" height="17.00" fill="#196c2e"/>
-<rect x="108.40" y="456.00" width="8.40" height="17.00" fill="#196c2e"/>
-<rect x="125.20" y="456.00" width="8.40" height="17.00" fill="#2ea043"/>
-<rect x="133.60" y="456.00" width="8.40" height="17.00" fill="#2ea043"/>
-<rect x="150.40" y="456.00" width="8.40" height="17.00" fill="#46c769"/>
-<rect x="158.80" y="456.00" width="8.40" height="17.00" fill="#46c769"/>
-<rect x="175.60" y="456.00" width="8.40" height="17.00" fill="#7ee787"/>
-<rect x="184.00" y="456.00" width="8.40" height="17.00" fill="#7ee787"/>
-<text y="467.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#6e7681" textLength="33.6" lengthAdjust="spacingAndGlyphs">less</tspan><tspan x="200.8" fill="#6e7681" textLength="33.6" lengthAdjust="spacingAndGlyphs">more</tspan><tspan x="511.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="520.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="484.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="504.0" lengthAdjust="spacingAndGlyphs">╰──────────────────────────────────────────────────────────╯</tspan><tspan x="520.0" fill="#30363c" textLength="504.0" lengthAdjust="spacingAndGlyphs">╰──────────────────────────────────────────────────────────╯</tspan></text>
-<text y="501.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="1008.0" lengthAdjust="spacingAndGlyphs">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
-<text y="518.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#8b939e" textLength="109.2" lengthAdjust="spacingAndGlyphs" font-weight="600">Contributions</tspan><tspan x="158.8" fill="#6e7681" textLength="67.2" lengthAdjust="spacingAndGlyphs">1 of 154</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="535.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#58a6ff" textLength="8.4" lengthAdjust="spacingAndGlyphs">▸</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">2026-07-31</tspan><tspan x="142.0" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">commit</tspan><tspan x="200.8" fill="#58a6ff" textLength="184.8" lengthAdjust="spacingAndGlyphs" font-weight="600">Drop the vendored fork</tspan><tspan x="847.6" fill="#6e7681" textLength="142.8" lengthAdjust="spacingAndGlyphs">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="552.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">2026-07-31</tspan><tspan x="142.0" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">commit</tspan><tspan x="200.8" fill="#e6edf3" textLength="193.2" lengthAdjust="spacingAndGlyphs">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681" textLength="142.8" lengthAdjust="spacingAndGlyphs">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="569.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">2026-07-31</tspan><tspan x="142.0" fill="#3fb950" textLength="16.8" lengthAdjust="spacingAndGlyphs">pr</tspan><tspan x="200.8" fill="#e6edf3" textLength="176.4" lengthAdjust="spacingAndGlyphs">Rework the token walk</tspan><tspan x="847.6" fill="#6e7681" textLength="142.8" lengthAdjust="spacingAndGlyphs">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="586.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">2026-07-31</tspan><tspan x="142.0" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">commit</tspan><tspan x="200.8" fill="#e6edf3" textLength="184.8" lengthAdjust="spacingAndGlyphs">Drop the vendored fork</tspan><tspan x="847.6" fill="#6e7681" textLength="142.8" lengthAdjust="spacingAndGlyphs">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="603.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">2026-07-31</tspan><tspan x="142.0" fill="#58a6ff" textLength="50.4" lengthAdjust="spacingAndGlyphs">review</tspan><tspan x="200.8" fill="#e6edf3" textLength="218.4" lengthAdjust="spacingAndGlyphs">Review: bound the org walk</tspan><tspan x="856.0" fill="#6e7681" textLength="134.4" lengthAdjust="spacingAndGlyphs">acme/web-console</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="620.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">2026-07-31</tspan><tspan x="142.0" fill="#d29922" textLength="42.0" lengthAdjust="spacingAndGlyphs">issue</tspan><tspan x="200.8" fill="#e6edf3" textLength="310.8" lengthAdjust="spacingAndGlyphs">Suspended users missing from listings</tspan><tspan x="856.0" fill="#6e7681" textLength="134.4" lengthAdjust="spacingAndGlyphs">acme/web-console</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="637.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">2026-07-31</tspan><tspan x="142.0" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">commit</tspan><tspan x="200.8" fill="#e6edf3" textLength="193.2" lengthAdjust="spacingAndGlyphs">Cache directory lookups</tspan><tspan x="805.6" fill="#6e7681" textLength="184.8" lengthAdjust="spacingAndGlyphs">acme/terraform-modules</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="654.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">2026-07-30</tspan><tspan x="142.0" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">commit</tspan><tspan x="200.8" fill="#e6edf3" textLength="193.2" lengthAdjust="spacingAndGlyphs">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681" textLength="142.8" lengthAdjust="spacingAndGlyphs">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="671.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">2026-07-30</tspan><tspan x="142.0" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">commit</tspan><tspan x="200.8" fill="#e6edf3" textLength="235.2" lengthAdjust="spacingAndGlyphs">Fix the retry budget on 429s</tspan><tspan x="847.6" fill="#6e7681" textLength="142.8" lengthAdjust="spacingAndGlyphs">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="688.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="1008.0" lengthAdjust="spacingAndGlyphs">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
-<text y="705.2" xml:space="preserve"><tspan x="16.0" fill="#3fb950" textLength="142.8" lengthAdjust="spacingAndGlyphs">154 contributions</tspan></text>
-<text y="722.2" xml:space="preserve"><tspan x="16.0" fill="#8b939e" textLength="25.2" lengthAdjust="spacingAndGlyphs">tab</tspan><tspan x="49.6" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">next field</tspan><tspan x="142.0" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="158.8" fill="#8b939e" textLength="25.2" lengthAdjust="spacingAndGlyphs">esc</tspan><tspan x="192.4" fill="#6e7681" textLength="33.6" lengthAdjust="spacingAndGlyphs">back</tspan><tspan x="234.4" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="251.2" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">ctrl+r</tspan><tspan x="310.0" fill="#6e7681" textLength="42.0" lengthAdjust="spacingAndGlyphs">fetch</tspan><tspan x="360.4" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="377.2" fill="#8b939e" textLength="42.0" lengthAdjust="spacingAndGlyphs">enter</tspan><tspan x="427.6" fill="#6e7681" textLength="33.6" lengthAdjust="spacingAndGlyphs">open</tspan><tspan x="469.6" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="486.4" fill="#8b939e" textLength="42.0" lengthAdjust="spacingAndGlyphs">alt+r</tspan><tspan x="536.8" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">repo chart</tspan><tspan x="629.2" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="646.0" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">ctrl+y</tspan><tspan x="704.8" fill="#6e7681" textLength="67.2" lengthAdjust="spacingAndGlyphs">copy url</tspan><tspan x="780.4" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="797.2" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">ctrl+c</tspan><tspan x="856.0" fill="#6e7681" textLength="33.6" lengthAdjust="spacingAndGlyphs">quit</tspan></text>
+<rect x="24.4" y="14" width="92.4" height="17" fill="#58a6ff"/>
+<text y="25.2"><tspan x="24.4" fill="#ffffff" font-weight="600">gh-contribs</tspan><tspan x="872.8000000000001" fill="#6e7681">github.example.com</tspan></text>
+<text y="59.2"><tspan x="16" fill="#30363c">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
+<text y="76.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#8b939e">User</tspan><tspan x="83.2" fill="#c9d1d9">nash-robin</tspan><tspan x="318.40000000000003" fill="#8b939e">│</tspan><tspan x="352" fill="#8b939e">From</tspan><tspan x="402.40000000000003" fill="#6e7681">2</tspan><tspan x="410.8" fill="#6e7681">026-05-04</tspan><tspan x="528.4" fill="#8b939e">│</tspan><tspan x="562" fill="#8b939e">To</tspan><tspan x="595.6" fill="#6e7681">2</tspan><tspan x="604" fill="#6e7681">026-08-04</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="93.2"><tspan x="16" fill="#30363c">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
+<text y="110.2"><tspan x="16" fill="#30363c">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
+<text y="127.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#e6edf3" font-weight="600">Nash, Robin</tspan><tspan x="133.60000000000002" fill="#6e7681" font-weight="600">@nash-robin</tspan><tspan x="242.8" fill="#6e7681">2026-05-04 → 2026-08-04</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="144.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#3fb950" font-weight="600">154</tspan><tspan x="66.4" fill="#8b939e">contributions</tspan><tspan x="184" fill="#8b939e">·</tspan><tspan x="200.8" fill="#8b939e">91</tspan><tspan x="226" fill="#8b939e">commits</tspan><tspan x="293.2" fill="#8b939e">·</tspan><tspan x="310" fill="#d29922">20</tspan><tspan x="335.2" fill="#8b939e">issues</tspan><tspan x="394" fill="#8b939e">·</tspan><tspan x="410.8" fill="#3fb950">22</tspan><tspan x="436" fill="#8b939e">prs (4 merged)</tspan><tspan x="562" fill="#8b939e">·</tspan><tspan x="578.8000000000001" fill="#58a6ff">21</tspan><tspan x="604" fill="#8b939e">reviews</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="161.2"><tspan x="16" fill="#30363c">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
+<text y="178.2"><tspan x="16" fill="#30363c">╭──────────────────────────────────────────────────────────╮</tspan><tspan x="520" fill="#30363c">╭──────────────────────────────────────────────────────────╮</tspan></text>
+<text y="195.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#8b939e" font-weight="600">Contribution calendar</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="536.8000000000001" fill="#8b939e" font-weight="600">Repositories</tspan><tspan x="654.4" fill="#6e7681">bars</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="696.4" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="704.8000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="713.2" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="721.6" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="730" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="738.4" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="746.8000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="755.2" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="763.6" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="772" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="780.4" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="788.8000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="797.2" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="805.6" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="814" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="822.4000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="830.8000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="839.2" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="847.6" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="856" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="864.4000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="872.8000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="881.2" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="889.6" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="898" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="906.4000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="914.8000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
+<rect x="923.2" y="201" width="8.4" height="17" fill="#8b939e"/>
+<text y="212.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="66.4" fill="#6e7681">May</tspan><tspan x="167.20000000000002" fill="#6e7681">Jun</tspan><tspan x="268" fill="#6e7681">Jul</tspan><tspan x="368.8" fill="#6e7681">Aug</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="536.8000000000001" fill="#c9d1d9">acme/platform-api</tspan><tspan x="973.6" fill="#8b939e">84</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="66.4" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="74.80000000000001" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="91.60000000000001" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="100" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="116.80000000000001" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="125.2" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="142" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="150.4" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="167.20000000000002" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="175.6" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="192.4" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="200.8" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="217.60000000000002" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="226" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="242.8" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="251.20000000000002" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="268" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="276.40000000000003" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="293.2" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="301.6" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="318.40000000000003" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="326.8" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="343.6" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="352" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="368.8" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="377.2" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="394" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="402.40000000000003" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="696.4" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="704.8000000000001" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="713.2" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="721.6" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="730" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="738.4" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="746.8000000000001" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="755.2" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="763.6" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="772" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="780.4" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="788.8000000000001" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="797.2" y="218" width="8.4" height="17" fill="#8b939e"/>
+<rect x="805.6" y="218" width="8.4" height="17" fill="#8b939e"/>
+<text y="229.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#6e7681">Mon</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="536.8000000000001" fill="#c9d1d9">acme/web-console</tspan><tspan x="973.6" fill="#8b939e">41</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="696.4" y="235" width="8.4" height="17" fill="#8b939e"/>
+<rect x="704.8000000000001" y="235" width="8.4" height="17" fill="#8b939e"/>
+<rect x="713.2" y="235" width="8.4" height="17" fill="#8b939e"/>
+<rect x="721.6" y="235" width="8.4" height="17" fill="#8b939e"/>
+<rect x="730" y="235" width="8.4" height="17" fill="#8b939e"/>
+<rect x="738.4" y="235" width="8.4" height="17" fill="#8b939e"/>
+<text y="246.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="536.8000000000001" fill="#c9d1d9">acme/terraform-mo…</tspan><tspan x="973.6" fill="#8b939e">19</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="66.4" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="74.80000000000001" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="91.60000000000001" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="100" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="116.80000000000001" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="125.2" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="142" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="150.4" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="167.20000000000002" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="175.6" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="192.4" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="200.8" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="217.60000000000002" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="226" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="242.8" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="251.20000000000002" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="268" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="276.40000000000003" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="293.2" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="301.6" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="318.40000000000003" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="326.8" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="343.6" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="352" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="368.8" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="377.2" y="252" width="8.4" height="17" fill="#7ee787"/>
+<rect x="394" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="402.40000000000003" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="696.4" y="252" width="8.4" height="17" fill="#8b939e"/>
+<rect x="704.8000000000001" y="252" width="8.4" height="17" fill="#8b939e"/>
+<text y="263.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="536.8000000000001" fill="#c9d1d9">acme/docs</tspan><tspan x="982" fill="#8b939e">7</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="696.4" y="269" width="8.4" height="17" fill="#8b939e"/>
+<text y="280.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="536.8000000000001" fill="#c9d1d9">acme/scripts</tspan><tspan x="982" fill="#8b939e">3</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="66.4" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="74.80000000000001" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="91.60000000000001" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="100" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="116.80000000000001" y="286" width="8.4" height="17" fill="#7ee787"/>
+<rect x="125.2" y="286" width="8.4" height="17" fill="#7ee787"/>
+<rect x="142" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="150.4" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="167.20000000000002" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="175.6" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="192.4" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="200.8" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="217.60000000000002" y="286" width="8.4" height="17" fill="#7ee787"/>
+<rect x="226" y="286" width="8.4" height="17" fill="#7ee787"/>
+<rect x="242.8" y="286" width="8.4" height="17" fill="#7ee787"/>
+<rect x="251.20000000000002" y="286" width="8.4" height="17" fill="#7ee787"/>
+<rect x="268" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="276.40000000000003" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="293.2" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="301.6" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="318.40000000000003" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="326.8" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="343.6" y="286" width="8.4" height="17" fill="#7ee787"/>
+<rect x="352" y="286" width="8.4" height="17" fill="#7ee787"/>
+<rect x="368.8" y="286" width="8.4" height="17" fill="#30363c"/>
+<rect x="377.2" y="286" width="8.4" height="17" fill="#30363c"/>
+<text y="297.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#6e7681">Wed</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="314.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="66.4" y="320" width="8.4" height="17" fill="#7ee787"/>
+<rect x="74.80000000000001" y="320" width="8.4" height="17" fill="#7ee787"/>
+<rect x="91.60000000000001" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="100" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="116.80000000000001" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="125.2" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="142" y="320" width="8.4" height="17" fill="#7ee787"/>
+<rect x="150.4" y="320" width="8.4" height="17" fill="#7ee787"/>
+<rect x="167.20000000000002" y="320" width="8.4" height="17" fill="#7ee787"/>
+<rect x="175.6" y="320" width="8.4" height="17" fill="#7ee787"/>
+<rect x="192.4" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="200.8" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="217.60000000000002" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="226" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="242.8" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="251.20000000000002" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="268" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="276.40000000000003" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="293.2" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="301.6" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="318.40000000000003" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="326.8" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="343.6" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="352" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="368.8" y="320" width="8.4" height="17" fill="#7ee787"/>
+<rect x="377.2" y="320" width="8.4" height="17" fill="#7ee787"/>
+<text y="331.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="348.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="66.4" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="74.80000000000001" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="91.60000000000001" y="354" width="8.4" height="17" fill="#7ee787"/>
+<rect x="100" y="354" width="8.4" height="17" fill="#7ee787"/>
+<rect x="116.80000000000001" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="125.2" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="142" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="150.4" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="167.20000000000002" y="354" width="8.4" height="17" fill="#7ee787"/>
+<rect x="175.6" y="354" width="8.4" height="17" fill="#7ee787"/>
+<rect x="192.4" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="200.8" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="217.60000000000002" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="226" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="242.8" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="251.20000000000002" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="268" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="276.40000000000003" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="293.2" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="301.6" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="318.40000000000003" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="326.8" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="343.6" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="352" y="354" width="8.4" height="17" fill="#30363c"/>
+<rect x="368.8" y="354" width="8.4" height="17" fill="#7ee787"/>
+<rect x="377.2" y="354" width="8.4" height="17" fill="#7ee787"/>
+<text y="365.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#6e7681">Fri</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="382.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="66.4" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="74.80000000000001" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="91.60000000000001" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="100" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="116.80000000000001" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="125.2" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="142" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="150.4" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="167.20000000000002" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="175.6" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="192.4" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="200.8" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="217.60000000000002" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="226" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="242.8" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="251.20000000000002" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="268" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="276.40000000000003" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="293.2" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="301.6" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="318.40000000000003" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="326.8" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="343.6" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="352" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="368.8" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="377.2" y="388" width="8.4" height="17" fill="#30363c"/>
+<text y="399.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="416.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="66.4" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="74.80000000000001" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="91.60000000000001" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="100" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="116.80000000000001" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="125.2" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="142" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="150.4" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="167.20000000000002" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="175.6" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="192.4" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="200.8" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="217.60000000000002" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="226" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="242.8" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="251.20000000000002" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="268" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="276.40000000000003" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="293.2" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="301.6" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="318.40000000000003" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="326.8" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="343.6" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="352" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="368.8" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="377.2" y="422" width="8.4" height="17" fill="#30363c"/>
+<text y="433.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="450.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<rect x="74.80000000000001" y="456" width="8.4" height="17" fill="#30363c"/>
+<rect x="83.2" y="456" width="8.4" height="17" fill="#30363c"/>
+<rect x="100" y="456" width="8.4" height="17" fill="#196c2e"/>
+<rect x="108.4" y="456" width="8.4" height="17" fill="#196c2e"/>
+<rect x="125.2" y="456" width="8.4" height="17" fill="#2ea043"/>
+<rect x="133.60000000000002" y="456" width="8.4" height="17" fill="#2ea043"/>
+<rect x="150.4" y="456" width="8.4" height="17" fill="#46c769"/>
+<rect x="158.8" y="456" width="8.4" height="17" fill="#46c769"/>
+<rect x="175.6" y="456" width="8.4" height="17" fill="#7ee787"/>
+<rect x="184" y="456" width="8.4" height="17" fill="#7ee787"/>
+<text y="467.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#6e7681">less</tspan><tspan x="200.8" fill="#6e7681">more</tspan><tspan x="511.6" fill="#30363c">│</tspan><tspan x="520" fill="#30363c">│</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="484.2"><tspan x="16" fill="#30363c">╰──────────────────────────────────────────────────────────╯</tspan><tspan x="520" fill="#30363c">╰──────────────────────────────────────────────────────────╯</tspan></text>
+<text y="501.2"><tspan x="16" fill="#30363c">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
+<text y="518.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#8b939e" font-weight="600">Contributions</tspan><tspan x="158.8" fill="#6e7681">1 of 154</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="535.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#58a6ff">▸</tspan><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#58a6ff" font-weight="600">Drop the vendored fork</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="552.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="569.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#3fb950">pr</tspan><tspan x="200.8" fill="#e6edf3">Rework the token walk</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="586.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Drop the vendored fork</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="603.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#58a6ff">review</tspan><tspan x="200.8" fill="#e6edf3">Review: bound the org walk</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="620.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#d29922">issue</tspan><tspan x="200.8" fill="#e6edf3">Suspended users missing from listings</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="637.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="805.6" fill="#6e7681">acme/terraform-modules</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="654.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">2026-07-30</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="671.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">2026-07-30</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Fix the retry budget on 429s</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan><tspan x="1015.6" fill="#30363c">│</tspan></text>
+<text y="688.2"><tspan x="16" fill="#30363c">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
+<text y="705.2"><tspan x="16" fill="#3fb950">154 contributions</tspan></text>
+<text y="722.2"><tspan x="16" fill="#8b939e">tab</tspan><tspan x="49.6" fill="#6e7681">next field</tspan><tspan x="142" fill="#6e7681">•</tspan><tspan x="158.8" fill="#8b939e">esc</tspan><tspan x="192.4" fill="#6e7681">back</tspan><tspan x="234.4" fill="#6e7681">•</tspan><tspan x="251.20000000000002" fill="#8b939e">ctrl+r</tspan><tspan x="310" fill="#6e7681">fetch</tspan><tspan x="360.40000000000003" fill="#6e7681">•</tspan><tspan x="377.2" fill="#8b939e">enter</tspan><tspan x="427.6" fill="#6e7681">open</tspan><tspan x="469.6" fill="#6e7681">•</tspan><tspan x="486.40000000000003" fill="#8b939e">alt+r</tspan><tspan x="536.8000000000001" fill="#6e7681">repo chart</tspan><tspan x="629.2" fill="#6e7681">•</tspan><tspan x="646" fill="#8b939e">ctrl+y</tspan><tspan x="704.8000000000001" fill="#6e7681">copy url</tspan><tspan x="780.4" fill="#6e7681">•</tspan><tspan x="797.2" fill="#8b939e">ctrl+c</tspan><tspan x="856" fill="#6e7681">quit</tspan></text>
 </svg>

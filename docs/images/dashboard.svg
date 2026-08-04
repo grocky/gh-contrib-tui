@@ -1,182 +1,182 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="972" height="538" viewBox="0 0 972 538" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace" font-size="14">
 <title>gh-contribs</title>
 <rect width="972" height="538" rx="8" fill="#0d1117"/>
-<rect x="24.4" y="14.0" width="92.4" height="17.0" fill="#58a6ff"/>
-<rect x="704.8" y="133.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="133.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="721.6" y="133.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="730.0" y="133.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="738.4" y="133.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="746.8" y="133.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="704.8" y="150.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="150.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="721.6" y="150.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="730.0" y="150.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="738.4" y="150.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="704.8" y="167.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="167.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="721.6" y="167.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="730.0" y="167.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="738.4" y="167.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="704.8" y="218.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="218.0" width="8.4" height="17.0" fill="#46c769"/>
-<rect x="721.6" y="218.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="730.0" y="218.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="738.4" y="218.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="746.8" y="218.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="704.8" y="235.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="235.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="721.6" y="235.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="730.0" y="235.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="738.4" y="235.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="704.8" y="252.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="252.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="721.6" y="252.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="730.0" y="252.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="738.4" y="252.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="704.8" y="303.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="303.0" width="8.4" height="17.0" fill="#46c769"/>
-<rect x="721.6" y="303.0" width="8.4" height="17.0" fill="#46c769"/>
-<rect x="730.0" y="303.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="738.4" y="303.0" width="8.4" height="17.0" fill="#46c769"/>
-<rect x="746.8" y="303.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="704.8" y="320.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="320.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="721.6" y="320.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="730.0" y="320.0" width="8.4" height="17.0" fill="#46c769"/>
-<rect x="738.4" y="320.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="704.8" y="337.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="337.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="721.6" y="337.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="730.0" y="337.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="738.4" y="337.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="704.8" y="388.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="388.0" width="8.4" height="17.0" fill="#2ea043"/>
-<rect x="721.6" y="388.0" width="8.4" height="17.0" fill="#2ea043"/>
-<rect x="730.0" y="388.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="738.4" y="388.0" width="8.4" height="17.0" fill="#2ea043"/>
-<rect x="746.8" y="388.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="704.8" y="405.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="405.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="721.6" y="405.0" width="8.4" height="17.0" fill="#7ee787"/>
-<rect x="730.0" y="405.0" width="8.4" height="17.0" fill="#2ea043"/>
-<rect x="738.4" y="405.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="704.8" y="422.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="713.2" y="422.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="721.6" y="422.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="730.0" y="422.0" width="8.4" height="17.0" fill="#30363c"/>
-<rect x="738.4" y="422.0" width="8.4" height="17.0" fill="#30363c"/>
-<text y="25.2" xml:space="preserve"><tspan x="24.4" fill="#ffffff" textLength="92.4" lengthAdjust="spacingAndGlyphs" font-weight="600">gh-contribs</tspan><tspan x="805.6" fill="#6e7681" textLength="151.2" lengthAdjust="spacingAndGlyphs">github.example.com</tspan></text>
-<text y="59.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="940.8" lengthAdjust="spacingAndGlyphs">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
-<text y="76.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#8b939e" textLength="33.6" lengthAdjust="spacingAndGlyphs">From</tspan><tspan x="83.2" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">2</tspan><tspan x="91.6" fill="#6e7681" textLength="75.6" lengthAdjust="spacingAndGlyphs">026-07-05</tspan><tspan x="209.2" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="242.8" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">To</tspan><tspan x="276.4" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">2</tspan><tspan x="284.8" fill="#6e7681" textLength="75.6" lengthAdjust="spacingAndGlyphs">026-08-04</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="93.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="940.8" lengthAdjust="spacingAndGlyphs">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
-<text y="110.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="940.8" lengthAdjust="spacingAndGlyphs">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
-<text y="127.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#8b939e" textLength="33.6" lengthAdjust="spacingAndGlyphs" font-weight="600">Team</tspan><tspan x="83.2" fill="#6e7681" textLength="67.2" lengthAdjust="spacingAndGlyphs">4 people</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="133.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="133.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="721.60" y="133.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="730.00" y="133.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="133.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="746.80" y="133.00" width="8.40" height="8.50" fill="#7ee787"/>
-<text y="144.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="32.8" fill="#58a6ff" textLength="8.4" lengthAdjust="spacingAndGlyphs">▸</tspan><tspan x="49.6" fill="#58a6ff" textLength="92.4" lengthAdjust="spacingAndGlyphs" font-weight="600">Nash, Robin</tspan><tspan x="217.6" fill="#3fb950" textLength="16.8" lengthAdjust="spacingAndGlyphs" font-weight="600">64</tspan><tspan x="242.8" fill="#8b939e" textLength="109.2" lengthAdjust="spacingAndGlyphs">contributions</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="150.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="150.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="150.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="730.00" y="150.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="738.40" y="150.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="161.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="92.4" lengthAdjust="spacingAndGlyphs">@nash-robin</tspan><tspan x="234.4" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">40</tspan><tspan x="259.6" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">commits</tspan><tspan x="419.2" fill="#3fb950" textLength="8.4" lengthAdjust="spacingAndGlyphs">8</tspan><tspan x="436.0" fill="#8b939e" textLength="117.6" lengthAdjust="spacingAndGlyphs">prs (1 merged)</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="167.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="167.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="167.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="730.00" y="167.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="167.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="178.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="67.2" lengthAdjust="spacingAndGlyphs">just now</tspan><tspan x="242.8" fill="#d29922" textLength="8.4" lengthAdjust="spacingAndGlyphs">8</tspan><tspan x="259.6" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">issues</tspan><tspan x="419.2" fill="#58a6ff" textLength="8.4" lengthAdjust="spacingAndGlyphs">8</tspan><tspan x="436.0" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">reviews</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="184.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="184.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="184.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="730.00" y="184.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="184.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="195.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="212.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="218.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="218.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="721.60" y="218.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="730.00" y="218.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="218.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="746.80" y="218.00" width="8.40" height="8.50" fill="#7ee787"/>
-<text y="229.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#e6edf3" textLength="100.8" lengthAdjust="spacingAndGlyphs">Avery, Lynn</tspan><tspan x="217.6" fill="#3fb950" textLength="16.8" lengthAdjust="spacingAndGlyphs" font-weight="600">35</tspan><tspan x="242.8" fill="#8b939e" textLength="109.2" lengthAdjust="spacingAndGlyphs">contributions</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="235.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="235.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="235.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="730.00" y="235.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="738.40" y="235.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="246.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="100.8" lengthAdjust="spacingAndGlyphs">@avery-lynn</tspan><tspan x="234.4" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">22</tspan><tspan x="259.6" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">commits</tspan><tspan x="419.2" fill="#3fb950" textLength="8.4" lengthAdjust="spacingAndGlyphs">5</tspan><tspan x="436.0" fill="#8b939e" textLength="117.6" lengthAdjust="spacingAndGlyphs">prs (0 merged)</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="252.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="252.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="252.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="730.00" y="252.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="252.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="263.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="67.2" lengthAdjust="spacingAndGlyphs">just now</tspan><tspan x="242.8" fill="#d29922" textLength="8.4" lengthAdjust="spacingAndGlyphs">4</tspan><tspan x="259.6" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">issues</tspan><tspan x="419.2" fill="#58a6ff" textLength="8.4" lengthAdjust="spacingAndGlyphs">4</tspan><tspan x="436.0" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">reviews</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="269.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="269.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="269.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="730.00" y="269.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="269.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="280.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="297.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="303.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="303.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="721.60" y="303.00" width="8.40" height="8.50" fill="#46c769"/>
-<rect x="730.00" y="303.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="303.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="746.80" y="303.00" width="8.40" height="8.50" fill="#7ee787"/>
-<text y="314.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#e6edf3" textLength="92.4" lengthAdjust="spacingAndGlyphs">Olsen, Ana</tspan><tspan x="217.6" fill="#3fb950" textLength="16.8" lengthAdjust="spacingAndGlyphs" font-weight="600">29</tspan><tspan x="242.8" fill="#8b939e" textLength="109.2" lengthAdjust="spacingAndGlyphs">contributions</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="320.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="320.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="320.00" width="8.40" height="8.50" fill="#46c769"/>
-<rect x="730.00" y="320.00" width="8.40" height="8.50" fill="#46c769"/>
-<rect x="738.40" y="320.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="331.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="92.4" lengthAdjust="spacingAndGlyphs">@olsen-ana</tspan><tspan x="234.4" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">18</tspan><tspan x="259.6" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">commits</tspan><tspan x="419.2" fill="#3fb950" textLength="8.4" lengthAdjust="spacingAndGlyphs">4</tspan><tspan x="436.0" fill="#8b939e" textLength="117.6" lengthAdjust="spacingAndGlyphs">prs (0 merged)</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="337.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="337.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="337.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="730.00" y="337.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="337.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="348.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="67.2" lengthAdjust="spacingAndGlyphs">just now</tspan><tspan x="242.8" fill="#d29922" textLength="8.4" lengthAdjust="spacingAndGlyphs">3</tspan><tspan x="259.6" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">issues</tspan><tspan x="419.2" fill="#58a6ff" textLength="8.4" lengthAdjust="spacingAndGlyphs">4</tspan><tspan x="436.0" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">reviews</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="354.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="354.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="354.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="730.00" y="354.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="354.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="365.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="382.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="388.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="388.00" width="8.40" height="8.50" fill="#2ea043"/>
-<rect x="721.60" y="388.00" width="8.40" height="8.50" fill="#2ea043"/>
-<rect x="730.00" y="388.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="388.00" width="8.40" height="8.50" fill="#7ee787"/>
-<rect x="746.80" y="388.00" width="8.40" height="8.50" fill="#7ee787"/>
-<text y="399.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#e6edf3" textLength="151.2" lengthAdjust="spacingAndGlyphs">Bianchi, Priya</tspan><tspan x="217.6" fill="#3fb950" textLength="16.8" lengthAdjust="spacingAndGlyphs" font-weight="600">16</tspan><tspan x="242.8" fill="#8b939e" textLength="109.2" lengthAdjust="spacingAndGlyphs">contributions</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="405.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="405.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="405.00" width="8.40" height="8.50" fill="#2ea043"/>
-<rect x="730.00" y="405.00" width="8.40" height="8.50" fill="#2ea043"/>
-<rect x="738.40" y="405.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="416.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="151.2" lengthAdjust="spacingAndGlyphs">@bianchi-priya</tspan><tspan x="234.4" fill="#8b939e" textLength="16.8" lengthAdjust="spacingAndGlyphs">11</tspan><tspan x="259.6" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">commits</tspan><tspan x="419.2" fill="#3fb950" textLength="8.4" lengthAdjust="spacingAndGlyphs">3</tspan><tspan x="436.0" fill="#8b939e" textLength="117.6" lengthAdjust="spacingAndGlyphs">prs (0 merged)</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="422.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="422.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="422.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="730.00" y="422.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="422.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="433.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="49.6" fill="#6e7681" textLength="67.2" lengthAdjust="spacingAndGlyphs">just now</tspan><tspan x="242.8" fill="#d29922" textLength="8.4" lengthAdjust="spacingAndGlyphs">1</tspan><tspan x="259.6" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">issues</tspan><tspan x="419.2" fill="#58a6ff" textLength="8.4" lengthAdjust="spacingAndGlyphs">1</tspan><tspan x="436.0" fill="#8b939e" textLength="58.8" lengthAdjust="spacingAndGlyphs">reviews</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<rect x="704.80" y="439.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="713.20" y="439.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="721.60" y="439.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="730.00" y="439.00" width="8.40" height="8.50" fill="#30363c"/>
-<rect x="738.40" y="439.00" width="8.40" height="8.50" fill="#30363c"/>
-<text y="450.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="467.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan><tspan x="948.4" fill="#30363c" textLength="8.4" lengthAdjust="spacingAndGlyphs">│</tspan></text>
-<text y="484.2" xml:space="preserve"><tspan x="16.0" fill="#30363c" textLength="940.8" lengthAdjust="spacingAndGlyphs">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
-<text y="501.2" xml:space="preserve"><tspan x="16.0" fill="#3fb950" textLength="117.6" lengthAdjust="spacingAndGlyphs">4 on your team</tspan></text>
-<text y="518.2" xml:space="preserve"><tspan x="16.0" fill="#8b939e" textLength="42.0" lengthAdjust="spacingAndGlyphs">enter</tspan><tspan x="66.4" fill="#6e7681" textLength="33.6" lengthAdjust="spacingAndGlyphs">open</tspan><tspan x="108.4" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="125.2" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">a</tspan><tspan x="142.0" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">add person</tspan><tspan x="234.4" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="251.2" fill="#8b939e" textLength="8.4" lengthAdjust="spacingAndGlyphs">x</tspan><tspan x="268.0" fill="#6e7681" textLength="50.4" lengthAdjust="spacingAndGlyphs">remove</tspan><tspan x="326.8" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="343.6" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">ctrl+r</tspan><tspan x="402.4" fill="#6e7681" textLength="42.0" lengthAdjust="spacingAndGlyphs">fetch</tspan><tspan x="452.8" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="469.6" fill="#8b939e" textLength="25.2" lengthAdjust="spacingAndGlyphs">tab</tspan><tspan x="503.2" fill="#6e7681" textLength="84.0" lengthAdjust="spacingAndGlyphs">next field</tspan><tspan x="595.6" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="612.4" fill="#8b939e" textLength="42.0" lengthAdjust="spacingAndGlyphs">alt+L</tspan><tspan x="662.8" fill="#6e7681" textLength="33.6" lengthAdjust="spacingAndGlyphs">logs</tspan><tspan x="704.8" fill="#6e7681" textLength="8.4" lengthAdjust="spacingAndGlyphs">•</tspan><tspan x="721.6" fill="#8b939e" textLength="50.4" lengthAdjust="spacingAndGlyphs">ctrl+c</tspan><tspan x="780.4" fill="#6e7681" textLength="33.6" lengthAdjust="spacingAndGlyphs">quit</tspan></text>
+<rect x="24.4" y="14" width="92.4" height="17" fill="#58a6ff"/>
+<rect x="704.8000000000001" y="133" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="133" width="8.4" height="17" fill="#7ee787"/>
+<rect x="721.6" y="133" width="8.4" height="17" fill="#7ee787"/>
+<rect x="730" y="133" width="8.4" height="17" fill="#30363c"/>
+<rect x="738.4" y="133" width="8.4" height="17" fill="#7ee787"/>
+<rect x="746.8000000000001" y="133" width="8.4" height="17" fill="#7ee787"/>
+<rect x="704.8000000000001" y="150" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="150" width="8.4" height="17" fill="#30363c"/>
+<rect x="721.6" y="150" width="8.4" height="17" fill="#7ee787"/>
+<rect x="730" y="150" width="8.4" height="17" fill="#7ee787"/>
+<rect x="738.4" y="150" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="167" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="167" width="8.4" height="17" fill="#30363c"/>
+<rect x="721.6" y="167" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="167" width="8.4" height="17" fill="#30363c"/>
+<rect x="738.4" y="167" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="218" width="8.4" height="17" fill="#46c769"/>
+<rect x="721.6" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="730" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="738.4" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="746.8000000000001" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="704.8000000000001" y="235" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="235" width="8.4" height="17" fill="#30363c"/>
+<rect x="721.6" y="235" width="8.4" height="17" fill="#7ee787"/>
+<rect x="730" y="235" width="8.4" height="17" fill="#7ee787"/>
+<rect x="738.4" y="235" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="721.6" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="738.4" y="252" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="303" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="303" width="8.4" height="17" fill="#46c769"/>
+<rect x="721.6" y="303" width="8.4" height="17" fill="#46c769"/>
+<rect x="730" y="303" width="8.4" height="17" fill="#30363c"/>
+<rect x="738.4" y="303" width="8.4" height="17" fill="#46c769"/>
+<rect x="746.8000000000001" y="303" width="8.4" height="17" fill="#7ee787"/>
+<rect x="704.8000000000001" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="721.6" y="320" width="8.4" height="17" fill="#7ee787"/>
+<rect x="730" y="320" width="8.4" height="17" fill="#46c769"/>
+<rect x="738.4" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="337" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="337" width="8.4" height="17" fill="#30363c"/>
+<rect x="721.6" y="337" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="337" width="8.4" height="17" fill="#30363c"/>
+<rect x="738.4" y="337" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="388" width="8.4" height="17" fill="#2ea043"/>
+<rect x="721.6" y="388" width="8.4" height="17" fill="#2ea043"/>
+<rect x="730" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="738.4" y="388" width="8.4" height="17" fill="#2ea043"/>
+<rect x="746.8000000000001" y="388" width="8.4" height="17" fill="#7ee787"/>
+<rect x="704.8000000000001" y="405" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="405" width="8.4" height="17" fill="#30363c"/>
+<rect x="721.6" y="405" width="8.4" height="17" fill="#7ee787"/>
+<rect x="730" y="405" width="8.4" height="17" fill="#2ea043"/>
+<rect x="738.4" y="405" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="721.6" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="422" width="8.4" height="17" fill="#30363c"/>
+<rect x="738.4" y="422" width="8.4" height="17" fill="#30363c"/>
+<text y="25.2"><tspan x="24.4" fill="#ffffff" font-weight="600">gh-contribs</tspan><tspan x="805.6" fill="#6e7681">github.example.com</tspan></text>
+<text y="59.2"><tspan x="16" fill="#30363c">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
+<text y="76.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#8b939e">From</tspan><tspan x="83.2" fill="#6e7681">2</tspan><tspan x="91.60000000000001" fill="#6e7681">026-07-05</tspan><tspan x="209.20000000000002" fill="#8b939e">│</tspan><tspan x="242.8" fill="#8b939e">To</tspan><tspan x="276.40000000000003" fill="#6e7681">2</tspan><tspan x="284.8" fill="#6e7681">026-08-04</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<text y="93.2"><tspan x="16" fill="#30363c">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
+<text y="110.2"><tspan x="16" fill="#30363c">╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────╮</tspan></text>
+<text y="127.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#8b939e" font-weight="600">Team</tspan><tspan x="83.2" fill="#6e7681">4 people</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="133" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="133" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="721.6" y="133" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="730" y="133" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="133" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="746.8000000000001" y="133" width="8.4" height="8.5" fill="#7ee787"/>
+<text y="144.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="32.8" fill="#58a6ff">▸</tspan><tspan x="49.6" fill="#58a6ff" font-weight="600">Nash, Robin</tspan><tspan x="217.60000000000002" fill="#3fb950" font-weight="600">64</tspan><tspan x="242.8" fill="#8b939e">contributions</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="150" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="150" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="150" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="730" y="150" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="738.4" y="150" width="8.4" height="8.5" fill="#30363c"/>
+<text y="161.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">@nash-robin</tspan><tspan x="234.4" fill="#8b939e">40</tspan><tspan x="259.6" fill="#8b939e">commits</tspan><tspan x="419.20000000000005" fill="#3fb950">8</tspan><tspan x="436" fill="#8b939e">prs (1 merged)</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="167" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="167" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="167" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="167" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="167" width="8.4" height="8.5" fill="#30363c"/>
+<text y="178.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">just now</tspan><tspan x="242.8" fill="#d29922">8</tspan><tspan x="259.6" fill="#8b939e">issues</tspan><tspan x="419.20000000000005" fill="#58a6ff">8</tspan><tspan x="436" fill="#8b939e">reviews</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="184" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="184" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="184" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="184" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="184" width="8.4" height="8.5" fill="#30363c"/>
+<text y="195.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<text y="212.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="218" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="218" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="721.6" y="218" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="730" y="218" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="218" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="746.8000000000001" y="218" width="8.4" height="8.5" fill="#7ee787"/>
+<text y="229.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#e6edf3">Avery, Lynn</tspan><tspan x="217.60000000000002" fill="#3fb950" font-weight="600">35</tspan><tspan x="242.8" fill="#8b939e">contributions</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="235" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="235" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="235" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="730" y="235" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="738.4" y="235" width="8.4" height="8.5" fill="#30363c"/>
+<text y="246.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">@avery-lynn</tspan><tspan x="234.4" fill="#8b939e">22</tspan><tspan x="259.6" fill="#8b939e">commits</tspan><tspan x="419.20000000000005" fill="#3fb950">5</tspan><tspan x="436" fill="#8b939e">prs (0 merged)</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="252" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="252" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="252" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="252" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="252" width="8.4" height="8.5" fill="#30363c"/>
+<text y="263.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">just now</tspan><tspan x="242.8" fill="#d29922">4</tspan><tspan x="259.6" fill="#8b939e">issues</tspan><tspan x="419.20000000000005" fill="#58a6ff">4</tspan><tspan x="436" fill="#8b939e">reviews</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="269" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="269" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="269" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="269" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="269" width="8.4" height="8.5" fill="#30363c"/>
+<text y="280.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<text y="297.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="303" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="303" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="721.6" y="303" width="8.4" height="8.5" fill="#46c769"/>
+<rect x="730" y="303" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="303" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="746.8000000000001" y="303" width="8.4" height="8.5" fill="#7ee787"/>
+<text y="314.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#e6edf3">Olsen, Ana</tspan><tspan x="217.60000000000002" fill="#3fb950" font-weight="600">29</tspan><tspan x="242.8" fill="#8b939e">contributions</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="320" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="320" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="320" width="8.4" height="8.5" fill="#46c769"/>
+<rect x="730" y="320" width="8.4" height="8.5" fill="#46c769"/>
+<rect x="738.4" y="320" width="8.4" height="8.5" fill="#30363c"/>
+<text y="331.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">@olsen-ana</tspan><tspan x="234.4" fill="#8b939e">18</tspan><tspan x="259.6" fill="#8b939e">commits</tspan><tspan x="419.20000000000005" fill="#3fb950">4</tspan><tspan x="436" fill="#8b939e">prs (0 merged)</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="337" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="337" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="337" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="337" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="337" width="8.4" height="8.5" fill="#30363c"/>
+<text y="348.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">just now</tspan><tspan x="242.8" fill="#d29922">3</tspan><tspan x="259.6" fill="#8b939e">issues</tspan><tspan x="419.20000000000005" fill="#58a6ff">4</tspan><tspan x="436" fill="#8b939e">reviews</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="354" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="354" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="354" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="354" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="354" width="8.4" height="8.5" fill="#30363c"/>
+<text y="365.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<text y="382.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="388" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="388" width="8.4" height="8.5" fill="#2ea043"/>
+<rect x="721.6" y="388" width="8.4" height="8.5" fill="#2ea043"/>
+<rect x="730" y="388" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="388" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="746.8000000000001" y="388" width="8.4" height="8.5" fill="#7ee787"/>
+<text y="399.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#e6edf3">Bianchi, Priya</tspan><tspan x="217.60000000000002" fill="#3fb950" font-weight="600">16</tspan><tspan x="242.8" fill="#8b939e">contributions</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="405" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="405" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="405" width="8.4" height="8.5" fill="#2ea043"/>
+<rect x="730" y="405" width="8.4" height="8.5" fill="#2ea043"/>
+<rect x="738.4" y="405" width="8.4" height="8.5" fill="#30363c"/>
+<text y="416.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">@bianchi-priya</tspan><tspan x="234.4" fill="#8b939e">11</tspan><tspan x="259.6" fill="#8b939e">commits</tspan><tspan x="419.20000000000005" fill="#3fb950">3</tspan><tspan x="436" fill="#8b939e">prs (0 merged)</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="422" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="422" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="422" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="422" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="422" width="8.4" height="8.5" fill="#30363c"/>
+<text y="433.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="49.6" fill="#6e7681">just now</tspan><tspan x="242.8" fill="#d29922">1</tspan><tspan x="259.6" fill="#8b939e">issues</tspan><tspan x="419.20000000000005" fill="#58a6ff">1</tspan><tspan x="436" fill="#8b939e">reviews</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<rect x="704.8000000000001" y="439" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="439" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="439" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="439" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="738.4" y="439" width="8.4" height="8.5" fill="#30363c"/>
+<text y="450.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<text y="467.2"><tspan x="16" fill="#30363c">│</tspan><tspan x="948.4000000000001" fill="#30363c">│</tspan></text>
+<text y="484.2"><tspan x="16" fill="#30363c">╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯</tspan></text>
+<text y="501.2"><tspan x="16" fill="#3fb950">4 on your team</tspan></text>
+<text y="518.2"><tspan x="16" fill="#8b939e">enter</tspan><tspan x="66.4" fill="#6e7681">open</tspan><tspan x="108.4" fill="#6e7681">•</tspan><tspan x="125.2" fill="#8b939e">a</tspan><tspan x="142" fill="#6e7681">add person</tspan><tspan x="234.4" fill="#6e7681">•</tspan><tspan x="251.20000000000002" fill="#8b939e">x</tspan><tspan x="268" fill="#6e7681">remove</tspan><tspan x="326.8" fill="#6e7681">•</tspan><tspan x="343.6" fill="#8b939e">ctrl+r</tspan><tspan x="402.40000000000003" fill="#6e7681">fetch</tspan><tspan x="452.8" fill="#6e7681">•</tspan><tspan x="469.6" fill="#8b939e">tab</tspan><tspan x="503.20000000000005" fill="#6e7681">next field</tspan><tspan x="595.6" fill="#6e7681">•</tspan><tspan x="612.4" fill="#8b939e">alt+L</tspan><tspan x="662.8000000000001" fill="#6e7681">logs</tspan><tspan x="704.8000000000001" fill="#6e7681">•</tspan><tspan x="721.6" fill="#8b939e">ctrl+c</tspan><tspan x="780.4" fill="#6e7681">quit</tspan></text>
 </svg>

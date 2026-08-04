@@ -147,6 +147,7 @@ goes past the cache whatever its age.
 
 ```
 cmd/github-contrib-tui   the binary: wires a client, the stores, and the UI
+cmd/ansi2svg             turns a captured terminal frame into an SVG
 internal/contrib         the domain — reports, events, calendars, date ranges.
                          No GitHub client, no terminal.
 internal/ghapi           GitHub GraphQL and REST, and the credential fallback
@@ -158,6 +159,7 @@ internal/reportcache     contribution reports, in the cache directory
 internal/directorycache  the user directory, in the cache directory
 internal/platform        opening a browser and the clipboard, per OS
 internal/logging         the logger the pane reads from
+internal/ansisvg         the ANSI-to-SVG conversion behind cmd/ansi2svg
 ```
 
 The domain package knows nothing about GitHub or the terminal, and the UI
@@ -175,6 +177,24 @@ go vet ./... && gofmt -l internal cmd
 Tests are written before the code they cover, and cover the fallbacks as well as
 the happy path — narrow terminals, missing scopes, corrupt caches, and slow
 answers arriving after the user has moved on.
+
+### The screenshots
+
+They are the real thing rather than mockups: the app renders a frame with its
+colour profile forced on, the frame is captured as ANSI, and `cmd/ansi2svg`
+converts it.
+
+```sh
+go run ./cmd/ansi2svg -title "team dashboard" -o docs/images/dashboard.svg frame.ansi
+some-program-that-prints-a-frame | go run ./cmd/ansi2svg -o out.svg
+```
+
+Nothing in the output depends on the reader having a terminal font installed.
+The block characters the charts are drawn from become rectangles, because their
+advance varies by font and a glyph wider than its cell paints over the number
+beside it. Gaps of two or more spaces become position rather than text, since a
+renderer collapses them and the calendar's month labels would bunch up against
+its left edge.
 
 ## Also in this repo
 

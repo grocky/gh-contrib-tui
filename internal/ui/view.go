@@ -281,7 +281,7 @@ func appendIfItFits(m model, title, suffix string) string {
 }
 
 func (m model) viewLogs() string {
-	title := panelTitleStyle.Render("Logs") + faintStyle.Render("  ctrl+l to close")
+	title := panelTitleStyle.Render("Logs") + faintStyle.Render("  alt+L to close")
 	return panelStyle.Width(m.contentWidth()).Render(title + "\n" + m.logView.View())
 }
 

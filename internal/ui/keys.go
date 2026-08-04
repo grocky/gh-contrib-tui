@@ -67,8 +67,8 @@ var keys = keyMap{
 		key.WithHelp("ctrl+u", "reload users"),
 	),
 	Logs: key.NewBinding(
-		key.WithKeys("ctrl+l"),
-		key.WithHelp("ctrl+l", "logs"),
+		key.WithKeys("alt+L"),
+		key.WithHelp("alt+L", "logs"),
 	),
 	Up: key.NewBinding(
 		key.WithKeys("up", "ctrl+p"),

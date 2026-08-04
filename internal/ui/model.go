@@ -112,6 +112,10 @@ type model struct {
 	// what turns the cursor from "the top row" into "this person".
 	teamCursorMoved bool
 
+	// repoChart is which view of the repository breakdown the details screen is
+	// showing.
+	repoChart repoChartMode
+
 	report *contrib.Report
 	status string
 	level  statusLevel
@@ -552,8 +556,14 @@ func (m model) handleKey(msg tea.KeyMsg) (model, tea.Cmd) {
 		if handled, next, cmd := m.handleDashboardKey(msg); handled {
 			return next, cmd
 		}
-	} else if key.Matches(msg, keys.Back) && !m.showLogs {
-		return m.showDashboard(), nil
+	} else {
+		switch {
+		case key.Matches(msg, keys.Back) && !m.showLogs:
+			return m.showDashboard(), nil
+		case key.Matches(msg, keys.RepoChart):
+			m.repoChart = m.repoChart.next()
+			return m, nil
+		}
 	}
 
 	switch {

@@ -12,6 +12,7 @@ type keyMap struct {
 	Back         key.Binding
 	AddPerson    key.Binding
 	RemovePerson key.Binding
+	RepoChart    key.Binding
 	Copy         key.Binding
 	Refresh      key.Binding
 	Logs         key.Binding
@@ -57,6 +58,13 @@ var keys = keyMap{
 	RemovePerson: key.NewBinding(
 		key.WithKeys("x"),
 		key.WithHelp("x", "remove"),
+	),
+	// RepoChart switches the repository breakdown between its two readings. It
+	// takes a modifier because the details screen hands plain letters to the
+	// contribution list, which has its own use for them.
+	RepoChart: key.NewBinding(
+		key.WithKeys("alt+r"),
+		key.WithHelp("alt+r", "repo chart"),
 	),
 	Copy: key.NewBinding(
 		key.WithKeys("ctrl+y"),
@@ -105,7 +113,7 @@ var keys = keyMap{
 // ShortHelp is the one-line help under the details layout. It shows the keys
 // that are always live, in the order they are most often reached for.
 func (k keyMap) ShortHelp() []key.Binding {
-	return []key.Binding{k.Next, k.Back, k.Fetch, k.Open, k.Copy, k.Logs, k.Quit}
+	return []key.Binding{k.Next, k.Back, k.Fetch, k.Open, k.RepoChart, k.Copy, k.Quit}
 }
 
 // dashboardHelp is the help line for the team screen, where enter drills into a

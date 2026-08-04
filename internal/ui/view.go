@@ -16,6 +16,11 @@ const (
 	panelChrome  = 3  // border, panel title, border
 	calendarRows = 10 // month row, seven weekdays, blank line, legend
 	minListRows  = 3
+
+	// minChartsSideBySide is the width below which the charts row holds the
+	// calendar alone. Two panels each need their own border, padding, and
+	// enough columns to say something.
+	minChartsSideBySide = 84
 )
 
 // calendarHeight is what the calendar panel costs. Spacing the rows out puts a
@@ -47,7 +52,7 @@ func (m model) View() string {
 		sections = append(sections, m.viewSummary())
 	}
 	if m.showCalendar {
-		sections = append(sections, m.viewCalendar())
+		sections = append(sections, m.viewCharts())
 	}
 	if m.showLogs {
 		sections = append(sections, m.viewLogs())
@@ -234,13 +239,61 @@ func stat(label string, count int, kind string) string {
 		mutedStyle.Render(label))
 }
 
-func (m model) viewCalendar() string {
-	inner := m.contentWidth() - 4
+// viewCharts is the row of charts under the summary: the contribution calendar,
+// and beside it the repository breakdown.
+//
+// The repositories panel is dropped rather than squeezed when the terminal is
+// too narrow for two: the calendar needs a column per week, and halving that
+// costs more than the breakdown adds.
+func (m model) viewCharts() string {
+	if m.contentWidth() < minChartsSideBySide {
+		return m.viewCalendar(m.contentWidth())
+	}
+
+	// Side by side there are two borders to pay for rather than one, and a
+	// border sits outside the width its panel was given.
+	total := m.contentWidth() - 2
+	calendarWidth := total / 2
+	calendar := m.viewCalendar(calendarWidth)
+
+	// The panels are read as one row, so the repositories match the calendar's
+	// height rather than each standing at its own.
+	body := lipgloss.Height(calendar) - panelChrome + 1
+	repos := m.viewRepos(total-calendarWidth, body)
+	return lipgloss.JoinHorizontal(lipgloss.Top, calendar, repos)
+}
+
+func (m model) viewCalendar(width int) string {
 	body := strings.Join([]string{
 		panelTitleStyle.Render("Contribution calendar"),
-		renderCalendar(m.report.Collection.Calendar, inner, m.calendarSpaced),
+		renderCalendar(m.report.Collection.Calendar, width-4, m.calendarSpaced),
 	}, "\n")
-	return panelStyle.Width(m.contentWidth()).Render(body)
+	return panelStyle.Width(width).Render(body)
+}
+
+// viewRepos is the repository breakdown, in whichever of its two modes is on
+// show. Height is what the calendar beside it came to, so the row is square.
+func (m model) viewRepos(width, height int) string {
+	title := panelTitleStyle.Render("Repositories") +
+		faintStyle.Render("  "+m.repoChart.String())
+
+	totals := contrib.RepoTotals(m.report)
+	inner := width - 4
+	rows := max(height-1, 1)
+
+	var body string
+	switch {
+	case len(totals) == 0:
+		body = faintStyle.Render("no repository activity")
+	case m.repoChart == chartTiles:
+		body = renderRepoTiles(totals, inner)
+	default:
+		body = renderRepoBars(totals, inner, rows)
+	}
+
+	// Pad to the height the row was given so the two panels close together.
+	body = lipgloss.NewStyle().Height(rows).Render(body)
+	return panelStyle.Width(width).Render(title + "\n" + body)
 }
 
 func (m model) viewList() string {

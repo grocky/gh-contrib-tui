@@ -877,3 +877,28 @@ func TestWindow_PlaceholdersFollowTheScreen(t *testing.T) {
 			onDetails, window.From.Format(contrib.DateFormat))
 	}
 }
+
+// A name long enough to fill its column must still leave a gap before the
+// stats, or the two columns read as one word.
+func TestTeamRow_LongNameKeepsItsColumn(t *testing.T) {
+	row := teamRow{
+		person: contrib.Person{
+			Login: "bianchi-priya",
+			Name:  "Bianchi, Priya [USA]",
+		},
+		report: reportOver("bianchi-priya", 9, 1),
+		state:  rowLoaded,
+	}
+
+	first := strings.Split(plain(renderTeamRow(row, 110, false)), "\n")[0]
+
+	// Clipped by display column, not by byte: an ellipsis is one column and
+	// three bytes, and slicing bytes cuts it in half.
+	name := lipgloss.NewStyle().MaxWidth(rowNameWidth).Render(first)
+	if !strings.HasSuffix(name, " ") {
+		t.Errorf("name column = %q, want it to end in a space:\n%s", name, first)
+	}
+	if !strings.Contains(first, "contributions") {
+		t.Fatalf("row lost its stats:\n%s", first)
+	}
+}

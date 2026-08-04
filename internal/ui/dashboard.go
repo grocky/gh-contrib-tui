@@ -155,8 +155,10 @@ func renderRowName(row teamRow, selected bool, width int, withTotal bool) string
 		nameStyle = selectedTitleStyle
 	}
 
-	name := truncate(row.person.DisplayName(), width-2)
-	login := truncate("@"+row.person.Login, width-2)
+	// The cursor takes two columns and the column beside this one needs a gap,
+	// so a name has three fewer than the block it sits in.
+	name := truncate(row.person.DisplayName(), width-3)
+	login := truncate("@"+row.person.Login, width-3)
 
 	total := ""
 	if withTotal && row.report != nil {
@@ -178,11 +180,11 @@ func renderRowName(row teamRow, selected bool, width int, withTotal bool) string
 func rowStatusLine(row teamRow, width int) string {
 	switch {
 	case row.state == rowFailed:
-		return dangerStyle.Render(truncate("failed: "+row.err, width-2))
+		return dangerStyle.Render(truncate("failed: "+row.err, width-3))
 	case row.state == rowLoading:
 		return faintStyle.Render("loading…")
 	case row.stale:
-		return warningStyle.Render(truncate(ago(row.fetchedAt)+" · refreshing", width-2))
+		return warningStyle.Render(truncate(ago(row.fetchedAt)+" · refreshing", width-3))
 	case row.fetchedAt.IsZero():
 		return ""
 	default:

@@ -36,12 +36,17 @@ var weekdayLabels = []string{"Mon", "", "Wed", "", "Fri", "", ""}
 // light-theme hex, so it is mapped back to a level here and re-rendered in
 // whichever palette the terminal calls for. Without this, an empty day's near
 // white reads as a busy one against a dark background.
+// The light column is GitHub's own scale. The dark column climbs the same hues
+// the other way, but starts well clear of black: GitHub's dark scale opens on a
+// near-black grey and a near-black green, which a browser separates with a
+// border and a terminal does not, so the two lowest levels arrive looking like
+// the same cell.
 var heatPalette = []lipgloss.AdaptiveColor{
-	{Light: "#ebedf0", Dark: "#21262d"},
-	{Light: "#9be9a8", Dark: "#0e4429"},
-	{Light: "#40c463", Dark: "#006d32"},
-	{Light: "#30a14e", Dark: "#26a641"},
-	{Light: "#216e39", Dark: "#39d353"},
+	{Light: "#ebedf0", Dark: "#30363d"},
+	{Light: "#aceebb", Dark: "#196c2e"},
+	{Light: "#4ac26b", Dark: "#2ea043"},
+	{Light: "#2da44e", Dark: "#46c76a"},
+	{Light: "#116329", Dark: "#7ee787"},
 }
 
 // heatLevels indexes the domain's shades so a day can be re-coloured.

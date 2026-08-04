@@ -3,6 +3,8 @@ package ui
 import (
 	"context"
 	"errors"
+	"fmt"
+	"math"
 	"regexp"
 	"strings"
 	"testing"
@@ -838,6 +840,139 @@ func TestLogBuffer_BoundsItsMemory(t *testing.T) {
 	if got := b.Lines()[0]; got != "line 50" {
 		t.Fatalf("oldest kept line = %q, want the oldest dropped", got)
 	}
+}
+
+// Heat palette.
+
+// minLevelDelta is how far apart two neighbouring shades have to be. The
+// numbers are CIE76 dE in Lab space, where about 2 is the smallest difference
+// anyone can see; a calendar is read at a glance and its cells are small, so
+// neighbours need to be plainly different colours rather than merely different.
+const minLevelDelta = 10
+
+// A shade nobody can tell from the one beside it is a shade that says nothing.
+// This has to hold on a dark terminal as much as a light one: the two palettes
+// are independent, and a ramp that separates well in one can collapse in the
+// other.
+func TestHeatPalette_AdjacentLevelsAreDistinguishable(t *testing.T) {
+	for _, theme := range themes() {
+		for i := 1; i < len(heatPalette); i++ {
+			prev, cur := theme.hex(heatPalette[i-1]), theme.hex(heatPalette[i])
+			if d := deltaE(t, prev, cur); d < minLevelDelta {
+				t.Errorf("%s: levels %d (%s) and %d (%s) differ by dE %.1f, want at least %d",
+					theme.name, i-1, prev, i, cur, d, minLevelDelta)
+			}
+		}
+	}
+}
+
+// The greens have to climb in one direction: a busier day that reads as fainter
+// than a quieter one is worse than no scale at all. Which direction depends on
+// what the shades sit against -- darker as the count rises on a light terminal,
+// brighter on a dark one.
+func TestHeatPalette_GreensClimbAwayFromTheBackground(t *testing.T) {
+	for _, theme := range themes() {
+		for i := 2; i < len(heatPalette); i++ {
+			prev, cur := theme.hex(heatPalette[i-1]), theme.hex(heatPalette[i])
+			if got := lightness(t, cur) - lightness(t, prev); got*theme.climb <= 0 {
+				t.Errorf("%s: level %d (%s) is not %s than level %d (%s)",
+					theme.name, i, cur, theme.direction(), i-1, prev)
+			}
+		}
+	}
+}
+
+// Distance alone is not enough: it is computed against a colour model, and
+// terminals crush the ends of the range. A shade a few points off the
+// background is a smudge whatever its dE says, and a 256-colour terminal rounds
+// the whole near-black band together -- which is how a dark green and a dark
+// grey end up looking like the same cell. So the ramp stays clear of the
+// background, and a green stays clear enough to read as green rather than as an
+// empty day.
+func TestHeatPalette_StaysClearOfTheBackground(t *testing.T) {
+	for _, theme := range themes() {
+		for i, shade := range heatPalette {
+			bound := theme.greenBound
+			what := "green"
+			if i == 0 {
+				bound, what = theme.emptyBound, "empty cell"
+			}
+			hex := theme.hex(shade)
+			if l := lightness(t, hex); (l-bound)*theme.climb < 0 {
+				t.Errorf("%s: the %s at level %d (%s) has lightness %.1f, want it %s than %.0f",
+					theme.name, what, i, hex, l, theme.direction(), bound)
+			}
+		}
+	}
+}
+
+type paletteTheme struct {
+	name  string
+	hex   func(lipgloss.AdaptiveColor) string
+	climb float64 // Which way lightness moves as the contribution count rises.
+
+	// How far a shade has to sit from the terminal background.
+	emptyBound, greenBound float64
+}
+
+func (p paletteTheme) direction() string {
+	if p.climb < 0 {
+		return "darker"
+	}
+	return "lighter"
+}
+
+func themes() []paletteTheme {
+	return []paletteTheme{
+		{"light", func(c lipgloss.AdaptiveColor) string { return c.Light }, -1, 95, 91},
+		{"dark", func(c lipgloss.AdaptiveColor) string { return c.Dark }, 1, 20, 36},
+	}
+}
+
+func lightness(t *testing.T, hex string) float64 {
+	t.Helper()
+	l, _, _ := lab(t, hex)
+	return l
+}
+
+// deltaE is the CIE76 distance between two colours: the straight line between
+// them in Lab, which is laid out so that equal distances look equally different.
+func deltaE(t *testing.T, a, b string) float64 {
+	t.Helper()
+	l1, a1, b1 := lab(t, a)
+	l2, a2, b2 := lab(t, b)
+	return math.Sqrt((l1-l2)*(l1-l2) + (a1-a2)*(a1-a2) + (b1-b2)*(b1-b2))
+}
+
+// lab converts an sRGB hex to CIE L*a*b* against the D65 white point.
+func lab(t *testing.T, hex string) (float64, float64, float64) {
+	t.Helper()
+	var r, g, b int
+	if _, err := fmt.Sscanf(strings.TrimPrefix(hex, "#"), "%02x%02x%02x", &r, &g, &b); err != nil {
+		t.Fatalf("colour %q: %v", hex, err)
+	}
+
+	// sRGB to linear light, then to XYZ.
+	linear := func(v int) float64 {
+		c := float64(v) / 255
+		if c <= 0.04045 {
+			return c / 12.92
+		}
+		return math.Pow((c+0.055)/1.055, 2.4)
+	}
+	rl, gl, bl := linear(r), linear(g), linear(b)
+	x := (0.4124*rl + 0.3576*gl + 0.1805*bl) / 0.95047
+	y := 0.2126*rl + 0.7152*gl + 0.0722*bl
+	z := (0.0193*rl + 0.1192*gl + 0.9505*bl) / 1.08883
+
+	f := func(v float64) float64 {
+		if v > 216.0/24389.0 {
+			return math.Cbrt(v)
+		}
+		return (24389.0/27.0*v + 16) / 116
+	}
+	fx, fy, fz := f(x), f(y), f(z)
+	return 116*fy - 16, 500 * (fx - fy), 200 * (fy - fz)
 }
 
 // Heatmap.

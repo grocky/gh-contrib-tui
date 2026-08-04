@@ -32,6 +32,9 @@ func (m model) View() string {
 	if !m.ready {
 		return "\n  starting..."
 	}
+	if m.screen == screenDashboard {
+		return m.viewDashboard()
+	}
 
 	sections := []string{
 		m.viewHeader(),
@@ -54,6 +57,65 @@ func (m model) View() string {
 	sections = append(sections, m.viewFooter())
 
 	return lipgloss.JoinVertical(lipgloss.Left, sections...)
+}
+
+// viewDashboard is the landing screen: the window being summarized, then a row
+// per team member.
+func (m model) viewDashboard() string {
+	sections := []string{
+		m.viewHeader(),
+		m.viewWindow(),
+	}
+	if rows := m.viewSuggestions(); rows != "" {
+		sections = append(sections, rows)
+	}
+	if m.showLogs {
+		sections = append(sections, m.viewLogs())
+	} else {
+		sections = append(sections, m.viewTeam())
+	}
+	sections = append(sections, m.viewFooter())
+
+	return lipgloss.JoinVertical(lipgloss.Left, sections...)
+}
+
+// viewWindow draws the dashboard's date fields, plus the add-person field while
+// it is open.
+func (m model) viewWindow() string {
+	cells := []string{
+		m.fieldCell("From", focusFrom),
+		m.fieldCell("To", focusTo),
+	}
+	if m.adding {
+		cells = append(cells, m.fieldCell("Add", focusUser))
+	}
+
+	row := strings.Join(cells, mutedStyle.Render("   │   "))
+	if lipgloss.Width(row) > m.contentWidth()-2 {
+		row = strings.Join(cells, "\n")
+	}
+	return panelStyle.Width(m.contentWidth()).Render(row)
+}
+
+func (m model) fieldCell(label string, area focusArea) string {
+	style := labelStyle
+	if m.focus == area {
+		style = focusedLabelStyle
+	}
+	return style.Render(label) + "  " + m.inputs[area].View()
+}
+
+// viewTeam draws the roster panel.
+func (m model) viewTeam() string {
+	title := panelTitleStyle.Render("Team")
+	title = appendIfItFits(m, title, fmt.Sprintf("  %d people", len(m.rows())))
+
+	body := m.teamList.View()
+	if len(m.rows()) == 0 {
+		hint := truncate("nobody on your team yet — press a to add someone", m.contentWidth()-6)
+		body = faintStyle.Render("  "+hint) + strings.Repeat("\n", max(m.teamList.Height()-1, 0))
+	}
+	return panelStyle.Width(m.contentWidth()).Render(title + "\n" + body)
 }
 
 func (m model) viewHeader() string {
@@ -231,10 +293,14 @@ func (m model) viewFooter() string {
 
 	bindings := keys.ShortHelp()
 	switch {
+	case m.adding:
+		bindings = addPersonHelp()
 	case m.showingSuggestions():
 		bindings = suggestionHelp()
 	case m.showLogs:
 		bindings = logHelp()
+	case m.screen == screenDashboard:
+		bindings = dashboardHelp()
 	}
 	// The help component stops truncating once its running width lands exactly
 	// on the limit, and then appends every remaining binding in full. Clamping
@@ -258,6 +324,11 @@ func (m model) contentWidth() int {
 // scroll, so it keeps its rows.
 func (m *model) resize() {
 	m.help.Width = m.width
+
+	if m.screen == screenDashboard {
+		m.resizeDashboard()
+		return
+	}
 
 	// The panels are measured rather than predicted: a long stat row, a wrapped
 	// warning, or a narrow terminal that stacks the filter fields all change
@@ -296,15 +367,40 @@ func (m *model) resize() {
 
 	inner := m.contentWidth() - 4
 	m.list.SetSize(inner, rows)
+	m.sizeLogPane(inner, rows)
+}
 
-	// Collaborators log from their own goroutines, so the pane is refreshed
-	// from the buffer on every message rather than pushed to. It follows the
-	// tail unless the user has scrolled up to read something, which is the one
-	// moment an arriving line must not yank the view out from under them.
+// resizeDashboard gives the roster everything the header, the date fields, and
+// the footer leave behind. There is nothing here to drop when the terminal is
+// short: the rows themselves scroll.
+func (m *model) resizeDashboard() {
+	free := m.height - lipgloss.Height(m.viewHeader()) -
+		lipgloss.Height(m.viewWindow()) - lipgloss.Height(m.viewFooter())
+	if rows := m.viewSuggestions(); rows != "" {
+		free -= lipgloss.Height(rows)
+	}
+
+	rows := free - panelChrome
+	if rows < minListRows {
+		rows = minListRows
+	}
+
+	inner := m.contentWidth() - 4
+	m.teamList.SetSize(inner, rows)
+	m.sizeLogPane(inner, rows)
+}
+
+// sizeLogPane fits the log viewport to the space the list would have had.
+//
+// Collaborators log from their own goroutines, so the pane is refreshed from
+// the buffer on every message rather than pushed to. It follows the tail unless
+// the user has scrolled up to read something, which is the one moment an
+// arriving line must not yank the view out from under them.
+func (m *model) sizeLogPane(width, height int) {
 	follow := m.logView.AtBottom()
-	m.logView.Width = inner
-	m.logView.Height = rows
-	m.logView.SetContent(m.logs.Render(inner))
+	m.logView.Width = width
+	m.logView.Height = height
+	m.logView.SetContent(m.logs.Render(width))
 	if follow {
 		m.logView.GotoBottom()
 	}

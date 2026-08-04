@@ -22,6 +22,7 @@ type fakeService struct {
 	fetchErr    error
 	people      []contrib.Person
 	discoverErr error
+	viewer      contrib.Person
 
 	gotUser   string
 	gotWindow contrib.Range
@@ -39,6 +40,13 @@ func (f *fakeService) FetchContributions(_ context.Context, username string, win
 func (f *fakeService) DiscoverPeople(context.Context) ([]contrib.Person, error) {
 	f.discovers++
 	return f.people, f.discoverErr
+}
+
+func (f *fakeService) Viewer(context.Context) (contrib.Person, error) {
+	if f.viewer.Login == "" {
+		return contrib.Person{}, errors.New("no viewer configured")
+	}
+	return f.viewer, nil
 }
 
 // fakeCache is an in-memory DirectoryCache.
@@ -94,12 +102,16 @@ var ansi = regexp.MustCompile(`\x1b\[[0-9;]*[a-zA-Z]`)
 
 func plain(s string) string { return ansi.ReplaceAllString(s, "") }
 
-// newTestModel returns a sized model, which is what the program does before
-// the first View.
+// newTestModel returns a sized model on the details screen, which is the single
+// user view these tests exercise. The dashboard has its own harness in
+// dashboard_test.go.
 func newTestModel(t *testing.T, svc ContributionService, w, h int) model {
 	t.Helper()
 	m := newModel()
 	m.svc = svc
+	m.screen = screenDetails
+	m.focus = focusUser
+	m.inputs[focusUser].Focus()
 	return send(t, m, tea.WindowSizeMsg{Width: w, Height: h})
 }
 
@@ -226,6 +238,39 @@ func TestView_FitsTheTerminal(t *testing.T) {
 			}
 		}
 	}
+}
+
+// The dashboard has the same duty as the details screen: it is a full-screen
+// view that must not scroll, whatever the roster or the terminal looks like.
+func TestViewDashboard_FitsTheTerminal(t *testing.T) {
+	sizes := []struct{ w, h int }{
+		{80, 24}, {100, 30}, {120, 45}, {200, 60}, {80, 15}, {40, 20},
+	}
+	for _, size := range sizes {
+		for _, members := range []int{0, 1, 8} {
+			store := &fakeTeamStore{team: teamOf(manyLogins(members)...)}
+			m := startDashboard(t, newTeamService(manyLogins(members)...), store,
+				newFakeReportCache(), size.w, size.h)
+
+			view := m.View()
+			if got := lipgloss.Height(view); got > size.h {
+				t.Errorf("%dx%d members=%d: view is %d rows, want at most %d",
+					size.w, size.h, members, got, size.h)
+			}
+			if got := lipgloss.Width(view); got > size.w {
+				t.Errorf("%dx%d members=%d: view is %d columns, want at most %d",
+					size.w, size.h, members, got, size.w)
+			}
+		}
+	}
+}
+
+func manyLogins(n int) []string {
+	logins := make([]string, 0, n)
+	for i := 0; i < n; i++ {
+		logins = append(logins, "user-"+string(rune('a'+i%26)))
+	}
+	return logins
 }
 
 // The suggestion dropdown grows the layout, and must not push it off-screen.

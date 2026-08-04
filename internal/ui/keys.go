@@ -5,19 +5,22 @@ import "github.com/charmbracelet/bubbles/key"
 // keyMap is the application's bindings. Bubbles' help component renders
 // straight from it, so the help line can never drift from the behaviour.
 type keyMap struct {
-	Next    key.Binding
-	Prev    key.Binding
-	Fetch   key.Binding
-	Open    key.Binding
-	Copy    key.Binding
-	Refresh key.Binding
-	Logs    key.Binding
-	Up      key.Binding
-	Down    key.Binding
-	Scroll  key.Binding
-	Accept  key.Binding
-	Dismiss key.Binding
-	Quit    key.Binding
+	Next         key.Binding
+	Prev         key.Binding
+	Fetch        key.Binding
+	Open         key.Binding
+	Back         key.Binding
+	AddPerson    key.Binding
+	RemovePerson key.Binding
+	Copy         key.Binding
+	Refresh      key.Binding
+	Logs         key.Binding
+	Up           key.Binding
+	Down         key.Binding
+	Scroll       key.Binding
+	Accept       key.Binding
+	Dismiss      key.Binding
+	Quit         key.Binding
 }
 
 var keys = keyMap{
@@ -36,6 +39,24 @@ var keys = keyMap{
 	Open: key.NewBinding(
 		key.WithKeys("enter"),
 		key.WithHelp("enter", "open"),
+	),
+	// Back leaves a details view. It shares escape with Dismiss, which is why
+	// everything that can be dismissed -- the dropdown, the add field, the log
+	// pane -- is offered the keystroke first.
+	Back: key.NewBinding(
+		key.WithKeys("esc"),
+		key.WithHelp("esc", "back"),
+	),
+	// AddPerson and RemovePerson are plain letters, which is safe only because
+	// they are read on the dashboard with the cursor on the list; a date field
+	// with focus takes its own keystrokes first.
+	AddPerson: key.NewBinding(
+		key.WithKeys("a"),
+		key.WithHelp("a", "add person"),
+	),
+	RemovePerson: key.NewBinding(
+		key.WithKeys("x"),
+		key.WithHelp("x", "remove"),
 	),
 	Copy: key.NewBinding(
 		key.WithKeys("ctrl+y"),
@@ -81,10 +102,23 @@ var keys = keyMap{
 	),
 }
 
-// ShortHelp is the one-line help under the layout. It shows the keys that are
-// always live, in the order they are most often reached for.
+// ShortHelp is the one-line help under the details layout. It shows the keys
+// that are always live, in the order they are most often reached for.
 func (k keyMap) ShortHelp() []key.Binding {
-	return []key.Binding{k.Next, k.Fetch, k.Open, k.Copy, k.Refresh, k.Logs, k.Quit}
+	return []key.Binding{k.Next, k.Back, k.Fetch, k.Open, k.Copy, k.Logs, k.Quit}
+}
+
+// dashboardHelp is the help line for the team screen, where enter drills into a
+// person and the roster keys are live.
+func dashboardHelp() []key.Binding {
+	return []key.Binding{
+		keys.Open, keys.AddPerson, keys.RemovePerson, keys.Fetch, keys.Next, keys.Logs, keys.Quit,
+	}
+}
+
+// addPersonHelp replaces the help line while the add field is open.
+func addPersonHelp() []key.Binding {
+	return []key.Binding{keys.Up, keys.Down, keys.Accept, keys.Dismiss}
 }
 
 // FullHelp is required by the help component; this UI only uses short help.

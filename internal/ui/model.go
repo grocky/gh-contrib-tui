@@ -2,6 +2,7 @@ package ui
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -16,6 +17,8 @@ import (
 
 	"gh-contribs/internal/contrib"
 	"gh-contribs/internal/platform"
+	"gh-contribs/internal/reportcache"
+	"gh-contribs/internal/teamconfig"
 )
 
 // discoveryTimeout bounds the background user-suggestion lookup.
@@ -33,6 +36,16 @@ const (
 
 const inputCount = 3
 
+// screen is which of the two views is on show. The dashboard summarizes the
+// whole team; details is one person's history, which is where the app started
+// life and what a dashboard row opens into.
+type screen int
+
+const (
+	screenDashboard screen = iota
+	screenDetails
+)
+
 // Messages produced by background work.
 type (
 	fetchedMsg struct {
@@ -45,12 +58,28 @@ type (
 		forced bool
 		source string
 	}
+	teamLoadedMsg struct {
+		team teamconfig.Team
+		err  error
+	}
+	viewerMsg struct {
+		person contrib.Person
+		err    error
+	}
+	teamFetchedMsg struct {
+		login  string
+		window contrib.Range
+		report *contrib.Report
+		err    error
+	}
 )
 
 // model is the bubbletea application state.
 type model struct {
 	svc     ContributionService
 	cache   DirectoryCache
+	teams   TeamStore
+	reports ReportCache
 	logs    *logBuffer
 	suggest *suggestionStore
 	host    string
@@ -64,6 +93,13 @@ type model struct {
 
 	suggestions  []contrib.Person
 	suggestIndex int
+
+	// The dashboard: the roster, a row per member, and whether the add field is
+	// open over it.
+	screen   screen
+	team     teamconfig.Team
+	teamList list.Model
+	adding   bool
 
 	report *contrib.Report
 	status string
@@ -84,19 +120,29 @@ type model struct {
 
 func newModel() model {
 	m := model{
-		logs:    newLogBuffer(),
-		suggest: &suggestionStore{},
-		list:    newEventList(),
-		help:    help.New(),
-		spinner: spinner.New(spinner.WithSpinner(spinner.Dot), spinner.WithStyle(mutedStyle)),
-		logView: viewport.New(0, 0),
-		status:  "enter a user and press ctrl+r",
+		logs:     newLogBuffer(),
+		suggest:  &suggestionStore{},
+		list:     newEventList(),
+		teamList: newTeamList(),
+		help:     help.New(),
+		spinner:  spinner.New(spinner.WithSpinner(spinner.Dot), spinner.WithStyle(mutedStyle)),
+		logView:  viewport.New(0, 0),
+		status:   "loading your team...",
 	}
 	m.help.Styles.ShortKey = mutedStyle
 	m.help.Styles.ShortDesc = faintStyle
 	m.help.Styles.ShortSeparator = faintStyle
 
-	placeholders := [inputCount]string{"login or name", "YYYY-MM-DD", "YYYY-MM-DD"}
+	// The date placeholders spell out the window that empty fields resolve to,
+	// so the dashboard says which range it is summarizing without putting text
+	// in the way of the next thing typed. They double as the format hint.
+	from, to := "YYYY-MM-DD", "YYYY-MM-DD"
+	if window, err := contrib.ParseRange("", ""); err == nil {
+		from = window.From.Format(contrib.DateFormat)
+		to = window.To.Format(contrib.DateFormat)
+	}
+
+	placeholders := [inputCount]string{"login or name", from, to}
 	widths := [inputCount]int{24, 12, 12}
 	for i := range m.inputs {
 		in := textinput.New()
@@ -107,12 +153,35 @@ func newModel() model {
 		in.PlaceholderStyle = faintStyle
 		m.inputs[i] = in
 	}
-	m.inputs[focusUser].Focus()
+	m.focus = focusList
 	return m
 }
 
 func (m model) Init() tea.Cmd {
-	return tea.Batch(textinput.Blink, m.loadCacheCmd(), m.discoverCmd(false))
+	return tea.Batch(textinput.Blink, m.loadTeamCmd(), m.loadCacheCmd(), m.discoverCmd(false))
+}
+
+// window is the range both screens work over.
+func (m model) window() (contrib.Range, error) {
+	return contrib.ParseRange(m.inputs[focusFrom].Value(), m.inputs[focusTo].Value())
+}
+
+// rows returns the dashboard's rows.
+func (m model) rows() []teamRow {
+	items := m.teamList.Items()
+	rows := make([]teamRow, 0, len(items))
+	for _, item := range items {
+		if row, ok := item.(teamRow); ok {
+			rows = append(rows, row)
+		}
+	}
+	return rows
+}
+
+// selectedRow is the team member under the cursor.
+func (m model) selectedRow() (teamRow, bool) {
+	row, ok := m.teamList.SelectedItem().(teamRow)
+	return row, ok
 }
 
 // Update handles one message. Everything that can change the layout -- a
@@ -146,35 +215,250 @@ func (m model) update(msg tea.Msg) (model, tea.Cmd) {
 	case discoveredMsg:
 		return m.applyDiscovered(msg)
 
+	case teamLoadedMsg:
+		return m.applyTeamLoaded(msg)
+
+	case viewerMsg:
+		return m.applyViewer(msg)
+
+	case teamFetchedMsg:
+		return m.applyTeamFetched(msg)
+
 	case tea.KeyMsg:
 		return m.handleKey(msg)
 	}
 
-	// Anything else belongs to the list: it filters asynchronously, so its own
-	// FilterMatchesMsg has to get back to it or "/" silently does nothing.
+	// Anything else belongs to the list on show: it filters asynchronously, so
+	// its own FilterMatchesMsg has to get back to it or "/" silently does
+	// nothing.
 	var cmd tea.Cmd
+	if m.screen == screenDashboard {
+		m.teamList, cmd = m.teamList.Update(msg)
+		return m, cmd
+	}
 	m.list, cmd = m.list.Update(msg)
 	return m, cmd
 }
 
-// handleKey routes a keystroke. Order matters: the open suggestion list and an
-// active filter both claim keys that mean something else elsewhere.
+// applyTeamLoaded takes the roster from disk. A first launch -- no config at
+// all -- seeds the team with whoever is running the app, so the dashboard is
+// never an empty screen with no way in. A team that exists and is empty is a
+// decision somebody made, and is left alone.
+func (m model) applyTeamLoaded(msg teamLoadedMsg) (model, tea.Cmd) {
+	switch {
+	case errors.Is(msg.err, teamconfig.ErrNotConfigured):
+		m.logs.Logf("[gray]no team configured yet; seeding it with your own account[-]")
+		return m, m.viewerCmd()
+	case msg.err != nil:
+		m.setStatus("team config unreadable: "+msg.err.Error(), statusError)
+		m.logs.Logf("[red]team config: %v[-]", msg.err)
+		return m, nil
+	}
+
+	m.team = msg.team
+	m.logs.Logf("[gray]team loaded members=%d[-]", len(m.team.Members))
+	return m.syncTeam(false)
+}
+
+// applyViewer seeds a first-launch team with the authenticated account.
+func (m model) applyViewer(msg viewerMsg) (model, tea.Cmd) {
+	if msg.err != nil {
+		m.setStatus("could not identify you: "+msg.err.Error(), statusWarn)
+		m.logs.Logf("[yellow]viewer lookup failed: %v[-]", msg.err)
+		return m, nil
+	}
+
+	m.team = teamconfig.Team{}.Add(msg.person)
+	m.logs.Logf("[green]seeded your team with %s[-]", msg.person.Login)
+
+	next, cmd := m.syncTeam(false)
+	return next, tea.Batch(m.saveTeamCmd(next.team), cmd)
+}
+
+// syncTeam rebuilds the rows to match the roster and goes after whatever data
+// is missing. Cached reports paint first: a launch shows numbers immediately
+// and refreshes behind them, rather than showing a screen of spinners.
+//
+// force skips the cache entirely, which is what ctrl+r is for.
+func (m model) syncTeam(force bool) (model, tea.Cmd) {
+	window, err := m.window()
+	if err != nil {
+		m.setStatus(err.Error(), statusError)
+		return m, nil
+	}
+
+	previous := map[string]teamRow{}
+	for _, row := range m.rows() {
+		previous[strings.ToLower(row.person.Login)] = row
+	}
+
+	items := make([]list.Item, 0, len(m.team.Members))
+	cmds := make([]tea.Cmd, 0, len(m.team.Members))
+	for _, person := range m.team.Members {
+		row := teamRow{person: person}
+		if prev, ok := previous[strings.ToLower(person.Login)]; ok {
+			row = prev
+			row.person = person
+		}
+		// A report fetched for another range says nothing about this one.
+		if row.report != nil && row.window != window {
+			row = teamRow{person: person}
+		}
+
+		if !force {
+			if entry, ok := m.cachedReport(person.Login, window); ok {
+				row.report = entry.Report
+				row.window = window
+				row.fetchedAt = entry.FetchedAt
+				row.state = rowLoaded
+				row.stale = !entry.Fresh
+				if entry.Fresh {
+					items = append(items, row)
+					continue
+				}
+			}
+		}
+
+		if row.report == nil {
+			row.state = rowLoading
+		}
+		row.err = ""
+		items = append(items, row)
+		cmds = append(cmds, m.fetchTeamCmd(person.Login, window))
+	}
+
+	m.teamList.SetItems(items)
+	if len(cmds) == 0 {
+		return m.settleTeamStatus(), nil
+	}
+
+	m.busy = true
+	m.setStatus(fmt.Sprintf("refreshing %d of %d...", len(cmds), len(items)), statusInfo)
+	return m, tea.Batch(append(cmds, m.spinner.Tick)...)
+}
+
+// cachedReport reads the report cache, which may not be configured at all.
+func (m model) cachedReport(login string, window contrib.Range) (reportcache.Entry, bool) {
+	if m.reports == nil {
+		return reportcache.Entry{}, false
+	}
+	entry, ok := m.reports.Load(login, window)
+	if !ok || entry.Report == nil {
+		return reportcache.Entry{}, false
+	}
+	return entry, true
+}
+
+// applyTeamFetched folds one member's result into their row. Every member is
+// fetched independently, so results arrive in whatever order they finish.
+func (m model) applyTeamFetched(msg teamFetchedMsg) (model, tea.Cmd) {
+	items := m.teamList.Items()
+	for i, item := range items {
+		row, ok := item.(teamRow)
+		if !ok || !strings.EqualFold(row.person.Login, msg.login) {
+			continue
+		}
+
+		if msg.err != nil {
+			row.state, row.err, row.stale = rowFailed, firstLine(msg.err.Error()), false
+			m.logs.Logf("[red]team fetch %s failed: %v[-]", msg.login, msg.err)
+			items[i] = row
+			m.teamList.SetItems(items)
+			return m.settleTeamStatus(), nil
+		}
+
+		row.report = msg.report
+		row.window = msg.window
+		row.fetchedAt = time.Now()
+		row.state, row.stale, row.err = rowLoaded, false, ""
+		if row.person.Name == "" {
+			row.person.Name = msg.report.Name
+		}
+		items[i] = row
+		m.teamList.SetItems(items)
+		return m.settleTeamStatus(), m.storeReportCmd(msg.login, msg.window, msg.report)
+	}
+	return m, nil
+}
+
+// settleTeamStatus reports how the dashboard stands once a row has landed.
+func (m model) settleTeamStatus() model {
+	if m.screen != screenDashboard {
+		return m
+	}
+
+	loading, failed := 0, 0
+	for _, row := range m.rows() {
+		switch row.state {
+		case rowLoading:
+			loading++
+		case rowFailed:
+			failed++
+		}
+	}
+	if loading > 0 {
+		m.busy = true
+		m.setStatus(fmt.Sprintf("refreshing %d of %d...", loading, len(m.rows())), statusInfo)
+		return m
+	}
+
+	m.busy = false
+	switch {
+	case len(m.team.Members) == 0:
+		m.setStatus("no one on your team yet — press a to add someone", statusInfo)
+	case failed > 0:
+		m.setStatus(fmt.Sprintf("%d of %d could not be loaded", failed, len(m.rows())), statusWarn)
+	default:
+		m.setStatus(fmt.Sprintf("%d on your team", len(m.rows())), statusOK)
+	}
+	return m
+}
+
+// firstLine keeps a row's error to something that fits beside a name.
+func firstLine(s string) string {
+	if i := strings.IndexByte(s, '\n'); i >= 0 {
+		return s[:i]
+	}
+	return s
+}
+
+// handleKey routes a keystroke. Order matters: the open suggestion list, the
+// add field, and an active filter all claim keys that mean something else
+// elsewhere.
 func (m model) handleKey(msg tea.KeyMsg) (model, tea.Cmd) {
 	if key.Matches(msg, keys.Quit) {
 		return m, tea.Quit
 	}
 
-	// While the list is being filtered, typing belongs to the filter.
-	if m.focus == focusList && m.list.SettingFilter() {
-		var cmd tea.Cmd
-		m.list, cmd = m.list.Update(msg)
-		return m, cmd
+	// While a list is being filtered, typing belongs to the filter.
+	if m.focus == focusList && m.activeList().SettingFilter() {
+		return m.updateActiveList(msg)
+	}
+
+	// The add field owns enter and escape while it is open: enter puts the
+	// person on the team, and escape has to close the field before it can mean
+	// "leave this screen".
+	if m.adding {
+		switch {
+		case key.Matches(msg, keys.Accept):
+			return m.acceptAdd()
+		case key.Matches(msg, keys.Dismiss):
+			return m.closeAdd(), nil
+		}
 	}
 
 	if m.showingSuggestions() {
 		if handled, next, cmd := m.handleSuggestionKey(msg); handled {
 			return next, cmd
 		}
+	}
+
+	if m.screen == screenDashboard {
+		if handled, next, cmd := m.handleDashboardKey(msg); handled {
+			return next, cmd
+		}
+	} else if key.Matches(msg, keys.Back) && !m.showLogs {
+		return m.showDashboard(), nil
 	}
 
 	switch {
@@ -224,9 +508,7 @@ func (m model) handleKey(msg tea.KeyMsg) (model, tea.Cmd) {
 		if m.showLogs {
 			return m, nil
 		}
-		var cmd tea.Cmd
-		m.list, cmd = m.list.Update(msg)
-		return m, cmd
+		return m.updateActiveList(msg)
 	}
 
 	i := int(m.focus)
@@ -235,6 +517,167 @@ func (m model) handleKey(msg tea.KeyMsg) (model, tea.Cmd) {
 	if m.focus == focusUser {
 		m.refreshSuggestions()
 	}
+	return m, cmd
+}
+
+// handleDashboardKey consumes the keys that only mean something on the
+// dashboard, reporting whether it took the keystroke. They are guarded by the
+// list having focus: with the cursor in a date field, a letter is a date being
+// typed, not a command.
+func (m model) handleDashboardKey(msg tea.KeyMsg) (bool, model, tea.Cmd) {
+	if m.focus != focusList || m.showLogs {
+		return false, m, nil
+	}
+
+	switch {
+	case key.Matches(msg, keys.AddPerson):
+		return true, m.openAdd(), textinput.Blink
+	case key.Matches(msg, keys.RemovePerson):
+		next, cmd := m.removeSelected()
+		return true, next, cmd
+	case key.Matches(msg, keys.Open):
+		next, cmd := m.openDetails()
+		return true, next, cmd
+	case key.Matches(msg, keys.Fetch):
+		// On the dashboard the fetch key means "everyone, now", which is the
+		// only way past a cache that is still within its TTL.
+		next, cmd := m.forceRefresh()
+		return true, next, cmd
+	}
+	return false, m, nil
+}
+
+// openAdd puts the cursor in the user field, where the same autocomplete that
+// serves the details screen picks the person to add.
+func (m model) openAdd() model {
+	m.adding = true
+	m.focus = focusUser
+	m.inputs[focusUser].SetValue("")
+	m.inputs[focusUser].Focus()
+	m.suggestions = nil
+	return m
+}
+
+func (m model) closeAdd() model {
+	m.adding = false
+	m.suggestions = nil
+	m.inputs[focusUser].SetValue("")
+	m.inputs[focusUser].Blur()
+	m.focus = focusList
+	return m
+}
+
+// acceptAdd puts the typed or highlighted person on the team. The highlighted
+// suggestion wins when the dropdown is open, so enter never adds a half-typed
+// login that happens to be a prefix of a real one.
+func (m model) acceptAdd() (model, tea.Cmd) {
+	person := contrib.Person{Login: strings.TrimSpace(m.inputs[focusUser].Value()), Active: true}
+	if m.showingSuggestions() && m.suggestIndex < len(m.suggestions) {
+		person = m.suggestions[m.suggestIndex]
+	}
+	if person.Login == "" {
+		return m.closeAdd(), nil
+	}
+	if m.team.Has(person.Login) {
+		m.setStatus(person.Login+" is already on your team", statusWarn)
+		return m.closeAdd(), nil
+	}
+
+	m.team = m.team.Add(person)
+	m = m.closeAdd()
+	m.logs.Logf("[green]added %s to your team[-]", person.Login)
+
+	next, cmd := m.syncTeam(false)
+	next.teamList.Select(len(next.rows()) - 1)
+	return next, tea.Batch(m.saveTeamCmd(next.team), cmd)
+}
+
+// removeSelected takes the row under the cursor off the team.
+func (m model) removeSelected() (model, tea.Cmd) {
+	row, ok := m.selectedRow()
+	if !ok {
+		return m, nil
+	}
+
+	index := m.teamList.Index()
+	m.team = m.team.Remove(row.person.Login)
+	m.logs.Logf("[yellow]removed %s from your team[-]", row.person.Login)
+
+	next, cmd := m.syncTeam(false)
+	if index >= len(next.rows()) {
+		index = len(next.rows()) - 1
+	}
+	if index >= 0 {
+		next.teamList.Select(index)
+	}
+	return next.settleTeamStatus(), tea.Batch(m.saveTeamCmd(next.team), cmd)
+}
+
+// forceRefresh refetches every member, cache or no cache.
+func (m model) forceRefresh() (model, tea.Cmd) {
+	if len(m.team.Members) == 0 {
+		m.setStatus("no one on your team yet — press a to add someone", statusInfo)
+		return m, nil
+	}
+	m.logs.Logf("[yellow]refreshing the whole team[-]")
+	return m.syncTeam(true)
+}
+
+// openDetails opens the selected member's history. A report already on the row
+// for this window is shown as it stands rather than fetched again; anything
+// else -- a failed row, a stale one, a window that has since changed -- goes
+// and gets it.
+func (m model) openDetails() (model, tea.Cmd) {
+	row, ok := m.selectedRow()
+	if !ok {
+		return m, nil
+	}
+
+	window, err := m.window()
+	if err != nil {
+		m.setStatus(err.Error(), statusError)
+		return m, nil
+	}
+
+	m.screen = screenDetails
+	m.inputs[focusUser].SetValue(row.person.Login)
+	m.inputs[focusUser].CursorEnd()
+	m.suggestions = nil
+	m.focus = focusList
+
+	if row.report != nil && row.window == window && !row.stale {
+		return m.showReport(row.report), nil
+	}
+	return m.startFetch()
+}
+
+// showDashboard returns from a details view.
+func (m model) showDashboard() model {
+	m.screen = screenDashboard
+	m.focus = focusList
+	m.adding = false
+	m.suggestions = nil
+	for i := range m.inputs {
+		m.inputs[i].Blur()
+	}
+	return m.settleTeamStatus()
+}
+
+// activeList is whichever list the screen on show owns.
+func (m model) activeList() list.Model {
+	if m.screen == screenDashboard {
+		return m.teamList
+	}
+	return m.list
+}
+
+func (m model) updateActiveList(msg tea.Msg) (model, tea.Cmd) {
+	var cmd tea.Cmd
+	if m.screen == screenDashboard {
+		m.teamList, cmd = m.teamList.Update(msg)
+		return m, cmd
+	}
+	m.list, cmd = m.list.Update(msg)
 	return m, cmd
 }
 
@@ -280,14 +723,33 @@ func (m model) acceptSuggestion() model {
 	return m
 }
 
+// focusRing is the order tab walks. The dashboard has no user field to visit
+// unless the add field is open over it, so tab skips it there rather than
+// parking the cursor somewhere with nothing to type into.
+func (m model) focusRing() []focusArea {
+	if m.screen == screenDetails || m.adding {
+		return []focusArea{focusUser, focusFrom, focusTo, focusList}
+	}
+	return []focusArea{focusFrom, focusTo, focusList}
+}
+
 func (m model) moveFocus(delta int) model {
 	// Leaving the user field closes the dropdown with it.
 	m.suggestions = nil
 
-	next := (int(m.focus) + delta + 4) % 4
-	m.focus = focusArea(next)
+	ring := m.focusRing()
+	at := 0
+	for i, area := range ring {
+		if area == m.focus {
+			at = i
+			break
+		}
+	}
+	next := ring[(at+delta+len(ring))%len(ring)]
+
+	m.focus = next
 	for i := range m.inputs {
-		if i == next {
+		if focusArea(i) == next {
 			m.inputs[i].Focus()
 			continue
 		}
@@ -329,23 +791,36 @@ func (m model) applyFetched(msg fetchedMsg) model {
 		return m
 	}
 
-	m.report = msg.report
-	// Echo the window that was actually used: an empty From means "trailing 30
-	// days", and leaving the fields blank hides which days those were.
-	m.inputs[focusFrom].SetValue(msg.report.Collection.StartedAt.Format(contrib.DateFormat))
-	m.inputs[focusTo].SetValue(msg.report.Collection.EndedAt.Format(contrib.DateFormat))
-
-	events := contrib.Events(msg.report)
-	m.list.SetItems(newEventItems(events))
-	m.list.ResetSelected()
-	m.setStatus(fmt.Sprintf("%d contributions", len(events)), statusOK)
-	m.logs.Logf("[green]fetch complete total=%d[-]", len(events))
-	if len(events) > 0 {
+	m.logs.Logf("[green]fetch complete total=%d[-]", len(contrib.Events(msg.report)))
+	m = m.showReport(msg.report)
+	if len(contrib.Events(msg.report)) > 0 {
 		m.focus = focusList
 		for i := range m.inputs {
 			m.inputs[i].Blur()
 		}
 	}
+	return m
+}
+
+// showReport puts a report on the details screen.
+//
+// The date fields are filled in only when they are empty. They echo the window
+// that was actually used -- an empty From means "trailing 30 days" -- but once
+// somebody has typed dates, those are the dates they asked for, and a report
+// that happens to cover something else must not rewrite them.
+func (m model) showReport(report *contrib.Report) model {
+	m.report = report
+	if strings.TrimSpace(m.inputs[focusFrom].Value()) == "" {
+		m.inputs[focusFrom].SetValue(report.Collection.StartedAt.Format(contrib.DateFormat))
+	}
+	if strings.TrimSpace(m.inputs[focusTo].Value()) == "" {
+		m.inputs[focusTo].SetValue(report.Collection.EndedAt.Format(contrib.DateFormat))
+	}
+
+	events := contrib.Events(report)
+	m.list.SetItems(newEventItems(events))
+	m.list.ResetSelected()
+	m.setStatus(fmt.Sprintf("%d contributions", len(events)), statusOK)
 	return m
 }
 
@@ -456,6 +931,77 @@ func (m model) loadCacheCmd() tea.Cmd {
 			return nil
 		}
 		return discoveredMsg{people: people, source: "cache"}
+	}
+}
+
+// loadTeamCmd reads the roster from the app's config.
+func (m model) loadTeamCmd() tea.Cmd {
+	store := m.teams
+	if store == nil {
+		return nil
+	}
+	return func() tea.Msg {
+		team, err := store.Load()
+		return teamLoadedMsg{team: team, err: err}
+	}
+}
+
+// saveTeamCmd persists the roster. A roster that cannot be saved is still used
+// for this session: losing the change on the next launch is better than
+// refusing the change now.
+func (m model) saveTeamCmd(team teamconfig.Team) tea.Cmd {
+	store := m.teams
+	logs := m.logs
+	if store == nil {
+		return nil
+	}
+	return func() tea.Msg {
+		if err := store.Save(team); err != nil {
+			logs.Logf("[yellow]could not save your team: %v[-]", err)
+		}
+		return nil
+	}
+}
+
+// viewerCmd asks who we are authenticated as, for a first-launch team.
+func (m model) viewerCmd() tea.Cmd {
+	svc := m.svc
+	if svc == nil {
+		return nil
+	}
+	return func() tea.Msg {
+		ctx, cancel := context.WithTimeout(context.Background(), discoveryTimeout)
+		defer cancel()
+		person, err := svc.Viewer(ctx)
+		return viewerMsg{person: person, err: err}
+	}
+}
+
+// fetchTeamCmd fetches one member's report. One command per member means the
+// runtime runs them concurrently and each row updates as its own result lands.
+func (m model) fetchTeamCmd(login string, window contrib.Range) tea.Cmd {
+	svc := m.svc
+	if svc == nil {
+		return nil
+	}
+	return func() tea.Msg {
+		report, err := svc.FetchContributions(context.Background(), login, window)
+		return teamFetchedMsg{login: login, window: window, report: report, err: err}
+	}
+}
+
+// storeReportCmd caches a fetched report for the next launch.
+func (m model) storeReportCmd(login string, window contrib.Range, report *contrib.Report) tea.Cmd {
+	cache := m.reports
+	logs := m.logs
+	if cache == nil {
+		return nil
+	}
+	return func() tea.Msg {
+		if err := cache.Store(login, window, report); err != nil {
+			logs.Logf("[yellow]could not cache %s's report: %v[-]", login, err)
+		}
+		return nil
 	}
 }
 

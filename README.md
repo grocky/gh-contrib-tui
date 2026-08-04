@@ -1,0 +1,183 @@
+# gh-contribs
+
+A terminal dashboard for GitHub contribution activity. It opens on a team
+summary — everyone you follow, ranked by how much they have been doing — and
+drills into one person's history: their totals, a contribution calendar, which
+repositories the work went to, and the individual commits, pull requests, issues
+and reviews behind the numbers.
+
+It works against github.com and against GitHub Enterprise Server.
+
+<img src="docs/images/dashboard.svg" alt="The team dashboard: a row per person with their totals and a minified
+contribution calendar, ranked by contributions" width="100%">
+
+Pressing enter on a row opens that person's history — their totals, a
+contribution calendar, where the work went, and the contributions themselves:
+
+<img src="docs/images/details.svg" alt="The details screen: summary, contribution calendar, a bar chart of
+repositories, and the list of contributions" width="100%">
+
+`alt+r` switches the repository breakdown from ranked bars to a single row
+divided by share:
+
+<img src="docs/images/details-tiles.svg" alt="The repositories panel in tiles mode: one row divided by share, with
+the repository names beneath" width="100%">
+
+## Why not the contributions API
+
+GitHub's `contributionsCollection` ignores activity in private and internal
+repositories, and on Enterprise Server it does not report the omission — the
+count simply comes back small. One user with 237 contributions on their profile
+reported 3 through that endpoint, because every repository they work in is
+private.
+
+This tool assembles history from the search APIs instead, which honour whatever
+the token can actually read. A `repo`-scoped token sees the real history. See
+[docs/design/contribution-history.md](docs/design/contribution-history.md).
+
+## Requirements
+
+- Go 1.25 or newer to build
+- A GitHub token with the `repo` scope, and `read:org` if you want
+  organization-wide autocomplete
+- Optional: the [`gh` CLI](https://cli.github.com), which the app will borrow a
+  token and a hostname from
+
+## Install
+
+```sh
+go build -o gh-contribs ./cmd/github-contrib-tui
+```
+
+Or run it straight from the source tree:
+
+```sh
+go run ./cmd/github-contrib-tui
+```
+
+## Authentication
+
+Tokens are tried in order, and the first that authenticates wins:
+
+1. `GITHUB_TOKEN`
+2. `GH_TOKEN`
+3. `gh auth token`
+
+If a request comes back unauthorized, the next candidate is tried before giving
+up, so a stale environment variable does not block a working `gh` login.
+
+The host is resolved from `GITHUB_HOSTNAME`, then `GH_HOST`, then `gh auth
+status`, falling back to github.com.
+
+## Using it
+
+The app opens on the **dashboard**: one row per person on your team, showing
+their totals and a minified contribution calendar, ranked by contributions.
+Pressing enter on a row opens the **details** screen for that person.
+
+| Key | Where | What |
+| --- | --- | --- |
+| `enter` | dashboard | open the selected person's details |
+| `a` | dashboard | add someone to the team |
+| `x` | dashboard | remove the selected person |
+| `esc` | details | back to the dashboard |
+| `alt+r` | details | switch the repository chart between bars and tiles |
+| `ctrl+r` | both | refetch — everyone on the dashboard, this person on details |
+| `/` | both | filter the list |
+| `enter` | details | open the selected contribution in a browser |
+| `ctrl+y` | details | copy the selected contribution's URL |
+| `tab` | both | move between the fields and the list |
+| `ctrl+u` | both | reload the user directory from GitHub |
+| `alt+L` | both | show the log pane |
+| `ctrl+c` | both | quit |
+
+Adding someone autocompletes against every member of your organizations,
+matching on login or display name. Accounts that only appear through team
+membership — suspended or departed people — are listed and marked, because a
+departed teammate is often exactly who you want to look up. See
+[docs/design/user-suggestions.md](docs/design/user-suggestions.md).
+
+### Dates
+
+The dashboard summarizes the trailing 30 days, details the trailing 3 months.
+The `From` and `To` placeholders always spell out the window an empty field
+resolves to.
+
+Dates may name a day, a month, or a year, with either separator. A partial date
+names a period, and the two ends of the window take opposite ends of it:
+
+| Typed | Resolves to |
+| --- | --- |
+| `2026-05-04` | that day |
+| `2026-05` in `From` | 2026-05-01 |
+| `2026-05` in `To` | 2026-05-31 |
+| `2026/05` | the same, slashes and dashes are interchangeable |
+| `2025` in `To` | 2025-12-31 |
+
+## Where it keeps things
+
+Everything is scoped by host, so github.com and an Enterprise deployment never
+share a team or a cached report.
+
+| What | Where | Lifetime |
+| --- | --- | --- |
+| Your team | `<config>/gh-contribs/team-<host>.json` | until you change it |
+| Contribution reports | `<cache>/gh-contribs/reports-<host>.json` | 1 hour |
+| User directory | `<cache>/gh-contribs/directory-<host>.json` | 24 hours |
+
+`<config>` and `<cache>` are your platform's own — `~/.config` and `~/.cache` on
+Linux, `~/Library/Application Support` and `~/Library/Caches` on macOS.
+
+The team file is written indented and is meant to be edited by hand. The two
+caches are disposable: delete them and the next launch refetches.
+
+Reports paint from cache first and refresh behind what is already on screen, so
+a launch shows numbers immediately rather than a screen of spinners. `ctrl+r`
+goes past the cache whatever its age.
+
+## Environment
+
+| Variable | Effect |
+| --- | --- |
+| `GITHUB_TOKEN`, `GH_TOKEN` | API tokens, tried before the `gh` CLI |
+| `GITHUB_HOSTNAME`, `GH_HOST` | which GitHub to talk to |
+| `GH_USER` | open straight to this person's details, skipping the dashboard |
+
+## Layout of the source
+
+```
+cmd/github-contrib-tui   the binary: wires a client, the stores, and the UI
+internal/contrib         the domain — reports, events, calendars, date ranges.
+                         No GitHub client, no terminal.
+internal/ghapi           GitHub GraphQL and REST, and the credential fallback
+internal/ui              the bubbletea model, its two screens, and lipgloss
+internal/auth            token discovery
+internal/config          which GitHub deployment, and its endpoints
+internal/teamconfig      the team roster, in the config directory
+internal/reportcache     contribution reports, in the cache directory
+internal/directorycache  the user directory, in the cache directory
+internal/platform        opening a browser and the clipboard, per OS
+internal/logging         the logger the pane reads from
+```
+
+The domain package knows nothing about GitHub or the terminal, and the UI
+reaches GitHub only through an interface it defines itself, so both are testable
+without a network.
+
+## Development
+
+```sh
+go test ./...            # the suite
+go test ./... -race      # with the race detector
+go vet ./... && gofmt -l internal cmd
+```
+
+Tests are written before the code they cover, and cover the fallbacks as well as
+the happy path — narrow terminals, missing scopes, corrupt caches, and slow
+answers arriving after the user has moved on.
+
+## Also in this repo
+
+`scripts/github-contrib` is the shell script this started as: one `gh api
+graphql` call against `contributionsCollection`. It is kept for reference, and
+is subject to the under-counting described above.

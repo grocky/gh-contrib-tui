@@ -145,6 +145,13 @@ func typeText(t *testing.T, m model, text string) model {
 	return m
 }
 
+// pressLogs sends the log pane's binding. It is spelled out here rather than
+// typed into each test so a rebinding is a one-line change.
+func pressLogs(t *testing.T, m model) model {
+	t.Helper()
+	return send(t, m, tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'L'}, Alt: true})
+}
+
 func press(t *testing.T, m model, k tea.KeyType) model {
 	t.Helper()
 	return send(t, m, tea.KeyMsg{Type: k})
@@ -738,7 +745,7 @@ func TestLogs_ToggleAndDismiss(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 100, 40)
 	m.logs.Logf("[green]hello from the api layer[-]")
 
-	m = send(t, m, tea.KeyMsg{Type: tea.KeyCtrlL})
+	m = pressLogs(t, m)
 	if !m.showLogs {
 		t.Fatal("expected the log pane to open")
 	}
@@ -764,7 +771,7 @@ func TestLogs_FollowTheTail(t *testing.T) {
 		m.logs.Logf("line %d", i)
 	}
 
-	m = send(t, m, tea.KeyMsg{Type: tea.KeyCtrlL})
+	m = pressLogs(t, m)
 
 	view := plain(m.View())
 	if !strings.Contains(view, "line 59") {
@@ -788,7 +795,7 @@ func TestLogs_ScrollingBackHoldsPosition(t *testing.T) {
 	for i := 0; i < 60; i++ {
 		m.logs.Logf("line %d", i)
 	}
-	m = send(t, m, tea.KeyMsg{Type: tea.KeyCtrlL})
+	m = pressLogs(t, m)
 
 	for i := 0; i < 5; i++ {
 		m = press(t, m, tea.KeyUp)
@@ -810,7 +817,7 @@ func TestLogs_ScrollingBackHoldsPosition(t *testing.T) {
 func TestLogs_TypingStillReachesTheFocusedField(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 100, 24)
 
-	m = send(t, m, tea.KeyMsg{Type: tea.KeyCtrlL})
+	m = pressLogs(t, m)
 	m = typeText(t, m, "octocat")
 
 	if got := m.inputs[focusUser].Value(); got != "octocat" {
@@ -827,7 +834,7 @@ func TestLogs_KeysDoNotReachTheHiddenList(t *testing.T) {
 		t.Fatalf("focus = %v, want the list for this test to mean anything", m.focus)
 	}
 
-	m = send(t, m, tea.KeyMsg{Type: tea.KeyCtrlL})
+	m = pressLogs(t, m)
 
 	var before [inputCount]string
 	for i, in := range m.inputs {

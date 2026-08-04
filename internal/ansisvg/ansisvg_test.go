@@ -268,3 +268,60 @@ func TestConvert_KeepsSingleSpacesInTheText(t *testing.T) {
 		t.Errorf("phrase was broken up:\n%s", got)
 	}
 }
+
+// Box drawing.
+
+// Borders are geometry too. Typeset, the horizontal rule renders at whatever
+// width the font gives its glyph, which leaves it short of the corner the
+// column grid puts at the end of the line.
+func TestConvert_DrawsBordersAsLines(t *testing.T) {
+	got := Convert("╭──╮", Options{})
+	parse(t, got)
+
+	for _, ch := range []string{"╭", "─", "╮"} {
+		if strings.Contains(got, ch) {
+			t.Errorf("%q was typeset rather than drawn:\n%s", ch, got)
+		}
+	}
+	if n := strings.Count(got, "<path"); n != 4 {
+		t.Errorf("drew %d paths, want one per border cell:\n%s", n, got)
+	}
+}
+
+// A rule has to reach the full width of every cell it occupies, or the corner
+// at the end of the line does not meet it.
+func TestConvert_RuleSpansItsCells(t *testing.T) {
+	got := Convert("──", Options{})
+	parse(t, got)
+
+	// The second cell's rule runs to the right edge of the second cell.
+	if !strings.Contains(got, `H`+ftoa(padX+2*cellWidth)) {
+		t.Errorf("rule stops short of its cell:\n%s", got)
+	}
+}
+
+// The sides of a panel are drawn down the middle of their column, so every row
+// of a border lines up with the one above it.
+func TestConvert_SidesShareAColumn(t *testing.T) {
+	got := Convert("│\n│", Options{})
+	parse(t, got)
+
+	centre := ftoa(padX + cellWidth/2)
+	if n := strings.Count(got, "M"+centre+","); n != 2 {
+		t.Errorf("the two sides are not on the same centre line:\n%s", got)
+	}
+}
+
+// A panel's line is a border, a gap, and its contents, all in one run.
+func TestConvert_MixesDrawingAndTextInOneRun(t *testing.T) {
+	got := Convert("│ Team", Options{})
+	parse(t, got)
+
+	if strings.Contains(got, "│") {
+		t.Errorf("the border was typeset:\n%s", got)
+	}
+	span := spanContaining(t, got, "Team")
+	if !strings.Contains(span, `x="`+ftoa(padX+2*cellWidth)+`"`) {
+		t.Errorf("text beside a border is misplaced: %q", span)
+	}
+}

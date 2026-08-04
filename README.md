@@ -32,8 +32,7 @@ reported 3 through that endpoint, because every repository they work in is
 private.
 
 This tool assembles history from the search APIs instead, which honour whatever
-the token can actually read. A `repo`-scoped token sees the real history. See
-[docs/design/contribution-history.md](docs/design/contribution-history.md).
+the token can actually read. A `repo`-scoped token sees the real history.
 
 ## Requirements
 

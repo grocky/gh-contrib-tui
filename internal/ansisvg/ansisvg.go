@@ -50,6 +50,41 @@ var blocks = map[rune]block{
 	'■': {0.15, 0.7, 1},
 }
 
+// Panel borders are geometry for the same reason the blocks are, and a worse
+// offender: a rule typeset at the font's own advance stops short of the corner
+// the grid puts at the end of the line, which leaves every panel with its
+// right-hand corners hanging off the end of the border.
+//
+// Each character is described by the half-cells its stroke reaches into, so a
+// rule covers its whole cell and meets its neighbours exactly, and a side runs
+// down the middle of its column on every row.
+type boxArms struct{ left, right, up, down, round bool }
+
+var boxes = map[rune]boxArms{
+	'─': {left: true, right: true},
+	'│': {up: true, down: true},
+	'╭': {right: true, down: true, round: true},
+	'╮': {left: true, down: true, round: true},
+	'╰': {right: true, up: true, round: true},
+	'╯': {left: true, up: true, round: true},
+	'┌': {right: true, down: true},
+	'┐': {left: true, down: true},
+	'└': {right: true, up: true},
+	'┘': {left: true, up: true},
+	'├': {right: true, up: true, down: true},
+	'┤': {left: true, up: true, down: true},
+	'┬': {left: true, right: true, down: true},
+	'┴': {left: true, right: true, up: true},
+	'┼': {left: true, right: true, up: true, down: true},
+}
+
+// borderStroke is the weight of a drawn border, and cornerRadius how far a
+// rounded corner cuts across its cell.
+const (
+	borderStroke = 1.1
+	cornerRadius = 3.0
+)
+
 // Options customizes a conversion.
 type Options struct {
 	// Title is the document's title, which readers announce and browsers show
@@ -141,10 +176,17 @@ func Convert(frame string, opts Options) string {
 			// whitespace in text content, which would bunch a row of month
 			// labels up against the left of the calendar.
 			for _, seg := range segments(r) {
-				if drawBlocks(&b, seg.text, seg.col, y, r.state, opts) {
-					continue
+				// A panel's line is a border, a gap, and its contents all in
+				// one run, so the drawn characters are picked out of the
+				// writing rather than the whole segment going one way.
+				for _, piece := range pieces(seg) {
+					switch {
+					case piece.drawn:
+						draw(&b, piece.text, piece.col, y, r.state, opts)
+					default:
+						spans.WriteString(textSpan(piece.text, piece.col, r.state, opts))
+					}
 				}
-				spans.WriteString(textSpan(seg.text, seg.col, r.state, opts))
 			}
 		}
 		if spans.Len() > 0 {
@@ -206,30 +248,128 @@ func segments(r run) []segment {
 	return out
 }
 
-// drawBlocks renders a run made entirely of block characters as rectangles,
-// reporting whether it did. A run of mixed text is left to the type setter.
-func drawBlocks(b *strings.Builder, text string, col int, y float64, st state, opts Options) bool {
-	for _, r := range text {
-		if _, ok := blocks[r]; !ok {
-			return false
+// piece is a stretch of a segment that is drawn, or one that is written.
+type piece struct {
+	text  string
+	col   int
+	drawn bool
+}
+
+// drawable reports whether a character is geometry rather than writing.
+func drawable(r rune) bool {
+	_, block := blocks[r]
+	_, box := boxes[r]
+	return block || box
+}
+
+// pieces splits a segment where it changes between drawing and writing.
+func pieces(seg segment) []piece {
+	runes := []rune(seg.text)
+	if len(runes) == 0 {
+		return nil
+	}
+
+	var (
+		out   []piece
+		start = 0
+		mode  = drawable(runes[0])
+	)
+	flush := func(end int) {
+		text := string(runes[start:end])
+		if !mode {
+			// Spaces at the edge of a written piece are position, not text.
+			trimmed := strings.TrimLeft(text, " ")
+			start += len([]rune(text)) - len([]rune(trimmed))
+			text = strings.TrimRight(trimmed, " ")
+		}
+		if text != "" {
+			out = append(out, piece{text: text, col: seg.col + start, drawn: mode})
 		}
 	}
 
+	for i, r := range runes {
+		if d := drawable(r); d != mode {
+			flush(i)
+			start, mode = i, d
+		}
+	}
+	flush(len(runes))
+	return out
+}
+
+// draw renders a piece of geometry: blocks as rectangles, borders as strokes.
+func draw(b *strings.Builder, text string, col int, y float64, st state, opts Options) {
 	fill := st.fg
 	if fill == "" {
 		fill = opts.foreground()
 	}
+
 	for i, r := range []rune(text) {
-		spec := blocks[r]
-		opacity := ""
-		if spec.alpha < 1 {
-			opacity = fmt.Sprintf(` opacity="%g"`, spec.alpha)
+		x := padX + float64(col+i)*cellWidth
+		if spec, ok := blocks[r]; ok {
+			opacity := ""
+			if spec.alpha < 1 {
+				opacity = fmt.Sprintf(` opacity="%g"`, spec.alpha)
+			}
+			fmt.Fprintf(b, `<rect x="%s" y="%s" width="%s" height="%s" fill="%s"%s/>`+"\n",
+				ftoa(x), ftoa(y+spec.top*lineHeight),
+				ftoa(cellWidth), ftoa(spec.height*lineHeight), fill, opacity)
+			continue
 		}
-		fmt.Fprintf(b, `<rect x="%s" y="%s" width="%s" height="%s" fill="%s"%s/>`+"\n",
-			ftoa(padX+float64(col+i)*cellWidth), ftoa(y+spec.top*lineHeight),
-			ftoa(cellWidth), ftoa(spec.height*lineHeight), fill, opacity)
+		if arms, ok := boxes[r]; ok {
+			fmt.Fprintf(b, `<path d="%s" stroke="%s" stroke-width="%s" fill="none"/>`+"\n",
+				borderPath(arms, x, y), fill, ftoa(borderStroke))
+		}
 	}
-	return true
+}
+
+// borderPath draws one border cell: a stroke from the middle of the cell out to
+// each edge the character reaches, with a rounded join where it turns a corner.
+func borderPath(arms boxArms, x, y float64) string {
+	cx, cy := x+cellWidth/2, y+lineHeight/2
+	radius := 0.0
+	if arms.round {
+		radius = cornerRadius
+	}
+
+	var d []string
+	horizontal := func() {
+		switch {
+		case arms.left && arms.right:
+			d = append(d, "M"+ftoa(x)+","+ftoa(cy)+"H"+ftoa(x+cellWidth))
+		case arms.left:
+			d = append(d, "M"+ftoa(x)+","+ftoa(cy)+"H"+ftoa(cx-radius))
+		case arms.right:
+			d = append(d, "M"+ftoa(cx+radius)+","+ftoa(cy)+"H"+ftoa(x+cellWidth))
+		}
+	}
+	vertical := func() {
+		switch {
+		case arms.up && arms.down:
+			d = append(d, "M"+ftoa(cx)+","+ftoa(y)+"V"+ftoa(y+lineHeight))
+		case arms.up:
+			d = append(d, "M"+ftoa(cx)+","+ftoa(y)+"V"+ftoa(cy-radius))
+		case arms.down:
+			d = append(d, "M"+ftoa(cx)+","+ftoa(cy+radius)+"V"+ftoa(y+lineHeight))
+		}
+	}
+	horizontal()
+	vertical()
+
+	// The quarter turn joining the two arms of a rounded corner.
+	if radius > 0 {
+		fromX, fromY := cx, cy-radius
+		if arms.down {
+			fromY = cy + radius
+		}
+		toX := cx - radius
+		if arms.right {
+			toX = cx + radius
+		}
+		d = append(d, fmt.Sprintf("M%s,%sQ%s,%s %s,%s",
+			ftoa(fromX), ftoa(fromY), ftoa(cx), ftoa(cy), ftoa(toX), ftoa(cy)))
+	}
+	return strings.Join(d, "")
 }
 
 // textSpan renders one run of writing, pinned to the column it starts at.

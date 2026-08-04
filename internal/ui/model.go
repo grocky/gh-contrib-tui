@@ -43,6 +43,19 @@ const (
 	detailsMonths = 3
 )
 
+// pendingFetch is a details request in flight.
+type pendingFetch struct {
+	login  string
+	window contrib.Range
+}
+
+func (p pendingFetch) active() bool { return p.login != "" }
+
+// answeredBy reports whether a result is the one being waited for.
+func (p pendingFetch) answeredBy(login string, window contrib.Range) bool {
+	return p.active() && strings.EqualFold(p.login, login) && p.window == window
+}
+
 // screen is which of the two views is on show. The dashboard summarizes the
 // whole team; details is one person's history, which is where the app started
 // life and what a dashboard row opens into.
@@ -56,6 +69,8 @@ const (
 // Messages produced by background work.
 type (
 	fetchedMsg struct {
+		login  string
+		window contrib.Range
 		report *contrib.Report
 		err    error
 	}
@@ -115,6 +130,12 @@ type model struct {
 	// repoChart is which view of the repository breakdown the details screen is
 	// showing.
 	repoChart repoChartMode
+
+	// pending is the request the details screen is waiting on. A fetch takes
+	// long enough that the user can be on somebody else by the time it lands,
+	// and an answer to a question nobody is asking any more is somebody else's
+	// data.
+	pending pendingFetch
 
 	report *contrib.Report
 	status string
@@ -309,7 +330,7 @@ func (m model) update(msg tea.Msg) (model, tea.Cmd) {
 		return m, cmd
 
 	case fetchedMsg:
-		return m.applyFetched(msg), nil
+		return m.applyFetched(msg)
 
 	case discoveredMsg:
 		return m.applyDiscovered(msg)
@@ -750,6 +771,12 @@ func (m model) openDetails() (model, tea.Cmd) {
 	m.suggestions = nil
 	m.focus = focusList
 
+	// Whatever was on screen belonged to whoever was open before. Left there it
+	// reads as this person's history until the new one lands.
+	if m.report != nil && !strings.EqualFold(m.report.Login, row.person.Login) {
+		m = m.clearReport()
+	}
+
 	// The window is resolved after the screen has changed, so an untouched pair
 	// of dates means the details default rather than the dashboard's.
 	window, err := m.window()
@@ -888,6 +915,23 @@ func (m model) startFetch() (model, tea.Cmd) {
 	}
 
 	m.suggestions = nil
+
+	// A report already on disk and inside its TTL is the answer: paint it and
+	// spend nothing. A stale one is painted too, and refreshed behind it --
+	// something to read beats an empty screen while the network works.
+	entry, cached := m.cachedReport(username, window)
+	if cached {
+		m = m.showReport(entry.Report)
+		m.logs.Logf("[gray]served %s from cache fetched=%s[-]",
+			username, entry.FetchedAt.Format(time.RFC3339))
+		if entry.Fresh {
+			m.busy = false
+			m.pending = pendingFetch{}
+			return m, nil
+		}
+	}
+
+	m.pending = pendingFetch{login: username, window: window}
 	m.busy = true
 	m.setStatus(fmt.Sprintf("loading %s...", username), statusInfo)
 	m.logs.Logf("[yellow]fetch start user=%s from=%s to=%s[-]",
@@ -896,12 +940,27 @@ func (m model) startFetch() (model, tea.Cmd) {
 	return m, tea.Batch(m.fetchCmd(username, window), m.spinner.Tick)
 }
 
-func (m model) applyFetched(msg fetchedMsg) model {
+func (m model) applyFetched(msg fetchedMsg) (model, tea.Cmd) {
+	// Whatever came back is worth keeping even if the user has moved on: the
+	// next visit should not pay for it again.
+	var cmd tea.Cmd
+	if msg.err == nil && msg.report != nil {
+		cmd = m.storeReportCmd(msg.login, msg.window, msg.report)
+	}
+
+	// An answer to a question nobody is asking any more belongs in the cache
+	// and nowhere else.
+	if !m.pending.answeredBy(msg.login, msg.window) {
+		m.logs.Logf("[gray]dropped a late report for %s[-]", msg.login)
+		return m, cmd
+	}
+	m.pending = pendingFetch{}
 	m.busy = false
+
 	if msg.err != nil {
 		m.setStatus(msg.err.Error(), statusError)
 		m.logs.Logf("[red]fetch failed: %v[-]", msg.err)
-		return m
+		return m, cmd
 	}
 
 	m.logs.Logf("[green]fetch complete total=%d[-]", len(contrib.Events(msg.report)))
@@ -912,6 +971,15 @@ func (m model) applyFetched(msg fetchedMsg) model {
 			m.inputs[i].Blur()
 		}
 	}
+	return m, cmd
+}
+
+// clearReport empties the details screen, which is what it should show while it
+// is loading somebody new.
+func (m model) clearReport() model {
+	m.report = nil
+	m.list.SetItems(nil)
+	m.list.ResetSelected()
 	return m
 }
 
@@ -1011,7 +1079,7 @@ func (m model) fetchCmd(username string, window contrib.Range) tea.Cmd {
 	svc := m.svc
 	return func() tea.Msg {
 		report, err := svc.FetchContributions(context.Background(), username, window)
-		return fetchedMsg{report: report, err: err}
+		return fetchedMsg{login: username, window: window, report: report, err: err}
 	}
 }
 

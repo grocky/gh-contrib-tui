@@ -314,6 +314,16 @@ func (m model) viewList() string {
 		title = appendIfItFits(m, title, fmt.Sprintf("  %d of %d", visible, len(m.list.Items())))
 	case visible > 0:
 		title = appendIfItFits(m, title, fmt.Sprintf("  %d of %d", m.list.Index()+1, visible))
+	case m.busy:
+		// A fetch is slow enough that a screen saying nothing looks broken. The
+		// spinner goes where the results will appear, not only in the status
+		// line under the layout.
+		waiting := strings.TrimSpace(m.inputs[focusUser].Value())
+		if m.pending.login != "" {
+			waiting = m.pending.login
+		}
+		body = "  " + m.spinner.View() + faintStyle.Render(" loading "+waiting+"…") +
+			strings.Repeat("\n", max(m.list.Height()-1, 0))
 	default:
 		// The list's own empty text is "No items.", which says nothing about
 		// what to do next. Pad to the list's height so the panel still fills

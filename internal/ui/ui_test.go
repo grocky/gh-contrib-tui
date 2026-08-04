@@ -152,6 +152,26 @@ func pressLogs(t *testing.T, m model) model {
 	return send(t, m, tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'L'}, Alt: true})
 }
 
+// deliver hands the model a report the way a fetch does: the request is started
+// so the model knows what it is waiting for, then the answer arrives. A bare
+// fetchedMsg is dropped as an answer to a question nobody asked.
+func deliver(t *testing.T, m model, report *contrib.Report, err error) model {
+	t.Helper()
+
+	login := "octocat"
+	if report != nil && report.Login != "" {
+		login = report.Login
+	}
+	m.inputs[focusUser].SetValue(login)
+	m, _ = m.startFetch()
+
+	window, wErr := m.window()
+	if wErr != nil {
+		t.Fatalf("window: %v", wErr)
+	}
+	return send(t, m, fetchedMsg{login: login, window: window, report: report, err: err})
+}
+
 func press(t *testing.T, m model, k tea.KeyType) model {
 	t.Helper()
 	return send(t, m, tea.KeyMsg{Type: k})
@@ -232,7 +252,7 @@ func TestView_FitsTheTerminal(t *testing.T) {
 		for _, withReport := range []bool{false, true} {
 			m := newTestModel(t, &fakeService{}, size.w, size.h)
 			if withReport {
-				m = send(t, m, fetchedMsg{report: sampleReport()})
+				m = deliver(t, m, sampleReport(), nil)
 			}
 			view := m.View()
 			if got := lipgloss.Height(view); got > size.h {
@@ -284,10 +304,12 @@ func manyLogins(n int) []string {
 func TestView_FitsTheTerminalWithSuggestions(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 100, 24)
 	m.suggest.set(contrib.NewDirectory(manyPeople(20)))
-	m = send(t, m, fetchedMsg{report: sampleReport()})
+	m = deliver(t, m, sampleReport(), nil)
 
-	// The results took focus; tab wraps from the list back to the user field.
+	// The results took focus; tab wraps from the list back to the user field,
+	// which is holding the login that was just fetched.
 	m = press(t, m, tea.KeyTab)
+	m.inputs[focusUser].SetValue("")
 	m = typeText(t, m, "user")
 
 	if len(m.suggestions) == 0 {
@@ -302,7 +324,7 @@ func TestView_FitsTheTerminalWithSuggestions(t *testing.T) {
 // filter box grows as it is typed into.
 func TestView_FitsTheTerminalWhileFiltering(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 80, 24)
-	m = send(t, m, fetchedMsg{report: sampleReport()})
+	m = deliver(t, m, sampleReport(), nil)
 	m = sendAndSettle(t, m, tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'/'}})
 	for _, r := range "a filter query long enough to crowd the panel title out" {
 		m = sendAndSettle(t, m, tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{r}})
@@ -532,7 +554,7 @@ func TestFetch_PassesTheTrimmedUserAndWindow(t *testing.T) {
 func TestFetch_PopulatesTheViews(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 120, 40)
 
-	m = send(t, m, fetchedMsg{report: sampleReport()})
+	m = deliver(t, m, sampleReport(), nil)
 
 	if m.busy {
 		t.Fatal("expected busy to clear")
@@ -563,7 +585,7 @@ func TestFetch_PopulatesTheViews(t *testing.T) {
 // requirement that stray messages get back to the list.
 func TestList_FilterNarrowsToMatchingContributions(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 120, 40)
-	m = send(t, m, fetchedMsg{report: sampleReport()})
+	m = deliver(t, m, sampleReport(), nil)
 	if m.focus != focusList {
 		t.Fatalf("focus = %v, want the list", m.focus)
 	}
@@ -594,7 +616,7 @@ func TestFetch_KeepsFocusWhenThereIsNothingToShow(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 100, 40)
 	empty := &contrib.Report{Login: "ghost"}
 
-	m = send(t, m, fetchedMsg{report: empty})
+	m = deliver(t, m, empty, nil)
 
 	if m.focus != focusUser {
 		t.Fatalf("focus = %v, want it left in the user field", m.focus)
@@ -604,7 +626,7 @@ func TestFetch_KeepsFocusWhenThereIsNothingToShow(t *testing.T) {
 func TestFetch_SurfacesServiceErrors(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 100, 40)
 
-	m = send(t, m, fetchedMsg{err: errors.New("graphql exploded")})
+	m = deliver(t, m, nil, errors.New("graphql exploded"))
 
 	if m.level != statusError || !strings.Contains(m.status, "graphql exploded") {
 		t.Fatalf("status = %q (level %v)", m.status, m.level)
@@ -622,7 +644,7 @@ func TestFetch_ShowsWarningsFromThePartialReport(t *testing.T) {
 	report.Warnings = []string{"commits unavailable: search is disabled"}
 	m := newTestModel(t, &fakeService{}, 120, 40)
 
-	m = send(t, m, fetchedMsg{report: report})
+	m = deliver(t, m, report, nil)
 
 	if !strings.Contains(plain(m.View()), "commits unavailable") {
 		t.Fatalf("expected the gap to be visible:\n%s", plain(m.View()))
@@ -728,7 +750,7 @@ func TestCopy_WithNothingSelected(t *testing.T) {
 
 func TestSelectedURL_FollowsTheList(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 100, 40)
-	m = send(t, m, fetchedMsg{report: sampleReport()})
+	m = deliver(t, m, sampleReport(), nil)
 
 	if got := m.selectedURL(); got != "https://example.com/commit/abc" {
 		t.Fatalf("selected = %q, want the newest event", got)
@@ -829,7 +851,7 @@ func TestLogs_TypingStillReachesTheFocusedField(t *testing.T) {
 // there rather than filter and scroll something nobody can see.
 func TestLogs_KeysDoNotReachTheHiddenList(t *testing.T) {
 	m := newTestModel(t, &fakeService{}, 100, 24)
-	m = send(t, m, fetchedMsg{report: sampleReport()})
+	m = deliver(t, m, sampleReport(), nil)
 	if m.focus != focusList {
 		t.Fatalf("focus = %v, want the list for this test to mean anything", m.focus)
 	}
@@ -1126,7 +1148,7 @@ func TestResize_DropsCalendarSpacingBeforeTheCalendar(t *testing.T) {
 	}
 	for _, tt := range tests {
 		m := newTestModel(t, &fakeService{}, 140, tt.height)
-		m = send(t, m, fetchedMsg{report: sampleReport()})
+		m = deliver(t, m, sampleReport(), nil)
 
 		if m.showCalendar != tt.calendar || m.calendarSpaced != tt.spaced {
 			t.Errorf("height %d: calendar=%v spaced=%v, want calendar=%v spaced=%v",

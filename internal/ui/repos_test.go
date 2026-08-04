@@ -228,6 +228,5 @@ func detailsWithRepos(t *testing.T, w, h int) model {
 	report.Collection = contrib.NewCollection(events, window)
 
 	m := newTestModel(t, &fakeService{report: report}, w, h)
-	m = send(t, m, fetchedMsg{report: report})
-	return m
+	return deliver(t, m, report, nil)
 }

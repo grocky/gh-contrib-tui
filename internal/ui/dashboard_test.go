@@ -62,28 +62,36 @@ func newFakeReportCache() *fakeReportCache {
 	return &fakeReportCache{entries: map[string]reportcache.Entry{}}
 }
 
-func (c *fakeReportCache) put(login string, report *contrib.Report, fresh bool) {
+// cacheKey mirrors the real cache: a report is only about the window it was
+// fetched for, and the two screens ask for different windows.
+func cacheKey(login string, window contrib.Range) string {
+	return strings.ToLower(login) + "|" +
+		window.From.Format(contrib.DateFormat) + "|" +
+		window.To.Format(contrib.DateFormat)
+}
+
+func (c *fakeReportCache) put(login string, window contrib.Range, report *contrib.Report, fresh bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	c.entries[strings.ToLower(login)] = reportcache.Entry{
+	c.entries[cacheKey(login, window)] = reportcache.Entry{
 		Report:    report,
 		FetchedAt: time.Date(2026, 8, 4, 11, 0, 0, 0, time.UTC),
 		Fresh:     fresh,
 	}
 }
 
-func (c *fakeReportCache) Load(login string, _ contrib.Range) (reportcache.Entry, bool) {
+func (c *fakeReportCache) Load(login string, window contrib.Range) (reportcache.Entry, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	entry, ok := c.entries[strings.ToLower(login)]
+	entry, ok := c.entries[cacheKey(login, window)]
 	return entry, ok
 }
 
-func (c *fakeReportCache) Store(login string, _ contrib.Range, report *contrib.Report) error {
+func (c *fakeReportCache) Store(login string, window contrib.Range, report *contrib.Report) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.stores = append(c.stores, strings.ToLower(login))
-	c.entries[strings.ToLower(login)] = reportcache.Entry{Report: report, Fresh: true}
+	c.entries[cacheKey(login, window)] = reportcache.Entry{Report: report, Fresh: true}
 	return nil
 }
 
@@ -248,7 +256,7 @@ func TestDashboard_PaintsFreshCacheWithoutFetching(t *testing.T) {
 	cache := newFakeReportCache()
 	cached := sampleReport()
 	cached.Login, cached.Name = "octocat", "Name of octocat"
-	cache.put("octocat", cached, true)
+	cache.put("octocat", contrib.TrailingDays(dashboardDays), cached, true)
 
 	svc := newTeamService("octocat")
 	m := startDashboard(t, svc, store, cache, 120, 40)
@@ -267,7 +275,7 @@ func TestDashboard_PaintsStaleCacheAndRefetches(t *testing.T) {
 	cache := newFakeReportCache()
 	stale := sampleReport()
 	stale.Login, stale.Name = "octocat", "Name of octocat"
-	cache.put("octocat", stale, false)
+	cache.put("octocat", contrib.TrailingDays(dashboardDays), stale, false)
 
 	svc := newTeamService("octocat")
 	m := startDashboard(t, svc, store, cache, 120, 40)
@@ -461,7 +469,7 @@ func TestDashboard_ForcedRefreshRefetchesEveryone(t *testing.T) {
 	cache := newFakeReportCache()
 	cached := sampleReport()
 	cached.Login = "octocat"
-	cache.put("octocat", cached, true)
+	cache.put("octocat", contrib.TrailingDays(dashboardDays), cached, true)
 
 	svc := newTeamService("octocat")
 	m := startDashboard(t, svc, store, cache, 120, 40)

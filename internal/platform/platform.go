@@ -5,6 +5,7 @@ package platform
 import (
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -51,12 +52,23 @@ func CopyToClipboard(s string) error {
 	return ErrNoClipboard
 }
 
+func resolveRuntimeOS() string {
+	// The existence of WSLInterop means we are either on a WSL 1 or WSL 2 host.
+	_, err := os.Stat("/proc/sys/fs/binfmt_misc/WSLInterop")
+	if err == nil {
+		return "wsl"
+	}
+	return runtime.GOOS
+}
+
 func browserCommand(url string) *exec.Cmd {
-	switch runtime.GOOS {
+	switch resolveRuntimeOS() {
 	case "darwin":
 		return exec.Command("open", url)
 	case "windows":
 		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+	case "wsl":
+		return exec.Command("explorer.exe", url)
 	default:
 		return exec.Command("xdg-open", url)
 	}

@@ -844,11 +844,12 @@ func TestLogBuffer_BoundsItsMemory(t *testing.T) {
 
 func TestRenderHeatmap_DrawsAWeekPerColumn(t *testing.T) {
 	cal := sampleReport().Collection.Calendar
-	got := plain(renderHeatmap(cal, 80))
+	got := plain(renderCalendar(cal, 80, false))
 
 	lines := strings.Split(got, "\n")
-	if len(lines) != 8 {
-		t.Fatalf("lines = %d, want a month row and seven weekdays:\n%s", len(lines), got)
+	if len(lines) != 10 {
+		t.Fatalf("lines = %d, want a month row, seven weekdays, a margin and a legend:\n%s",
+			len(lines), got)
 	}
 	if !strings.Contains(lines[0], "Jun") && !strings.Contains(lines[0], "Jul") {
 		t.Fatalf("month row = %q", lines[0])
@@ -856,13 +857,136 @@ func TestRenderHeatmap_DrawsAWeekPerColumn(t *testing.T) {
 	if !strings.HasPrefix(lines[1], "Mon") {
 		t.Fatalf("first weekday row = %q", lines[1])
 	}
-	// Five week columns cover 2026-07-01 to 2026-07-29.
-	if got := strings.Count(lines[1], dayCell); got != 5 {
+	// Five week columns cover 2026-07-01 to 2026-07-29, each drawn at the
+	// widest cell an 80-column panel affords.
+	cell := layoutFor(len(cal.Weeks), 80).text()
+	if cell != strings.Repeat(dayCell, maxCellWidth) {
+		t.Fatalf("cell = %q, want the widest cell for five weeks in 80 columns", cell)
+	}
+	if got := strings.Count(lines[1], cell); got != 5 {
 		t.Fatalf("Monday cells = %d, want 5: %q", got, lines[1])
 	}
 }
 
+// The calendar spends whatever room the panel gives it on bigger days, up to
+// the point where a day stops looking square.
+func TestRenderHeatmap_GrowsCellsToFillTheWidth(t *testing.T) {
+	cal := yearCalendar(t)
+	weeks := len(cal.Weeks)
+
+	for _, width := range []int{30, 80, 120, 200} {
+		l := layoutFor(weeks, width)
+		got := plain(renderCalendar(cal, width, true))
+
+		widest := 0
+		for _, line := range strings.Split(got, "\n") {
+			if w := lipgloss.Width(line); w > widest {
+				widest = w
+			}
+		}
+		if widest > width {
+			t.Errorf("width %d: calendar is %d columns, want it clamped:\n%s", width, widest, got)
+		}
+		// Either the cell is as big as a cell gets, or one column more per week
+		// would not have fit.
+		if l.cell < maxCellWidth && weeks*(l.cell+2) <= width-gutterWidth {
+			t.Errorf("width %d: cell is %d columns wide, want it grown to fill:\n%s", width, l.cell, got)
+		}
+	}
+}
+
 func TestRenderHeatmap_ClampsToWidth(t *testing.T) {
+	cal := yearCalendar(t)
+
+	got := plain(renderCalendar(cal, 30, true))
+	for _, line := range strings.Split(got, "\n") {
+		if w := lipgloss.Width(line); w > 30 {
+			t.Fatalf("line is %d columns, want it clamped to 30: %q", w, line)
+		}
+	}
+}
+
+// A terminal too narrow to give every week a gap packs them shoulder to
+// shoulder, and switches glyph: full blocks with nothing between them fuse a
+// row into one unreadable bar.
+func TestRenderHeatmap_PacksDenselyWhenNarrow(t *testing.T) {
+	cal := yearCalendar(t)
+
+	l := layoutFor(len(cal.Weeks), 60)
+	if l.step != 1 {
+		t.Fatalf("layout at 60 columns = %+v, want no room for gaps", l)
+	}
+
+	row := strings.Split(plain(renderCalendar(cal, 60, false)), "\n")[1]
+	if strings.Contains(row, dayCell) {
+		t.Errorf("Monday row uses the full block with no gap to separate weeks: %q", row)
+	}
+	if !strings.Contains(row, strings.Repeat(denseCell, 2)) {
+		t.Errorf("Monday row = %q, want adjacent dense cells", row)
+	}
+}
+
+// The calendar degrades a step at a time as the terminal shortens: roomy, then
+// tight, and only then gone.
+func TestResize_DropsCalendarSpacingBeforeTheCalendar(t *testing.T) {
+	tests := []struct {
+		height           int
+		calendar, spaced bool
+	}{
+		{50, true, true},
+		{30, true, false},
+		{24, false, false},
+	}
+	for _, tt := range tests {
+		m := newTestModel(t, &fakeService{}, 140, tt.height)
+		m = send(t, m, fetchedMsg{report: sampleReport()})
+
+		if m.showCalendar != tt.calendar || m.calendarSpaced != tt.spaced {
+			t.Errorf("height %d: calendar=%v spaced=%v, want calendar=%v spaced=%v",
+				tt.height, m.showCalendar, m.calendarSpaced, tt.calendar, tt.spaced)
+		}
+		if m.list.Height() < minListRows {
+			t.Errorf("height %d: list has %d rows, want at least %d",
+				tt.height, m.list.Height(), minListRows)
+		}
+	}
+}
+
+// Spacing the rows out costs exactly what the height budget reserves for it,
+// and the legend keeps its margin either way.
+func TestRenderCalendar_SpacesRows(t *testing.T) {
+	cal := sampleReport().Collection.Calendar
+
+	for _, spaced := range []bool{false, true} {
+		got := plain(renderCalendar(cal, 80, spaced))
+		lines := strings.Split(got, "\n")
+
+		if want := calendarHeight(spaced) - panelChrome; len(lines) != want {
+			t.Errorf("spaced=%v: %d lines, want the %d the budget reserves:\n%s",
+				spaced, len(lines), want, got)
+		}
+		// Blank between Monday and Tuesday only when spaced out.
+		if blank := strings.TrimSpace(lines[2]) == ""; blank != spaced {
+			t.Errorf("spaced=%v: line under Monday = %q", spaced, lines[2])
+		}
+		if legend := lines[len(lines)-1]; !strings.Contains(legend, "less") {
+			t.Errorf("spaced=%v: last line = %q, want the legend", spaced, legend)
+		}
+		if margin := lines[len(lines)-2]; strings.TrimSpace(margin) != "" {
+			t.Errorf("spaced=%v: line above the legend = %q, want a margin", spaced, margin)
+		}
+	}
+}
+
+func TestRenderHeatmap_EmptyCalendar(t *testing.T) {
+	got := plain(renderCalendar(contrib.Calendar{}, 40, true))
+	if !strings.Contains(got, "no calendar data") {
+		t.Fatalf("empty calendar = %q", got)
+	}
+}
+
+func yearCalendar(t *testing.T) contrib.Calendar {
+	t.Helper()
 	window := contrib.Range{
 		From: time.Date(2025, 7, 29, 0, 0, 0, 0, time.UTC),
 		To:   time.Date(2026, 7, 29, 23, 59, 59, 0, time.UTC),
@@ -871,19 +995,7 @@ func TestRenderHeatmap_ClampsToWidth(t *testing.T) {
 	if len(cal.Weeks) < 52 {
 		t.Fatalf("weeks = %d, want a full year", len(cal.Weeks))
 	}
-
-	got := plain(renderHeatmap(cal, 30))
-	for _, line := range strings.Split(got, "\n") {
-		if w := lipgloss.Width(line); w > 30 {
-			t.Fatalf("line is %d columns, want it clamped to 30: %q", w, line)
-		}
-	}
-}
-
-func TestRenderHeatmap_EmptyCalendar(t *testing.T) {
-	if got := plain(renderHeatmap(contrib.Calendar{}, 40)); !strings.Contains(got, "no calendar data") {
-		t.Fatalf("empty calendar = %q", got)
-	}
+	return cal
 }
 
 // List rows.

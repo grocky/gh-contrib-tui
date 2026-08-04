@@ -13,10 +13,20 @@ import (
 // Vertical costs the list has to give way to. Only the panels whose height is
 // fixed by construction are constants; the rest are measured in resize.
 const (
-	panelChrome    = 3  // border, panel title, border
-	calendarHeight = 12 // chrome, month row, seven weekdays, legend
-	minListRows    = 3
+	panelChrome  = 3  // border, panel title, border
+	calendarRows = 10 // month row, seven weekdays, blank line, legend
+	minListRows  = 3
 )
+
+// calendarHeight is what the calendar panel costs. Spacing the rows out puts a
+// blank line under each weekday row but the last, which buys the grid room to
+// breathe at the price of six list rows.
+func calendarHeight(spaced bool) int {
+	if spaced {
+		return panelChrome + calendarRows + 6
+	}
+	return panelChrome + calendarRows
+}
 
 func (m model) View() string {
 	if !m.ready {
@@ -166,8 +176,7 @@ func (m model) viewCalendar() string {
 	inner := m.contentWidth() - 4
 	body := strings.Join([]string{
 		panelTitleStyle.Render("Contribution calendar"),
-		renderHeatmap(m.report.Collection.Calendar, inner),
-		renderLegend(),
+		renderCalendar(m.report.Collection.Calendar, inner, m.calendarSpaced),
 	}, "\n")
 	return panelStyle.Width(m.contentWidth()).Render(body)
 }
@@ -253,16 +262,25 @@ func (m *model) resize() {
 	if rows := m.viewSuggestions(); rows != "" {
 		free -= lipgloss.Height(rows)
 	}
-	m.showSummary, m.showCalendar = false, false
+	m.showSummary, m.showCalendar, m.calendarSpaced = false, false, false
 
 	if m.report != nil {
 		if summary := lipgloss.Height(m.viewSummary()); free-summary >= panelChrome+minListRows {
 			m.showSummary = true
 			free -= summary
 		}
-		if m.showSummary && free-calendarHeight >= panelChrome+minListRows {
-			m.showCalendar = true
-			free -= calendarHeight
+		// The roomy calendar first, then the tight one, and only then is the
+		// calendar dropped: losing the spacing is a smaller loss than losing the
+		// calendar with it.
+		for _, spaced := range []bool{true, false} {
+			if !m.showSummary {
+				break
+			}
+			if h := calendarHeight(spaced); free-h >= panelChrome+minListRows {
+				m.showCalendar, m.calendarSpaced = true, spaced
+				free -= h
+				break
+			}
 		}
 	}
 

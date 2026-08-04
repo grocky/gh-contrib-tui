@@ -37,6 +37,12 @@ const (
 
 const inputCount = 3
 
+// The default windows the two screens open on.
+const (
+	dashboardDays = 30
+	detailsMonths = 3
+)
+
 // screen is which of the two views is on show. The dashboard summarizes the
 // whole team; details is one person's history, which is where the app started
 // life and what a dashboard row opens into.
@@ -138,16 +144,7 @@ func newModel() model {
 	m.help.Styles.ShortDesc = faintStyle
 	m.help.Styles.ShortSeparator = faintStyle
 
-	// The date placeholders spell out the window that empty fields resolve to,
-	// so the dashboard says which range it is summarizing without putting text
-	// in the way of the next thing typed. They double as the format hint.
-	from, to := "YYYY-MM-DD", "YYYY-MM-DD"
-	if window, err := contrib.ParseRange("", ""); err == nil {
-		from = window.From.Format(contrib.DateFormat)
-		to = window.To.Format(contrib.DateFormat)
-	}
-
-	placeholders := [inputCount]string{"login or name", from, to}
+	placeholders := [inputCount]string{"login or name", "", ""}
 	widths := [inputCount]int{24, 12, 12}
 	for i := range m.inputs {
 		in := textinput.New()
@@ -159,6 +156,11 @@ func newModel() model {
 		m.inputs[i] = in
 	}
 	m.focus = focusList
+
+	// The date fields advertise the window an empty pair resolves to, so a
+	// screen says which range it is showing without putting text in the way of
+	// the next thing typed.
+	m.advertiseWindow()
 	return m
 }
 
@@ -166,9 +168,36 @@ func (m model) Init() tea.Cmd {
 	return tea.Batch(textinput.Blink, m.loadTeamCmd(), m.loadCacheCmd(), m.discoverCmd(false))
 }
 
-// window is the range both screens work over.
+// window is the range the current screen works over. Typed dates win; empty
+// fields fall back to the screen's own default.
 func (m model) window() (contrib.Range, error) {
-	return contrib.ParseRange(m.inputs[focusFrom].Value(), m.inputs[focusTo].Value())
+	from := strings.TrimSpace(m.inputs[focusFrom].Value())
+	to := strings.TrimSpace(m.inputs[focusTo].Value())
+	if from == "" && to == "" {
+		return m.defaultWindow(), nil
+	}
+	return contrib.ParseRange(from, to)
+}
+
+// defaultWindow is what an untouched pair of date fields means here.
+//
+// The two screens ask different questions. The dashboard asks what the team has
+// been up to lately, which is a recent span; details asks what one person has
+// been doing, which is read over a longer one.
+func (m model) defaultWindow() contrib.Range {
+	if m.screen == screenDetails {
+		return contrib.TrailingMonths(detailsMonths)
+	}
+	return contrib.TrailingDays(dashboardDays)
+}
+
+// advertiseWindow spells the current default out in the date placeholders. They
+// are the only thing on screen saying what an empty field resolves to, so they
+// follow the screen rather than being fixed at startup.
+func (m *model) advertiseWindow() {
+	window := m.defaultWindow()
+	m.inputs[focusFrom].Placeholder = window.From.Format(contrib.DateFormat)
+	m.inputs[focusTo].Placeholder = window.To.Format(contrib.DateFormat)
 }
 
 // setTeamRows orders the dashboard and installs it.
@@ -704,18 +733,20 @@ func (m model) openDetails() (model, tea.Cmd) {
 		return m, nil
 	}
 
-	window, err := m.window()
-	if err != nil {
-		m.setStatus(err.Error(), statusError)
-		return m, nil
-	}
-
 	m.screen = screenDetails
+	m.advertiseWindow()
 	m.inputs[focusUser].SetValue(row.person.Login)
 	m.inputs[focusUser].CursorEnd()
 	m.suggestions = nil
 	m.focus = focusList
 
+	// The window is resolved after the screen has changed, so an untouched pair
+	// of dates means the details default rather than the dashboard's.
+	window, err := m.window()
+	if err != nil {
+		m.setStatus(err.Error(), statusError)
+		return m, nil
+	}
 	if row.report != nil && row.window == window && !row.stale {
 		return m.showReport(row.report), nil
 	}
@@ -725,6 +756,7 @@ func (m model) openDetails() (model, tea.Cmd) {
 // showDashboard returns from a details view.
 func (m model) showDashboard() model {
 	m.screen = screenDashboard
+	m.advertiseWindow()
 	m.focus = focusList
 	m.adding = false
 	m.suggestions = nil
@@ -839,7 +871,7 @@ func (m model) startFetch() (model, tea.Cmd) {
 		m.setStatus("user is required", statusError)
 		return m, nil
 	}
-	window, err := contrib.ParseRange(m.inputs[focusFrom].Value(), m.inputs[focusTo].Value())
+	window, err := m.window()
 	if err != nil {
 		m.setStatus(err.Error(), statusError)
 		return m, nil
@@ -875,18 +907,13 @@ func (m model) applyFetched(msg fetchedMsg) model {
 
 // showReport puts a report on the details screen.
 //
-// The date fields are filled in only when they are empty. They echo the window
-// that was actually used -- an empty From means "trailing 30 days" -- but once
-// somebody has typed dates, those are the dates they asked for, and a report
-// that happens to cover something else must not rewrite them.
+// The date fields are left exactly as they were found. They once echoed the
+// window a fetch had used, which was how an empty field showed what it had
+// resolved to -- the placeholders say that now. Writing the dates back turned a
+// default into a typed choice that then followed the user to the other screen,
+// where it meant something different.
 func (m model) showReport(report *contrib.Report) model {
 	m.report = report
-	if strings.TrimSpace(m.inputs[focusFrom].Value()) == "" {
-		m.inputs[focusFrom].SetValue(report.Collection.StartedAt.Format(contrib.DateFormat))
-	}
-	if strings.TrimSpace(m.inputs[focusTo].Value()) == "" {
-		m.inputs[focusTo].SetValue(report.Collection.EndedAt.Format(contrib.DateFormat))
-	}
 
 	events := contrib.Events(report)
 	m.list.SetItems(newEventItems(events))

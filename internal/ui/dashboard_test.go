@@ -794,3 +794,78 @@ func TestTeamRow_FoldsBeforeItTruncates(t *testing.T) {
 		t.Errorf("row dropped its calendar with room for one:\n%s", got)
 	}
 }
+
+// Default windows.
+
+// A person's history is read over a longer span than a team's standing: the
+// dashboard answers "what is everyone up to lately", details answers "what has
+// this person been doing".
+func TestWindow_DetailsDefaultsToThreeMonths(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("octocat")}
+	m := startDashboard(t, newTeamService("octocat"), store, newFakeReportCache(), 120, 40)
+
+	dashboard, err := m.window()
+	if err != nil {
+		t.Fatalf("dashboard window: %v", err)
+	}
+	if days := dashboard.To.Sub(dashboard.From).Hours() / 24; days < 29 || days > 32 {
+		t.Errorf("dashboard window spans %.0f days, want the trailing 30", days)
+	}
+
+	m = pressAndSettle(t, m, tea.KeyMsg{Type: tea.KeyEnter})
+	if m.screen != screenDetails {
+		t.Fatalf("screen = %v, want details", m.screen)
+	}
+
+	details, err := m.window()
+	if err != nil {
+		t.Fatalf("details window: %v", err)
+	}
+	if days := details.To.Sub(details.From).Hours() / 24; days < 88 || days > 93 {
+		t.Errorf("details window spans %.0f days, want the trailing three months", days)
+	}
+}
+
+// The dates a person typed are the dates they asked for, whichever screen they
+// are looking at.
+func TestWindow_TypedDatesBeatTheDefault(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("octocat")}
+	m := startDashboard(t, newTeamService("octocat"), store, newFakeReportCache(), 120, 40)
+
+	m.inputs[focusFrom].SetValue("2026-05")
+	m.inputs[focusTo].SetValue("2026-05")
+
+	got, err := m.window()
+	if err != nil {
+		t.Fatalf("window: %v", err)
+	}
+	if from := got.From.Format(contrib.DateFormat); from != "2026-05-01" {
+		t.Errorf("from = %s, want the month expanded to its first day", from)
+	}
+	if to := got.To.Format(contrib.DateFormat); to != "2026-05-31" {
+		t.Errorf("to = %s, want the month expanded to its last day", to)
+	}
+}
+
+// The placeholder is the only thing on screen saying which window an untouched
+// field resolves to, so it has to say the right one for the screen you are on.
+func TestWindow_PlaceholdersFollowTheScreen(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("octocat")}
+	m := startDashboard(t, newTeamService("octocat"), store, newFakeReportCache(), 120, 40)
+
+	onDashboard := m.inputs[focusFrom].Placeholder
+	m = pressAndSettle(t, m, tea.KeyMsg{Type: tea.KeyEnter})
+	onDetails := m.inputs[focusFrom].Placeholder
+
+	if onDashboard == onDetails {
+		t.Fatalf("both screens advertise %q, want each to show its own default", onDashboard)
+	}
+	window, err := m.window()
+	if err != nil {
+		t.Fatalf("window: %v", err)
+	}
+	if onDetails != window.From.Format(contrib.DateFormat) {
+		t.Errorf("placeholder = %q, want the window it resolves to (%s)",
+			onDetails, window.From.Format(contrib.DateFormat))
+	}
+}

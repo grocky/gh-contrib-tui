@@ -105,9 +105,30 @@ func ParseDate(raw string) (time.Time, error) {
 	return t.UTC().Truncate(24 * time.Hour), nil
 }
 
-// ParseRange resolves user-supplied from/to calendar dates into an inclusive
-// UTC window. An empty range defaults to the trailing 30 days; an empty `to`
-// defaults to today.
+// TrailingDays is the window ending today and running back n days.
+func TrailingDays(n int) Range {
+	now := time.Now().UTC()
+	return Range{From: startOfDay(now.AddDate(0, 0, -n)), To: endOfDay(now)}
+}
+
+// TrailingMonths is the window ending today and running back n calendar months.
+// Months rather than a count of days: three months back from the 31st has no
+// 31st to land on in every month, and "the last three months" is what people
+// mean by it anyway.
+func TrailingMonths(n int) Range {
+	now := time.Now().UTC()
+	return Range{From: startOfDay(now.AddDate(0, -n, 0)), To: endOfDay(now)}
+}
+
+// ParseRange resolves user-supplied from/to dates into an inclusive UTC window.
+// An empty range defaults to the trailing 30 days; an empty `to` defaults to
+// today.
+//
+// Dates may name a day, a month, or a year, with either separator. A partial
+// date names a period rather than an instant, and the two ends of the window
+// take opposite ends of it: `from` opens on the period's first day and `to`
+// closes on its last, so "2026-05" to "2026-07" is the whole of May through
+// July without anyone counting days.
 func ParseRange(from, to string) (Range, error) {
 	from = strings.TrimSpace(from)
 	to = strings.TrimSpace(to)
@@ -115,22 +136,45 @@ func ParseRange(from, to string) (Range, error) {
 	if from == "" && to != "" {
 		return Range{}, errors.New("from is required when to is set")
 	}
-	now := time.Now().UTC()
 	if from == "" && to == "" {
-		return Range{From: startOfDay(now.AddDate(0, 0, -30)), To: endOfDay(now)}, nil
+		return TrailingDays(30), nil
 	}
-	if to == "" {
-		to = now.Format(DateFormat)
-	}
-	fromTime, err := time.ParseInLocation(DateFormat, from, time.UTC)
+
+	fromTime, _, err := parsePeriod(from)
 	if err != nil {
 		return Range{}, fmt.Errorf("invalid from date: %s", from)
 	}
-	toTime, err := time.ParseInLocation(DateFormat, to, time.UTC)
+	if to == "" {
+		return Range{From: startOfDay(fromTime), To: endOfDay(time.Now().UTC())}, nil
+	}
+
+	_, toTime, err := parsePeriod(to)
 	if err != nil {
 		return Range{}, fmt.Errorf("invalid to date: %s", to)
 	}
 	return Range{From: startOfDay(fromTime), To: endOfDay(toTime)}, nil
+}
+
+// parsePeriod resolves a whole or partial date into the first and last day of
+// the period it names.
+func parsePeriod(raw string) (first, last time.Time, err error) {
+	// Slashes are how plenty of people write a date, and they carry no other
+	// meaning here, so they are simply the other spelling of a dash.
+	raw = strings.ReplaceAll(strings.TrimSpace(raw), "/", "-")
+
+	if t, err := time.ParseInLocation(DateFormat, raw, time.UTC); err == nil {
+		return t, t, nil
+	}
+	if t, err := time.ParseInLocation("2006-01", raw, time.UTC); err == nil {
+		// AddDate normalizes, so the first of the next month less a day is the
+		// last of this one whatever length it happens to be -- February in a
+		// leap year included.
+		return t, t.AddDate(0, 1, -1), nil
+	}
+	if t, err := time.ParseInLocation("2006", raw, time.UTC); err == nil {
+		return t, t.AddDate(1, 0, -1), nil
+	}
+	return time.Time{}, time.Time{}, fmt.Errorf("unrecognized date: %s", raw)
 }
 
 func startOfDay(t time.Time) time.Time {

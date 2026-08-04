@@ -58,13 +58,19 @@ var heatLevels = func() map[string]int {
 	return levels
 }()
 
-// cellStyle is the style for one calendar day.
-func cellStyle(day contrib.Day) lipgloss.Style {
+// shadeOf maps a day onto the palette. The domain hands out a light-theme hex;
+// this turns it back into a level so the terminal's own theme can colour it.
+func shadeOf(day contrib.Day) lipgloss.AdaptiveColor {
 	level := heatLevels[day.Color]
 	if level >= len(heatPalette) {
 		level = len(heatPalette) - 1
 	}
-	return lipgloss.NewStyle().Foreground(heatPalette[level])
+	return heatPalette[level]
+}
+
+// cellStyle is the style for one calendar day.
+func cellStyle(day contrib.Day) lipgloss.Style {
+	return lipgloss.NewStyle().Foreground(shadeOf(day))
 }
 
 // layout is how one day of the calendar is drawn: cell glyph columns followed

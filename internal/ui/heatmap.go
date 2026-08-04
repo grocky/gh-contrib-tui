@@ -9,10 +9,15 @@ import (
 )
 
 const (
-	// dayCell is one day of the calendar when there is room to draw it. A full
-	// block fills its character cell, so a day reads as a tile rather than the
-	// pinprick a smaller glyph leaves floating in the middle of the cell.
-	dayCell = "█"
+	// hairlineCell is one day of the calendar. It fills all but the top eighth
+	// of its character cell, and that sliver is the gap between one weekday row
+	// and the next.
+	//
+	// The gap used to be a blank line, which is a whole row of it -- far more
+	// than the grid needs, and six rows the contribution list could have had.
+	// A terminal cannot draw a smaller gap than a row, but a cell can decline to
+	// fill one.
+	hairlineCell = "▇"
 
 	// denseCell is the fallback for terminals too narrow to give every week a
 	// gap. Full blocks with nothing between them would fuse a row into one
@@ -94,7 +99,7 @@ func (l layout) text() string {
 	if l.step == 1 {
 		return denseCell
 	}
-	return strings.Repeat(dayCell, l.cell)
+	return strings.Repeat(hairlineCell, l.cell)
 }
 
 func (l layout) blank() string { return strings.Repeat(" ", l.cell) }
@@ -106,31 +111,21 @@ func (l layout) weeksThatFit(width int) int {
 	return (width-gutterWidth-l.cell)/l.step + 1
 }
 
-// rowGap is the separator between weekday rows. A blank line is the smallest
-// vertical gap a terminal can draw, and it costs seven lines of panel, so the
-// caller only asks for it when resize has found the room.
-func rowGap(spaced bool) string {
-	if spaced {
-		return "\n\n"
-	}
-	return "\n"
-}
-
 // renderCalendar draws the contribution calendar and its legend, both at the
 // cell size the width affords. The legend always keeps a blank line of its own:
 // butted against the grid it reads as an eighth weekday row.
-func renderCalendar(cal contrib.Calendar, width int, spaced bool) string {
+func renderCalendar(cal contrib.Calendar, width int) string {
 	if len(cal.Weeks) == 0 {
 		return faintStyle.Render("no calendar data")
 	}
 	l := layoutFor(len(cal.Weeks), width)
-	return renderHeatmap(cal, width, l, spaced) + "\n\n" + renderLegend(l)
+	return renderHeatmap(cal, width, l) + "\n\n" + renderLegend(l)
 }
 
 // renderHeatmap draws the calendar as weekday rows by week columns. When the
 // terminal is too narrow for the whole window, the most recent weeks win: the
 // current stretch of activity is what people look at.
-func renderHeatmap(cal contrib.Calendar, width int, l layout, spaced bool) string {
+func renderHeatmap(cal contrib.Calendar, width int, l layout) string {
 	weeks := cal.Weeks
 	if max := l.weeksThatFit(width); max > 0 && len(weeks) > max {
 		weeks = weeks[len(weeks)-max:]
@@ -164,7 +159,7 @@ func renderHeatmap(cal contrib.Calendar, width int, l layout, spaced bool) strin
 			b.WriteString(cellStyle(*day).Render(l.text()))
 		}
 		if row < 6 {
-			b.WriteString(rowGap(spaced))
+			b.WriteByte('\n')
 		}
 	}
 	return b.String()

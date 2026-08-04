@@ -1053,7 +1053,7 @@ func lab(t *testing.T, hex string) (float64, float64, float64) {
 
 func TestRenderHeatmap_DrawsAWeekPerColumn(t *testing.T) {
 	cal := sampleReport().Collection.Calendar
-	got := plain(renderCalendar(cal, 80, false))
+	got := plain(renderCalendar(cal, 80))
 
 	lines := strings.Split(got, "\n")
 	if len(lines) != 10 {
@@ -1069,7 +1069,7 @@ func TestRenderHeatmap_DrawsAWeekPerColumn(t *testing.T) {
 	// Five week columns cover 2026-07-01 to 2026-07-29, each drawn at the
 	// widest cell an 80-column panel affords.
 	cell := layoutFor(len(cal.Weeks), 80).text()
-	if cell != strings.Repeat(dayCell, maxCellWidth) {
+	if cell != strings.Repeat(hairlineCell, maxCellWidth) {
 		t.Fatalf("cell = %q, want the widest cell for five weeks in 80 columns", cell)
 	}
 	if got := strings.Count(lines[1], cell); got != 5 {
@@ -1085,7 +1085,7 @@ func TestRenderHeatmap_GrowsCellsToFillTheWidth(t *testing.T) {
 
 	for _, width := range []int{30, 80, 120, 200} {
 		l := layoutFor(weeks, width)
-		got := plain(renderCalendar(cal, width, true))
+		got := plain(renderCalendar(cal, width))
 
 		widest := 0
 		for _, line := range strings.Split(got, "\n") {
@@ -1107,7 +1107,7 @@ func TestRenderHeatmap_GrowsCellsToFillTheWidth(t *testing.T) {
 func TestRenderHeatmap_ClampsToWidth(t *testing.T) {
 	cal := yearCalendar(t)
 
-	got := plain(renderCalendar(cal, 30, true))
+	got := plain(renderCalendar(cal, 30))
 	for _, line := range strings.Split(got, "\n") {
 		if w := lipgloss.Width(line); w > 30 {
 			t.Fatalf("line is %d columns, want it clamped to 30: %q", w, line)
@@ -1126,8 +1126,8 @@ func TestRenderHeatmap_PacksDenselyWhenNarrow(t *testing.T) {
 		t.Fatalf("layout at 60 columns = %+v, want no room for gaps", l)
 	}
 
-	row := strings.Split(plain(renderCalendar(cal, 60, false)), "\n")[1]
-	if strings.Contains(row, dayCell) {
+	row := strings.Split(plain(renderCalendar(cal, 60)), "\n")[1]
+	if strings.Contains(row, hairlineCell) {
 		t.Errorf("Monday row uses the full block with no gap to separate weeks: %q", row)
 	}
 	if !strings.Contains(row, strings.Repeat(denseCell, 2)) {
@@ -1135,24 +1135,23 @@ func TestRenderHeatmap_PacksDenselyWhenNarrow(t *testing.T) {
 	}
 }
 
-// The calendar degrades a step at a time as the terminal shortens: roomy, then
-// tight, and only then gone.
-func TestResize_DropsCalendarSpacingBeforeTheCalendar(t *testing.T) {
+// The calendar gives way to the list when the terminal is short: it is the
+// panel with the least to say in a few rows.
+func TestResize_DropsTheCalendarWhenShort(t *testing.T) {
 	tests := []struct {
-		height           int
-		calendar, spaced bool
+		height   int
+		calendar bool
 	}{
-		{50, true, true},
-		{30, true, false},
-		{24, false, false},
+		{50, true},
+		{30, true},
+		{22, false},
 	}
 	for _, tt := range tests {
 		m := newTestModel(t, &fakeService{}, 140, tt.height)
 		m = deliver(t, m, sampleReport(), nil)
 
-		if m.showCalendar != tt.calendar || m.calendarSpaced != tt.spaced {
-			t.Errorf("height %d: calendar=%v spaced=%v, want calendar=%v spaced=%v",
-				tt.height, m.showCalendar, m.calendarSpaced, tt.calendar, tt.spaced)
+		if m.showCalendar != tt.calendar {
+			t.Errorf("height %d: calendar=%v, want %v", tt.height, m.showCalendar, tt.calendar)
 		}
 		if m.list.Height() < minListRows {
 			t.Errorf("height %d: list has %d rows, want at least %d",
@@ -1161,34 +1160,40 @@ func TestResize_DropsCalendarSpacingBeforeTheCalendar(t *testing.T) {
 	}
 }
 
-// Spacing the rows out costs exactly what the height budget reserves for it,
-// and the legend keeps its margin either way.
-func TestRenderCalendar_SpacesRows(t *testing.T) {
+// The gap between weekday rows comes out of the cell rather than out of a blank
+// line: each day fills all but the top sliver of its own row. A blank line is a
+// whole row of gap, which is far more than the grid needs and costs six rows of
+// the list below it.
+func TestRenderCalendar_LeavesAHairlineGap(t *testing.T) {
 	cal := sampleReport().Collection.Calendar
+	got := plain(renderCalendar(cal, 80))
+	lines := strings.Split(got, "\n")
 
-	for _, spaced := range []bool{false, true} {
-		got := plain(renderCalendar(cal, 80, spaced))
-		lines := strings.Split(got, "\n")
+	if want := calendarHeight() - panelChrome; len(lines) != want {
+		t.Fatalf("%d lines, want the %d the budget reserves:\n%s", len(lines), want, got)
+	}
 
-		if want := calendarHeight(spaced) - panelChrome; len(lines) != want {
-			t.Errorf("spaced=%v: %d lines, want the %d the budget reserves:\n%s",
-				spaced, len(lines), want, got)
+	// The seven weekdays are seven consecutive lines, with nothing between.
+	for i := 1; i <= 7; i++ {
+		if strings.TrimSpace(lines[i]) == "" {
+			t.Errorf("line %d is blank, want the weekday rows adjacent:\n%s", i, got)
 		}
-		// Blank between Monday and Tuesday only when spaced out.
-		if blank := strings.TrimSpace(lines[2]) == ""; blank != spaced {
-			t.Errorf("spaced=%v: line under Monday = %q", spaced, lines[2])
-		}
-		if legend := lines[len(lines)-1]; !strings.Contains(legend, "less") {
-			t.Errorf("spaced=%v: last line = %q, want the legend", spaced, legend)
-		}
-		if margin := lines[len(lines)-2]; strings.TrimSpace(margin) != "" {
-			t.Errorf("spaced=%v: line above the legend = %q, want a margin", spaced, margin)
-		}
+	}
+	if !strings.Contains(lines[1], hairlineCell) {
+		t.Errorf("Monday row = %q, want it drawn with the hairline cell", lines[1])
+	}
+	if strings.Contains(got, "\u2588") {
+		t.Errorf("a full block is drawn somewhere, which leaves no gap:\n%s", got)
+	}
+
+	// The legend still keeps its own blank line.
+	if margin := lines[len(lines)-2]; strings.TrimSpace(margin) != "" {
+		t.Errorf("line above the legend = %q, want a margin", margin)
 	}
 }
 
 func TestRenderHeatmap_EmptyCalendar(t *testing.T) {
-	got := plain(renderCalendar(contrib.Calendar{}, 40, true))
+	got := plain(renderCalendar(contrib.Calendar{}, 40))
 	if !strings.Contains(got, "no calendar data") {
 		t.Fatalf("empty calendar = %q", got)
 	}

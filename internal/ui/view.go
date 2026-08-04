@@ -23,13 +23,9 @@ const (
 	minChartsSideBySide = 84
 )
 
-// calendarHeight is what the calendar panel costs. Spacing the rows out puts a
-// blank line under each weekday row but the last, which buys the grid room to
-// breathe at the price of six list rows.
-func calendarHeight(spaced bool) int {
-	if spaced {
-		return panelChrome + calendarRows + 6
-	}
+// calendarHeight is what the calendar panel costs: its chrome and its rows. The
+// gap between weekday rows comes out of the cell, so it costs nothing here.
+func calendarHeight() int {
 	return panelChrome + calendarRows
 }
 
@@ -266,7 +262,7 @@ func (m model) viewCharts() string {
 func (m model) viewCalendar(width int) string {
 	body := strings.Join([]string{
 		panelTitleStyle.Render("Contribution calendar"),
-		renderCalendar(m.report.Collection.Calendar, width-4, m.calendarSpaced),
+		renderCalendar(m.report.Collection.Calendar, width-4),
 	}, "\n")
 	return panelStyle.Width(width).Render(body)
 }
@@ -401,25 +397,18 @@ func (m *model) resize() {
 	if rows := m.viewSuggestions(); rows != "" {
 		free -= lipgloss.Height(rows)
 	}
-	m.showSummary, m.showCalendar, m.calendarSpaced = false, false, false
+	m.showSummary, m.showCalendar = false, false
 
 	if m.report != nil {
 		if summary := lipgloss.Height(m.viewSummary()); free-summary >= panelChrome+minListRows {
 			m.showSummary = true
 			free -= summary
 		}
-		// The roomy calendar first, then the tight one, and only then is the
-		// calendar dropped: losing the spacing is a smaller loss than losing the
-		// calendar with it.
-		for _, spaced := range []bool{true, false} {
-			if !m.showSummary {
-				break
-			}
-			if h := calendarHeight(spaced); free-h >= panelChrome+minListRows {
-				m.showCalendar, m.calendarSpaced = true, spaced
-				free -= h
-				break
-			}
+		// The calendar goes only when what is left cannot hold both it and a
+		// usable list.
+		if h := calendarHeight(); m.showSummary && free-h >= panelChrome+minListRows {
+			m.showCalendar = true
+			free -= h
 		}
 	}
 

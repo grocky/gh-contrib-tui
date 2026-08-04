@@ -147,11 +147,9 @@ type model struct {
 	height   int
 	ready    bool
 
-	// Set by resize: whether there is vertical room for these panels, and for
-	// the blank line under each calendar row.
-	showSummary    bool
-	showCalendar   bool
-	calendarSpaced bool
+	// Set by resize: whether there is vertical room for these panels.
+	showSummary  bool
+	showCalendar bool
 }
 
 func newModel() model {

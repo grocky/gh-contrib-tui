@@ -236,7 +236,12 @@ func (m model) viewFooter() string {
 	case m.showLogs:
 		bindings = logHelp()
 	}
-	return m.level.style().Render(truncate(status, m.width)) + "\n" + m.help.ShortHelpView(bindings)
+	// The help component stops truncating once its running width lands exactly
+	// on the limit, and then appends every remaining binding in full. Clamping
+	// the rendered line is ANSI-aware, where cutting the string by hand would
+	// slice an escape sequence in half.
+	help := lipgloss.NewStyle().MaxWidth(m.width).Render(m.help.ShortHelpView(bindings))
+	return m.level.style().Render(truncate(status, m.width)) + "\n" + help
 }
 
 // contentWidth is the usable width for a panel, leaving a one-column margin.

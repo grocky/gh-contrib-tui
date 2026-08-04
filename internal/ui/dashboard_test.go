@@ -3,6 +3,7 @@ package ui
 import (
 	"context"
 	"errors"
+	"reflect"
 	"strings"
 	"sync"
 	"testing"
@@ -327,17 +328,20 @@ func TestDashboard_EnterOpensTheDetailsScreen(t *testing.T) {
 	store := &fakeTeamStore{team: teamOf("octocat", "avery-lynn")}
 	m := startDashboard(t, newTeamService("octocat", "avery-lynn"), store, newFakeReportCache(), 120, 40)
 
+	// Rows are ordered by contributions, so the second row is whoever the sort
+	// put there rather than whoever is second in the config.
+	want := m.rows()[1].person.Login
 	m = press(t, m, tea.KeyDown)
 	m = pressAndSettle(t, m, tea.KeyMsg{Type: tea.KeyEnter})
 
 	if m.screen != screenDetails {
 		t.Fatalf("screen = %v, want details", m.screen)
 	}
-	if got := m.inputs[focusUser].Value(); got != "avery-lynn" {
-		t.Errorf("user field = %q, want the selected member", got)
+	if got := m.inputs[focusUser].Value(); got != want {
+		t.Errorf("user field = %q, want the selected member %q", got, want)
 	}
-	if m.report == nil || m.report.Login != "avery-lynn" {
-		t.Fatalf("details report = %+v, want the selected member's", m.report)
+	if m.report == nil || m.report.Login != want {
+		t.Fatalf("details report = %+v, want %q's", m.report, want)
 	}
 }
 
@@ -417,16 +421,18 @@ func TestDashboard_RemovesTheSelectedPerson(t *testing.T) {
 	store := &fakeTeamStore{team: teamOf("octocat", "avery-lynn")}
 	m := startDashboard(t, newTeamService("octocat", "avery-lynn"), store, newFakeReportCache(), 120, 40)
 
+	// Whoever the sort put on the second row is who x removes.
+	gone := m.rows()[1].person.Login
 	m = press(t, m, tea.KeyDown)
 	m = pressAndSettle(t, m, tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'x'}})
 
-	if m.team.Has("avery-lynn") {
-		t.Fatalf("team = %+v, want the selected member removed", m.team.Members)
+	if m.team.Has(gone) {
+		t.Fatalf("team = %+v, want %q removed", m.team.Members, gone)
 	}
 	if got := len(m.rows()); got != 1 {
 		t.Errorf("rows = %d, want the removed row gone", got)
 	}
-	if _, saved := store.saved(); saved.Has("avery-lynn") {
+	if _, saved := store.saved(); saved.Has(gone) {
 		t.Errorf("saved team = %+v, want the removal persisted", saved.Members)
 	}
 }
@@ -474,6 +480,166 @@ func TestDashboard_ForcedRefreshRefetchesEveryone(t *testing.T) {
 func pressAndSettle(t *testing.T, m model, msg tea.KeyMsg) model {
 	t.Helper()
 	return sendAndSettle(t, m, msg)
+}
+
+// Ordering.
+
+// withTotals gives each login a report carrying that many contributions.
+func (s *teamService) withTotals(totals map[string]int) *teamService {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for login, total := range totals {
+		s.reports[strings.ToLower(login)] = reportOver(login, total, 1)
+	}
+	return s
+}
+
+func loginsOf(rows []teamRow) []string {
+	logins := make([]string, 0, len(rows))
+	for _, row := range rows {
+		logins = append(logins, row.person.Login)
+	}
+	return logins
+}
+
+// The dashboard is read top down, so it leads with whoever has been busiest
+// rather than with whoever happens to sit first in the config file.
+func TestDashboard_SortsByContributions(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("quiet", "busiest", "middling")}
+	svc := newTeamService("quiet", "busiest", "middling").
+		withTotals(map[string]int{"quiet": 2, "busiest": 40, "middling": 12})
+
+	m := startDashboard(t, svc, store, newFakeReportCache(), 120, 60)
+
+	want := []string{"busiest", "middling", "quiet"}
+	if got := loginsOf(m.rows()); !reflect.DeepEqual(got, want) {
+		t.Fatalf("order = %v, want %v", got, want)
+	}
+}
+
+// Reports land one at a time and in no particular order, so the ordering has to
+// be reapplied as they arrive rather than fixed at the first paint.
+func TestDashboard_ResortsAsReportsLand(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("first", "second")}
+	svc := newTeamService("first", "second").
+		withTotals(map[string]int{"first": 3, "second": 90})
+
+	m := startDashboard(t, svc, store, newFakeReportCache(), 120, 60)
+	if got := loginsOf(m.rows()); got[0] != "second" {
+		t.Fatalf("order = %v, want the busier member first", got)
+	}
+
+	// A later report overtakes.
+	window, err := m.window()
+	if err != nil {
+		t.Fatalf("window: %v", err)
+	}
+	m = send(t, m, teamFetchedMsg{login: "first", window: window, report: reportOver("first", 500, 1)})
+
+	if got := loginsOf(m.rows()); got[0] != "first" {
+		t.Fatalf("order = %v, want the new report to have moved its row up", got)
+	}
+}
+
+// A row with no numbers cannot be ranked, and counting it as a zero would rank
+// someone by a number nobody measured. It waits at the bottom.
+func TestDashboard_RowsWithoutDataSinkToTheBottom(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("ghost", "octocat")}
+	svc := newTeamService("octocat").withTotals(map[string]int{"octocat": 5})
+
+	m := startDashboard(t, svc, store, newFakeReportCache(), 120, 60)
+
+	want := []string{"octocat", "ghost"}
+	if got := loginsOf(m.rows()); !reflect.DeepEqual(got, want) {
+		t.Fatalf("order = %v, want the unreachable member last", got)
+	}
+}
+
+// Equal counts are common on a quiet week. Falling back to the name keeps the
+// list from reshuffling itself every refresh.
+func TestDashboard_BreaksTiesByName(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("zed", "adams", "moss")}
+	svc := newTeamService("zed", "adams", "moss").
+		withTotals(map[string]int{"zed": 7, "adams": 7, "moss": 7})
+
+	m := startDashboard(t, svc, store, newFakeReportCache(), 120, 60)
+
+	want := []string{"adams", "moss", "zed"}
+	if got := loginsOf(m.rows()); !reflect.DeepEqual(got, want) {
+		t.Fatalf("order = %v, want equal counts ordered by name", got)
+	}
+}
+
+// Until someone moves it, the cursor belongs to the top of the list rather than
+// to a person: rows arrive unsorted and settle into order, and a cursor that
+// clung to whoever landed first would end up parked mid-list for no reason.
+func TestDashboard_CursorRidesTheTopUntilItIsMoved(t *testing.T) {
+	// Rows start out with no reports and sort by name, so "alpha" leads at
+	// first; the totals then put "omega" on top. The cursor has to move with
+	// the top row, not stay with whoever was there before the data arrived.
+	store := &fakeTeamStore{team: teamOf("alpha", "omega")}
+	svc := newTeamService("alpha", "omega").
+		withTotals(map[string]int{"alpha": 2, "omega": 90})
+
+	m := startDashboard(t, svc, store, newFakeReportCache(), 120, 60)
+
+	if got := m.teamList.Index(); got != 0 {
+		t.Fatalf("cursor is at index %d, want it still at the top", got)
+	}
+	row, ok := m.selectedRow()
+	if !ok || row.person.Login != "omega" {
+		t.Fatalf("selected = %+v, want the busiest member once the rows settled", row.person)
+	}
+}
+
+// The cursor belongs to a person, not to a position. A report landing elsewhere
+// on the team must not slide someone else under the cursor mid-read.
+func TestDashboard_KeepsTheCursorOnItsPersonAcrossASort(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("low", "high")}
+	svc := newTeamService("low", "high").
+		withTotals(map[string]int{"low": 1, "high": 100})
+
+	m := startDashboard(t, svc, store, newFakeReportCache(), 120, 60)
+	m = press(t, m, tea.KeyDown)
+
+	selected, ok := m.selectedRow()
+	if !ok || selected.person.Login != "low" {
+		t.Fatalf("selected = %+v, want the second row", selected.person)
+	}
+
+	window, err := m.window()
+	if err != nil {
+		t.Fatalf("window: %v", err)
+	}
+	m = send(t, m, teamFetchedMsg{login: "low", window: window, report: reportOver("low", 500, 1)})
+
+	after, ok := m.selectedRow()
+	if !ok || after.person.Login != "low" {
+		t.Fatalf("selected = %+v after the sort, want the same person", after.person)
+	}
+	if got := m.teamList.Index(); got != 0 {
+		t.Errorf("cursor is at index %d, want it to have followed the row to the top", got)
+	}
+}
+
+// Ordering is a view of the roster, not a rewrite of it: the config keeps the
+// order it was curated in, so nothing churns the file on every refresh.
+func TestDashboard_SortingDoesNotReorderTheStoredTeam(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("quiet", "busiest")}
+	svc := newTeamService("quiet", "busiest").
+		withTotals(map[string]int{"quiet": 1, "busiest": 50})
+
+	m := startDashboard(t, svc, store, newFakeReportCache(), 120, 60)
+	if got := loginsOf(m.rows())[0]; got != "busiest" {
+		t.Fatalf("first row = %s, want the busier member", got)
+	}
+
+	if got := m.team.Logins(); !reflect.DeepEqual(got, []string{"quiet", "busiest"}) {
+		t.Fatalf("roster = %v, want it left in curated order", got)
+	}
+	if saves, _ := store.saved(); saves != 0 {
+		t.Errorf("saves = %d, want sorting to leave the config alone", saves)
+	}
 }
 
 // Row layout.

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -101,6 +102,10 @@ type model struct {
 	teamList list.Model
 	adding   bool
 
+	// teamCursorMoved records that someone has driven the roster list, which is
+	// what turns the cursor from "the top row" into "this person".
+	teamCursorMoved bool
+
 	report *contrib.Report
 	status string
 	level  statusLevel
@@ -164,6 +169,67 @@ func (m model) Init() tea.Cmd {
 // window is the range both screens work over.
 func (m model) window() (contrib.Range, error) {
 	return contrib.ParseRange(m.inputs[focusFrom].Value(), m.inputs[focusTo].Value())
+}
+
+// setTeamRows orders the dashboard and installs it.
+//
+// What the cursor holds onto depends on whether anyone has touched it. Rows
+// arrive unsorted and settle as reports land, so a cursor nobody has moved
+// rides the top of the list rather than clinging to whoever happened to be
+// first before the numbers came in. Once it has been moved it belongs to a
+// person, and a report landing elsewhere on the team must not slide a stranger
+// under it mid-read.
+func (m *model) setTeamRows(items []list.Item) {
+	selected := ""
+	if row, ok := m.selectedRow(); ok && m.teamCursorMoved {
+		selected = row.person.Login
+	}
+
+	sortTeamRows(items)
+	m.teamList.SetItems(items)
+
+	if selected == "" {
+		m.teamList.Select(0)
+		return
+	}
+	m.selectLogin(selected)
+}
+
+// sortTeamRows puts the busiest first. The dashboard is read top down, and the
+// order people were added to the config in says nothing about who to look at.
+//
+// A row with no report cannot be ranked, so it waits at the bottom rather than
+// being counted as a zero: that would rank someone by a number nobody measured.
+// Ties fall back to the name, so a quiet week does not reshuffle the list on
+// every refresh.
+func sortTeamRows(items []list.Item) {
+	sort.SliceStable(items, func(i, j int) bool {
+		a, aok := items[i].(teamRow)
+		b, bok := items[j].(teamRow)
+		if !aok || !bok {
+			return aok
+		}
+
+		if (a.report != nil) != (b.report != nil) {
+			return a.report != nil
+		}
+		if a.report != nil {
+			if at, bt := a.report.Collection.Calendar.Total, b.report.Collection.Calendar.Total; at != bt {
+				return at > bt
+			}
+		}
+		return strings.ToLower(a.person.DisplayName()) < strings.ToLower(b.person.DisplayName())
+	})
+}
+
+// selectLogin puts the cursor on a team member by login.
+func (m *model) selectLogin(login string) {
+	for i, item := range m.teamList.Items() {
+		if row, ok := item.(teamRow); ok && strings.EqualFold(row.person.Login, login) {
+			m.teamList.Select(i)
+			return
+		}
+	}
 }
 
 // rows returns the dashboard's rows.
@@ -327,7 +393,7 @@ func (m model) syncTeam(force bool) (model, tea.Cmd) {
 		cmds = append(cmds, m.fetchTeamCmd(person.Login, window))
 	}
 
-	m.teamList.SetItems(items)
+	m.setTeamRows(items)
 	if len(cmds) == 0 {
 		return m.settleTeamStatus(), nil
 	}
@@ -363,7 +429,7 @@ func (m model) applyTeamFetched(msg teamFetchedMsg) (model, tea.Cmd) {
 			row.state, row.err, row.stale = rowFailed, firstLine(msg.err.Error()), false
 			m.logs.Logf("[red]team fetch %s failed: %v[-]", msg.login, msg.err)
 			items[i] = row
-			m.teamList.SetItems(items)
+			m.setTeamRows(items)
 			return m.settleTeamStatus(), nil
 		}
 
@@ -375,7 +441,7 @@ func (m model) applyTeamFetched(msg teamFetchedMsg) (model, tea.Cmd) {
 			row.person.Name = msg.report.Name
 		}
 		items[i] = row
-		m.teamList.SetItems(items)
+		m.setTeamRows(items)
 		return m.settleTeamStatus(), m.storeReportCmd(msg.login, msg.window, msg.report)
 	}
 	return m, nil
@@ -508,6 +574,11 @@ func (m model) handleKey(msg tea.KeyMsg) (model, tea.Cmd) {
 		if m.showLogs {
 			return m, nil
 		}
+		// Any key the roster list handles is someone driving it, from which
+		// point the cursor follows its person rather than the top row.
+		if m.screen == screenDashboard {
+			m.teamCursorMoved = true
+		}
 		return m.updateActiveList(msg)
 	}
 
@@ -588,7 +659,7 @@ func (m model) acceptAdd() (model, tea.Cmd) {
 	m.logs.Logf("[green]added %s to your team[-]", person.Login)
 
 	next, cmd := m.syncTeam(false)
-	next.teamList.Select(len(next.rows()) - 1)
+	next.selectLogin(person.Login)
 	return next, tea.Batch(m.saveTeamCmd(next.team), cmd)
 }
 

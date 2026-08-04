@@ -62,7 +62,15 @@ func resolveRuntimeOS() string {
 }
 
 func browserCommand(url string) *exec.Cmd {
-	switch resolveRuntimeOS() {
+	return browserCommandFor(resolveRuntimeOS(), url)
+}
+
+// browserCommandFor maps a host to its opener. It takes the host as an argument
+// so the mapping can be tested for every host from any one of them -- WSL in
+// particular is only detectable by a file that exists on the machine you happen
+// to be running on.
+func browserCommandFor(host, url string) *exec.Cmd {
+	switch host {
 	case "darwin":
 		return exec.Command("open", url)
 	case "windows":

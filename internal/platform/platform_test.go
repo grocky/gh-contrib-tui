@@ -24,13 +24,38 @@ func TestBrowserCommand_TargetsURL(t *testing.T) {
 	if got := cmd.Args[len(cmd.Args)-1]; got != url {
 		t.Fatalf("last arg = %q, want the url", got)
 	}
+}
 
-	want := map[string]string{"darwin": "open", "windows": "rundll32"}[runtime.GOOS]
-	if want == "" {
-		want = "xdg-open"
+// Every host's opener is checked from whichever host the tests run on. WSL
+// reports itself as linux and is told apart by a file on the machine, so a test
+// that asks runtime.GOOS what to expect is wrong on exactly the platform the
+// WSL case was added for.
+func TestBrowserCommandFor_MapsEveryHost(t *testing.T) {
+	const url = "https://example.com/pr/1"
+	tests := map[string]string{
+		"darwin":  "open",
+		"windows": "rundll32",
+		"wsl":     "explorer.exe",
+		"linux":   "xdg-open",
 	}
-	if !strings.HasSuffix(cmd.Args[0], want) {
-		t.Fatalf("command = %q, want %q for GOOS=%s", cmd.Args[0], want, runtime.GOOS)
+	for host, want := range tests {
+		cmd := browserCommandFor(host, url)
+		if !strings.HasSuffix(cmd.Args[0], want) {
+			t.Errorf("%s: command = %q, want %q", host, cmd.Args[0], want)
+		}
+		if got := cmd.Args[len(cmd.Args)-1]; got != url {
+			t.Errorf("%s: last arg = %q, want the url", host, got)
+		}
+	}
+}
+
+// The host this test is running on has to be one the mapping knows, or the
+// opener silently falls through to the linux default.
+func TestResolveRuntimeOS_IsAKnownHost(t *testing.T) {
+	switch got := resolveRuntimeOS(); got {
+	case "darwin", "windows", "wsl", "linux":
+	default:
+		t.Fatalf("resolveRuntimeOS = %q, which the mapping does not name", got)
 	}
 }
 

@@ -147,6 +147,7 @@ goes past the cache whatever its age.
 ```
 cmd/github-contrib-tui   the binary: wires a client, the stores, and the UI
 cmd/ansi2svg             turns a captured terminal frame into an SVG
+cmd/screenshots          renders the README's frames and converts them
 internal/contrib         the domain — reports, events, calendars, date ranges.
                          No GitHub client, no terminal.
 internal/ghapi           GitHub GraphQL and REST, and the credential fallback
@@ -158,7 +159,7 @@ internal/reportcache     contribution reports, in the cache directory
 internal/directorycache  the user directory, in the cache directory
 internal/platform        opening a browser and the clipboard, per OS
 internal/logging         the logger the pane reads from
-internal/ansisvg         the ANSI-to-SVG conversion behind cmd/ansi2svg
+internal/ansisvg         the ANSI-to-SVG conversion behind both commands
 ```
 
 The domain package knows nothing about GitHub or the terminal, and the UI
@@ -179,21 +180,37 @@ answers arriving after the user has moved on.
 
 ### The screenshots
 
-They are the real thing rather than mockups: the app renders a frame with its
-colour profile forced on, the frame is captured as ANSI, and `cmd/ansi2svg`
-converts it.
+They are the real screens rather than mockups, and they regenerate with one
+command:
 
 ```sh
-go run ./cmd/ansi2svg -title "team dashboard" -o docs/images/dashboard.svg frame.ansi
-some-program-that-prints-a-frame | go run ./cmd/ansi2svg -o out.svg
+go run ./cmd/screenshots               # writes docs/images/*.svg
+go run ./cmd/screenshots -ansi /tmp/f  # keeps the captured frames too
 ```
 
-Nothing in the output depends on the reader having a terminal font installed.
-The block characters the charts are drawn from become rectangles, because their
-advance varies by font and a glyph wider than its cell paints over the number
-beside it. Gaps of two or more spaces become position rather than text, since a
-renderer collapses them and the calendar's month labels would bunch up against
-its left edge.
+That command owns the sample team and their histories, renders each frame
+through the UI itself, and converts it. Two runs produce identical files.
+
+The conversion is ours rather than a library's, which is worth explaining. These
+frames are an unusual input: a dense grid of box-drawing and block characters
+where a general converter has to typeset what is really geometry, and then the
+output only lines up if the reader's font agrees with the grid. `cmd/ansi2svg`
+draws them instead — blocks are rectangles, borders are stroked paths — so
+nothing depends on a font being installed or embedded, and gaps of two or more
+spaces become position rather than text, since a renderer collapses those and
+the calendar's month labels would bunch up against its left edge.
+
+[wader/ansisvg](https://github.com/wader/ansisvg) was measured against it on
+these same frames. Its `--grid` mode drew the panel borders as broken dashes
+unless a font was embedded, which took one image from 113 KB to 3.3 MB, and
+positioning every character on the grid left visible gaps inside words. It is a
+good tool for ordinary coloured output; a full-screen TUI frame is not that.
+
+`cmd/ansi2svg` remains for converting a frame captured some other way:
+
+```sh
+some-program-that-prints-a-frame | go run ./cmd/ansi2svg -o out.svg
+```
 
 ## Also in this repo
 

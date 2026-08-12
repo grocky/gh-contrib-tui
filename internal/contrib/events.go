@@ -27,6 +27,14 @@ type Event struct {
 	// Merged reports whether an authored pull request has landed. It is
 	// meaningless for every other kind.
 	Merged bool
+
+	// Branch names the branch a commit was found on, and is set only for
+	// commits that are not reachable from their repository's default branch.
+	// GitHub's commit search indexes default branches alone, so this is how
+	// pushed-but-unmerged work enters the report at all -- and the one thing
+	// that distinguishes it once it is here. Empty for every other kind, and
+	// for commits that have landed.
+	Branch string
 }
 
 // heatLevels are GitHub's calendar shades, from "nothing" to "busiest day".

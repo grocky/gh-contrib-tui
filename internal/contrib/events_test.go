@@ -72,6 +72,41 @@ func TestNewCollection_DedupesWithinKindOnly(t *testing.T) {
 	}
 }
 
+// Commits that never reached a default branch carry the branch they live on,
+// so unmerged work is identifiable in the list rather than silently mixed in
+// with landed commits.
+func TestNewCollection_KeepsTheBranchOnCommits(t *testing.T) {
+	got := NewCollection([]Event{
+		{OccurredAt: at(4, 9), Kind: KindCommit, URL: "https://example/c/1", Branch: "feature-x"},
+	}, testWindow())
+
+	if len(got.Events) != 1 || got.Events[0].Branch != "feature-x" {
+		t.Fatalf("events = %+v, want the branch carried through", got.Events)
+	}
+}
+
+// The same commit is reachable from every branch built on top of it, and from
+// the default branch once it lands. Dedupe keeps the first copy, so the caller
+// controls which one wins by ordering its streams -- the default-branch copy is
+// collected first precisely so a landed commit is not labelled with a branch it
+// has since outlived.
+func TestNewCollection_DedupeKeepsTheFirstCopyOfACommit(t *testing.T) {
+	got := NewCollection([]Event{
+		{OccurredAt: at(4, 9), Kind: KindCommit, URL: "https://example/c/1"},
+		{OccurredAt: at(4, 9), Kind: KindCommit, URL: "https://example/c/1", Branch: "feature-x"},
+	}, testWindow())
+
+	if len(got.Events) != 1 {
+		t.Fatalf("events = %+v, want the duplicate collapsed", got.Events)
+	}
+	if got.Events[0].Branch != "" {
+		t.Fatalf("branch = %q, want the default-branch copy to win", got.Events[0].Branch)
+	}
+	if got.TotalCommits != 1 {
+		t.Fatalf("commits = %d, want 1", got.TotalCommits)
+	}
+}
+
 // Reviews are found by searching for recently updated pull requests, which
 // drags in reviews submitted outside the window.
 func TestNewCollection_DropsEventsOutsideWindow(t *testing.T) {

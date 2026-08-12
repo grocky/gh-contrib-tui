@@ -142,6 +142,38 @@ func TestDetails_StaleCacheStillRefetches(t *testing.T) {
 	}
 }
 
+// ctrl+r is someone saying "go and look again", usually because they know the
+// data changed. A cache still inside its TTL must not answer it -- on the
+// dashboard the same key already forces a refetch, and the details screen
+// silently serving cached data from it is the difference between seeing work
+// that just landed and being told there is none.
+func TestDetails_ForcedFetchIgnoresAFreshCache(t *testing.T) {
+	store := &fakeTeamStore{team: teamOf("octocat")}
+	svc := newTeamService("octocat")
+	cache := newFakeReportCache()
+	m := startDashboard(t, svc, store, cache, 120, 44)
+	m = openDetailsFor(t, m, "octocat")
+
+	// Everything cached is inside its TTL, which is the case that used to
+	// short-circuit the fetch entirely.
+	cache.mu.Lock()
+	for key, entry := range cache.entries {
+		entry.Fresh = true
+		cache.entries[key] = entry
+	}
+	cache.mu.Unlock()
+
+	before := len(svc.askedFor())
+	m = pressAndSettle(t, m, tea.KeyMsg{Type: tea.KeyCtrlR})
+
+	if got := len(svc.askedFor()); got <= before {
+		t.Errorf("fetches = %d, want ctrl+r to refetch past a fresh cache", got-before)
+	}
+	if m.report == nil {
+		t.Error("a forced refetch left the screen empty")
+	}
+}
+
 // Loading.
 
 // The fetch takes a while, and a screen that says nothing while it waits looks
@@ -150,7 +182,7 @@ func TestDetails_SaysItIsLoading(t *testing.T) {
 	m := newTestModel(t, &fakeService{report: sampleReport()}, 120, 44)
 	m.inputs[focusUser].SetValue("octocat")
 
-	next, _ := m.startFetch()
+	next, _ := m.startFetch(false)
 	if !next.busy {
 		t.Fatal("startFetch did not mark the model busy")
 	}
@@ -169,7 +201,7 @@ func TestDetails_SaysItIsLoading(t *testing.T) {
 func TestDetails_SpinsWhileItLoads(t *testing.T) {
 	m := newTestModel(t, &fakeService{report: sampleReport()}, 120, 44)
 	m.inputs[focusUser].SetValue("octocat")
-	next, _ := m.startFetch()
+	next, _ := m.startFetch(false)
 
 	frame := strings.TrimSpace(plain(next.spinner.View()))
 	if frame == "" {

@@ -591,7 +591,9 @@ func (m model) handleKey(msg tea.KeyMsg) (model, tea.Cmd) {
 	case key.Matches(msg, keys.Prev):
 		return m.moveFocus(-1), nil
 	case key.Matches(msg, keys.Fetch):
-		return m.startFetch()
+		// The same key forces a refetch on the dashboard; it means the same
+		// thing here.
+		return m.startFetch(true)
 	case key.Matches(msg, keys.Refresh):
 		m.busy = true
 		m.setStatus("refreshing user list...", statusInfo)
@@ -613,7 +615,8 @@ func (m model) handleKey(msg tea.KeyMsg) (model, tea.Cmd) {
 		if m.focus == focusList {
 			return m.openSelected(), nil
 		}
-		return m.startFetch()
+		// Enter is "show me this", which a fresh cache answers perfectly well.
+		return m.startFetch(false)
 	}
 
 	// The log pane replaces the list, but the filter fields stay on screen and
@@ -785,7 +788,7 @@ func (m model) openDetails() (model, tea.Cmd) {
 	if row.report != nil && row.window == window && !row.stale {
 		return m.showReport(row.report), nil
 	}
-	return m.startFetch()
+	return m.startFetch(false)
 }
 
 // showDashboard returns from a details view.
@@ -900,7 +903,12 @@ func (m model) moveFocus(delta int) model {
 }
 
 // startFetch validates the filters and kicks off the request.
-func (m model) startFetch() (model, tea.Cmd) {
+//
+// force is ctrl+r: an explicit "go and look again", which a cache inside its
+// TTL must not answer. The dashboard's copy of that key already forces, and
+// the two screens disagreeing about what it means is how work that has just
+// landed gets reported as absent.
+func (m model) startFetch(force bool) (model, tea.Cmd) {
 	username := strings.TrimSpace(m.inputs[focusUser].Value())
 	if username == "" {
 		m.setStatus("user is required", statusError)
@@ -916,13 +924,14 @@ func (m model) startFetch() (model, tea.Cmd) {
 
 	// A report already on disk and inside its TTL is the answer: paint it and
 	// spend nothing. A stale one is painted too, and refreshed behind it --
-	// something to read beats an empty screen while the network works.
+	// something to read beats an empty screen while the network works. A forced
+	// fetch paints it for the same reason, but never settles for it.
 	entry, cached := m.cachedReport(username, window)
 	if cached {
 		m = m.showReport(entry.Report)
 		m.logs.Logf("[gray]served %s from cache fetched=%s[-]",
 			username, entry.FetchedAt.Format(time.RFC3339))
-		if entry.Fresh {
+		if entry.Fresh && !force {
 			m.busy = false
 			m.pending = pendingFetch{}
 			return m, nil

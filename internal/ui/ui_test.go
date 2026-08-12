@@ -163,7 +163,7 @@ func deliver(t *testing.T, m model, report *contrib.Report, err error) model {
 		login = report.Login
 	}
 	m.inputs[focusUser].SetValue(login)
-	m, _ = m.startFetch()
+	m, _ = m.startFetch(false)
 
 	window, wErr := m.window()
 	if wErr != nil {

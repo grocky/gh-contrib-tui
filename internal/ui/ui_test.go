@@ -1246,6 +1246,32 @@ func TestEventItem_FilterValueCoversTitleRepoAndKind(t *testing.T) {
 	}
 }
 
+// A commit that only exists on a branch is worth telling apart from one that
+// landed, and the branch is worth searching by: "/" on a ticket-shaped branch
+// name is how you find the work for a ticket.
+func TestEventItem_FilterValueCoversTheBranch(t *testing.T) {
+	item := eventItem{Event: contrib.Event{
+		Kind: contrib.KindCommit, Repo: "acme/repo1", Title: "Fix it", Branch: "fix/retry-budget",
+	}}
+	if !strings.Contains(item.FilterValue(), "fix/retry-budget") {
+		t.Errorf("FilterValue() = %q, want it to include the branch", item.FilterValue())
+	}
+}
+
+// The branch rides along with the repository, which is the other half of
+// "where did this work go".
+func TestEventLocation_ShowsTheBranchOnlyWhenThereIsOne(t *testing.T) {
+	branched := eventLocation(contrib.Event{Repo: "acme/repo1", Branch: "feature-x"})
+	if branched != "acme/repo1@feature-x" {
+		t.Errorf("location = %q, want the branch appended", branched)
+	}
+
+	landed := eventLocation(contrib.Event{Repo: "acme/repo1"})
+	if landed != "acme/repo1" {
+		t.Errorf("location = %q, want no branch decoration", landed)
+	}
+}
+
 func TestTruncate(t *testing.T) {
 	tests := []struct {
 		in    string

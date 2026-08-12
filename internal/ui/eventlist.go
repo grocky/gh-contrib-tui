@@ -16,6 +16,10 @@ const (
 	badgeWidth = 6
 	dateWidth  = 10
 	repoWidth  = 26
+
+	// branchWidth is the extra room a commit's branch is allowed on top of the
+	// repository, enough for the ticket-shaped names branches usually carry.
+	branchWidth = 18
 )
 
 // eventItem adapts a contribution to the list component.
@@ -23,10 +27,20 @@ type eventItem struct {
 	contrib.Event
 }
 
-// FilterValue is what "/" searches over: the title, the repository, and the
-// kind, so "review acme" narrows to reviews in one repository.
+// FilterValue is what "/" searches over: the title, the repository and branch,
+// and the kind, so "review acme" narrows to reviews in one repository and a
+// ticket-shaped branch name finds the commits pushed for that ticket.
 func (i eventItem) FilterValue() string {
-	return strings.Join([]string{i.Title, i.Repo, eventLabel(i.Event)}, " ")
+	return strings.Join([]string{i.Title, eventLocation(i.Event), eventLabel(i.Event)}, " ")
+}
+
+// eventLocation is where a contribution went: its repository, and for a commit
+// that never reached a default branch, the branch it is sitting on.
+func eventLocation(event contrib.Event) string {
+	if event.Branch == "" {
+		return event.Repo
+	}
+	return event.Repo + "@" + event.Branch
 }
 
 func newEventItems(events []contrib.Event) []list.Item {
@@ -82,7 +96,14 @@ func (d eventDelegate) Render(w io.Writer, m list.Model, index int, item list.It
 	repo := ""
 	room := width - fixed
 	if room > 30 {
-		repo = truncate(event.Repo, min(repoWidth, room/3))
+		// A branch pushes the location past the usual repository budget, so it
+		// is given room to survive truncation -- "acme/repo@" with the branch
+		// cut off would say less than the repository alone.
+		budget := repoWidth
+		if event.Branch != "" {
+			budget = repoWidth + branchWidth
+		}
+		repo = truncate(eventLocation(event.Event), min(budget, room/2))
 		room -= lipgloss.Width(repo) + 1
 	}
 

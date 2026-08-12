@@ -34,6 +34,14 @@ private.
 This tool assembles history from the search APIs instead, which honour whatever
 the token can actually read. A `repo`-scoped token sees the real history.
 
+Search has a blind spot of its own: `/search/commits` indexes a repository's
+default branch and nothing else, so work pushed to a feature branch and not yet
+merged is missing entirely — one user here showed **0 commits** for a month in
+which they had made **5**, all on branches. So the commits are gathered twice:
+from commit search, and by walking the branches of repositories pushed to
+inside the window. A commit found only on a branch is counted like any other
+and shown as `owner/repo@branch`, so unmerged work is visible as unmerged.
+
 ## Requirements
 
 - Go 1.25 or newer to build

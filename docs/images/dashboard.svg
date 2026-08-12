@@ -2,70 +2,58 @@
 <title>gh-contribs team dashboard</title>
 <rect width="972" height="538" rx="8" fill="#0d1117"/>
 <rect x="24.4" y="14" width="92.4" height="17" fill="#58a6ff"/>
-<rect x="704.8000000000001" y="133" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="133" width="8.4" height="17" fill="#7ee787"/>
 <rect x="713.2" y="133" width="8.4" height="17" fill="#7ee787"/>
-<rect x="721.6" y="133" width="8.4" height="17" fill="#7ee787"/>
-<rect x="730" y="133" width="8.4" height="17" fill="#30363c"/>
+<rect x="721.6" y="133" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="133" width="8.4" height="17" fill="#7ee787"/>
 <rect x="738.4" y="133" width="8.4" height="17" fill="#7ee787"/>
-<rect x="746.8000000000001" y="133" width="8.4" height="17" fill="#7ee787"/>
 <rect x="704.8000000000001" y="150" width="8.4" height="17" fill="#30363c"/>
-<rect x="713.2" y="150" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="150" width="8.4" height="17" fill="#7ee787"/>
 <rect x="721.6" y="150" width="8.4" height="17" fill="#7ee787"/>
-<rect x="730" y="150" width="8.4" height="17" fill="#7ee787"/>
-<rect x="738.4" y="150" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="150" width="8.4" height="17" fill="#30363c"/>
 <rect x="704.8000000000001" y="167" width="8.4" height="17" fill="#30363c"/>
 <rect x="713.2" y="167" width="8.4" height="17" fill="#30363c"/>
 <rect x="721.6" y="167" width="8.4" height="17" fill="#30363c"/>
 <rect x="730" y="167" width="8.4" height="17" fill="#30363c"/>
-<rect x="738.4" y="167" width="8.4" height="17" fill="#30363c"/>
-<rect x="704.8000000000001" y="218" width="8.4" height="17" fill="#30363c"/>
-<rect x="713.2" y="218" width="8.4" height="17" fill="#46c769"/>
-<rect x="721.6" y="218" width="8.4" height="17" fill="#7ee787"/>
-<rect x="730" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="713.2" y="218" width="8.4" height="17" fill="#7ee787"/>
+<rect x="721.6" y="218" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="218" width="8.4" height="17" fill="#7ee787"/>
 <rect x="738.4" y="218" width="8.4" height="17" fill="#7ee787"/>
-<rect x="746.8000000000001" y="218" width="8.4" height="17" fill="#7ee787"/>
 <rect x="704.8000000000001" y="235" width="8.4" height="17" fill="#30363c"/>
-<rect x="713.2" y="235" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="235" width="8.4" height="17" fill="#7ee787"/>
 <rect x="721.6" y="235" width="8.4" height="17" fill="#7ee787"/>
-<rect x="730" y="235" width="8.4" height="17" fill="#7ee787"/>
-<rect x="738.4" y="235" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="235" width="8.4" height="17" fill="#30363c"/>
 <rect x="704.8000000000001" y="252" width="8.4" height="17" fill="#30363c"/>
 <rect x="713.2" y="252" width="8.4" height="17" fill="#30363c"/>
 <rect x="721.6" y="252" width="8.4" height="17" fill="#30363c"/>
 <rect x="730" y="252" width="8.4" height="17" fill="#30363c"/>
-<rect x="738.4" y="252" width="8.4" height="17" fill="#30363c"/>
-<rect x="704.8000000000001" y="303" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="303" width="8.4" height="17" fill="#7ee787"/>
 <rect x="713.2" y="303" width="8.4" height="17" fill="#46c769"/>
-<rect x="721.6" y="303" width="8.4" height="17" fill="#46c769"/>
-<rect x="730" y="303" width="8.4" height="17" fill="#30363c"/>
-<rect x="738.4" y="303" width="8.4" height="17" fill="#46c769"/>
-<rect x="746.8000000000001" y="303" width="8.4" height="17" fill="#7ee787"/>
+<rect x="721.6" y="303" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="303" width="8.4" height="17" fill="#7ee787"/>
+<rect x="738.4" y="303" width="8.4" height="17" fill="#7ee787"/>
 <rect x="704.8000000000001" y="320" width="8.4" height="17" fill="#30363c"/>
-<rect x="713.2" y="320" width="8.4" height="17" fill="#30363c"/>
-<rect x="721.6" y="320" width="8.4" height="17" fill="#7ee787"/>
-<rect x="730" y="320" width="8.4" height="17" fill="#46c769"/>
-<rect x="738.4" y="320" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="320" width="8.4" height="17" fill="#46c769"/>
+<rect x="721.6" y="320" width="8.4" height="17" fill="#46c769"/>
+<rect x="730" y="320" width="8.4" height="17" fill="#30363c"/>
 <rect x="704.8000000000001" y="337" width="8.4" height="17" fill="#30363c"/>
 <rect x="713.2" y="337" width="8.4" height="17" fill="#30363c"/>
 <rect x="721.6" y="337" width="8.4" height="17" fill="#30363c"/>
 <rect x="730" y="337" width="8.4" height="17" fill="#30363c"/>
-<rect x="738.4" y="337" width="8.4" height="17" fill="#30363c"/>
-<rect x="704.8000000000001" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="704.8000000000001" y="388" width="8.4" height="17" fill="#2ea043"/>
 <rect x="713.2" y="388" width="8.4" height="17" fill="#2ea043"/>
-<rect x="721.6" y="388" width="8.4" height="17" fill="#2ea043"/>
-<rect x="730" y="388" width="8.4" height="17" fill="#30363c"/>
-<rect x="738.4" y="388" width="8.4" height="17" fill="#2ea043"/>
-<rect x="746.8000000000001" y="388" width="8.4" height="17" fill="#7ee787"/>
+<rect x="721.6" y="388" width="8.4" height="17" fill="#30363c"/>
+<rect x="730" y="388" width="8.4" height="17" fill="#7ee787"/>
+<rect x="738.4" y="388" width="8.4" height="17" fill="#7ee787"/>
 <rect x="704.8000000000001" y="405" width="8.4" height="17" fill="#30363c"/>
-<rect x="713.2" y="405" width="8.4" height="17" fill="#30363c"/>
-<rect x="721.6" y="405" width="8.4" height="17" fill="#7ee787"/>
-<rect x="730" y="405" width="8.4" height="17" fill="#2ea043"/>
-<rect x="738.4" y="405" width="8.4" height="17" fill="#30363c"/>
+<rect x="713.2" y="405" width="8.4" height="17" fill="#2ea043"/>
+<rect x="721.6" y="405" width="8.4" height="17" fill="#2ea043"/>
+<rect x="730" y="405" width="8.4" height="17" fill="#30363c"/>
 <rect x="704.8000000000001" y="422" width="8.4" height="17" fill="#30363c"/>
 <rect x="713.2" y="422" width="8.4" height="17" fill="#30363c"/>
 <rect x="721.6" y="422" width="8.4" height="17" fill="#30363c"/>
 <rect x="730" y="422" width="8.4" height="17" fill="#30363c"/>
-<rect x="738.4" y="422" width="8.4" height="17" fill="#30363c"/>
 <text y="25.2"><tspan x="24.4" fill="#ffffff" font-weight="600">gh-contribs</tspan><tspan x="805.6" fill="#6e7681">github.example.com</tspan></text>
 <path d="M23.2,56.5H24.4M20.2,59.5V65M20.2,59.5Q20.2,56.5 23.2,56.5" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M24.4,56.5H32.8" stroke="#30363c" stroke-width="1.1" fill="none"/>
@@ -182,7 +170,7 @@
 <path d="M20.2,65V82" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M213.4,65V82" stroke="#8b939e" stroke-width="1.1" fill="none"/>
 <path d="M952.6000000000001,65V82" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="76.2"><tspan x="32.8" fill="#8b939e">From</tspan><tspan x="83.2" fill="#6e7681">2</tspan><tspan x="91.60000000000001" fill="#6e7681">026-07-05</tspan><tspan x="242.8" fill="#8b939e">To</tspan><tspan x="276.40000000000003" fill="#6e7681">2</tspan><tspan x="284.8" fill="#6e7681">026-08-04</tspan></text>
+<text y="76.2"><tspan x="32.8" fill="#8b939e">From</tspan><tspan x="83.2" fill="#6e7681">2</tspan><tspan x="91.60000000000001" fill="#6e7681">026-07-13</tspan><tspan x="242.8" fill="#8b939e">To</tspan><tspan x="276.40000000000003" fill="#6e7681">2</tspan><tspan x="284.8" fill="#6e7681">026-08-12</tspan></text>
 <path d="M23.2,90.5H24.4M20.2,82V87.5M20.2,87.5Q20.2,90.5 23.2,90.5" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M24.4,90.5H32.8" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M32.8,90.5H41.199999999999996" stroke="#30363c" stroke-width="1.1" fill="none"/>
@@ -411,28 +399,26 @@
 <path d="M952.6000000000001,116V133" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="127.2"><tspan x="32.8" fill="#8b939e" font-weight="600">Team</tspan><tspan x="83.2" fill="#6e7681">4 people</tspan></text>
 <path d="M20.2,133V150" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<rect x="704.8000000000001" y="133" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="704.8000000000001" y="133" width="8.4" height="8.5" fill="#7ee787"/>
 <rect x="713.2" y="133" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="721.6" y="133" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="730" y="133" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="133" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="133" width="8.4" height="8.5" fill="#7ee787"/>
 <rect x="738.4" y="133" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="746.8000000000001" y="133" width="8.4" height="8.5" fill="#7ee787"/>
 <path d="M952.6000000000001,133V150" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="144.2"><tspan x="32.8" fill="#58a6ff">▸</tspan><tspan x="49.6" fill="#58a6ff" font-weight="600">Nash, Robin</tspan><tspan x="217.60000000000002" fill="#3fb950" font-weight="600">64</tspan><tspan x="242.8" fill="#8b939e">contributions</tspan></text>
 <path d="M20.2,150V167" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="704.8000000000001" y="150" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="713.2" y="150" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="721.6" y="150" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="730" y="150" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="721.6" y="150" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="150" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="738.4" y="150" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,150V167" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="161.2"><tspan x="49.6" fill="#6e7681">@nash-robin</tspan><tspan x="234.4" fill="#8b939e">40</tspan><tspan x="259.6" fill="#8b939e">commits</tspan><tspan x="419.20000000000005" fill="#3fb950">8</tspan><tspan x="436" fill="#8b939e">prs (1 merged)</tspan></text>
 <path d="M20.2,167V184" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="704.8000000000001" y="167" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="713.2" y="167" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="721.6" y="167" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="167" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="721.6" y="167" width="8.4" height="8.5" fill="#7ee787"/>
 <rect x="730" y="167" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="738.4" y="167" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,167V184" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="178.2"><tspan x="49.6" fill="#6e7681">just now</tspan><tspan x="242.8" fill="#d29922">8</tspan><tspan x="259.6" fill="#8b939e">issues</tspan><tspan x="419.20000000000005" fill="#58a6ff">8</tspan><tspan x="436" fill="#8b939e">reviews</tspan></text>
 <path d="M20.2,184V201" stroke="#30363c" stroke-width="1.1" fill="none"/>
@@ -440,33 +426,30 @@
 <rect x="713.2" y="184" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="721.6" y="184" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="730" y="184" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="738.4" y="184" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,184V201" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M20.2,201V218" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M952.6000000000001,201V218" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M20.2,218V235" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<rect x="704.8000000000001" y="218" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="704.8000000000001" y="218" width="8.4" height="8.5" fill="#46c769"/>
 <rect x="713.2" y="218" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="721.6" y="218" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="730" y="218" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="218" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="218" width="8.4" height="8.5" fill="#7ee787"/>
 <rect x="738.4" y="218" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="746.8000000000001" y="218" width="8.4" height="8.5" fill="#7ee787"/>
 <path d="M952.6000000000001,218V235" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="229.2"><tspan x="49.6" fill="#e6edf3">Avery, Lynn</tspan><tspan x="217.60000000000002" fill="#3fb950" font-weight="600">35</tspan><tspan x="242.8" fill="#8b939e">contributions</tspan></text>
 <path d="M20.2,235V252" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="704.8000000000001" y="235" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="713.2" y="235" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="721.6" y="235" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="730" y="235" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="721.6" y="235" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="235" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="738.4" y="235" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,235V252" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="246.2"><tspan x="49.6" fill="#6e7681">@avery-lynn</tspan><tspan x="234.4" fill="#8b939e">22</tspan><tspan x="259.6" fill="#8b939e">commits</tspan><tspan x="419.20000000000005" fill="#3fb950">5</tspan><tspan x="436" fill="#8b939e">prs (0 merged)</tspan></text>
 <path d="M20.2,252V269" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="704.8000000000001" y="252" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="713.2" y="252" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="721.6" y="252" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="252" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="721.6" y="252" width="8.4" height="8.5" fill="#7ee787"/>
 <rect x="730" y="252" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="738.4" y="252" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,252V269" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="263.2"><tspan x="49.6" fill="#6e7681">just now</tspan><tspan x="242.8" fill="#d29922">4</tspan><tspan x="259.6" fill="#8b939e">issues</tspan><tspan x="419.20000000000005" fill="#58a6ff">4</tspan><tspan x="436" fill="#8b939e">reviews</tspan></text>
 <path d="M20.2,269V286" stroke="#30363c" stroke-width="1.1" fill="none"/>
@@ -474,33 +457,30 @@
 <rect x="713.2" y="269" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="721.6" y="269" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="730" y="269" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="738.4" y="269" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,269V286" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M20.2,286V303" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M952.6000000000001,286V303" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M20.2,303V320" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<rect x="704.8000000000001" y="303" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="713.2" y="303" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="721.6" y="303" width="8.4" height="8.5" fill="#46c769"/>
-<rect x="730" y="303" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="704.8000000000001" y="303" width="8.4" height="8.5" fill="#46c769"/>
+<rect x="713.2" y="303" width="8.4" height="8.5" fill="#46c769"/>
+<rect x="721.6" y="303" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="303" width="8.4" height="8.5" fill="#46c769"/>
 <rect x="738.4" y="303" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="746.8000000000001" y="303" width="8.4" height="8.5" fill="#7ee787"/>
 <path d="M952.6000000000001,303V320" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="314.2"><tspan x="49.6" fill="#e6edf3">Olsen, Ana</tspan><tspan x="217.60000000000002" fill="#3fb950" font-weight="600">29</tspan><tspan x="242.8" fill="#8b939e">contributions</tspan></text>
 <path d="M20.2,320V337" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="704.8000000000001" y="320" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="713.2" y="320" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="721.6" y="320" width="8.4" height="8.5" fill="#46c769"/>
-<rect x="730" y="320" width="8.4" height="8.5" fill="#46c769"/>
+<rect x="721.6" y="320" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="320" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="738.4" y="320" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,320V337" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="331.2"><tspan x="49.6" fill="#6e7681">@olsen-ana</tspan><tspan x="234.4" fill="#8b939e">18</tspan><tspan x="259.6" fill="#8b939e">commits</tspan><tspan x="419.20000000000005" fill="#3fb950">4</tspan><tspan x="436" fill="#8b939e">prs (0 merged)</tspan></text>
 <path d="M20.2,337V354" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="704.8000000000001" y="337" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="713.2" y="337" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="721.6" y="337" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="337" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="721.6" y="337" width="8.4" height="8.5" fill="#46c769"/>
 <rect x="730" y="337" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="738.4" y="337" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,337V354" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="348.2"><tspan x="49.6" fill="#6e7681">just now</tspan><tspan x="242.8" fill="#d29922">3</tspan><tspan x="259.6" fill="#8b939e">issues</tspan><tspan x="419.20000000000005" fill="#58a6ff">4</tspan><tspan x="436" fill="#8b939e">reviews</tspan></text>
 <path d="M20.2,354V371" stroke="#30363c" stroke-width="1.1" fill="none"/>
@@ -508,33 +488,30 @@
 <rect x="713.2" y="354" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="721.6" y="354" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="730" y="354" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="738.4" y="354" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,354V371" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M20.2,371V388" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M952.6000000000001,371V388" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M20.2,388V405" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<rect x="704.8000000000001" y="388" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="704.8000000000001" y="388" width="8.4" height="8.5" fill="#2ea043"/>
 <rect x="713.2" y="388" width="8.4" height="8.5" fill="#2ea043"/>
-<rect x="721.6" y="388" width="8.4" height="8.5" fill="#2ea043"/>
-<rect x="730" y="388" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="721.6" y="388" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="388" width="8.4" height="8.5" fill="#2ea043"/>
 <rect x="738.4" y="388" width="8.4" height="8.5" fill="#7ee787"/>
-<rect x="746.8000000000001" y="388" width="8.4" height="8.5" fill="#7ee787"/>
 <path d="M952.6000000000001,388V405" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="399.2"><tspan x="49.6" fill="#e6edf3">Bianchi, Priya</tspan><tspan x="217.60000000000002" fill="#3fb950" font-weight="600">16</tspan><tspan x="242.8" fill="#8b939e">contributions</tspan></text>
 <path d="M20.2,405V422" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="704.8000000000001" y="405" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="713.2" y="405" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="721.6" y="405" width="8.4" height="8.5" fill="#2ea043"/>
-<rect x="730" y="405" width="8.4" height="8.5" fill="#2ea043"/>
+<rect x="721.6" y="405" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="730" y="405" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="738.4" y="405" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,405V422" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="416.2"><tspan x="49.6" fill="#6e7681">@bianchi-priya</tspan><tspan x="234.4" fill="#8b939e">11</tspan><tspan x="259.6" fill="#8b939e">commits</tspan><tspan x="419.20000000000005" fill="#3fb950">3</tspan><tspan x="436" fill="#8b939e">prs (0 merged)</tspan></text>
 <path d="M20.2,422V439" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="704.8000000000001" y="422" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="713.2" y="422" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="721.6" y="422" width="8.4" height="8.5" fill="#30363c"/>
+<rect x="713.2" y="422" width="8.4" height="8.5" fill="#7ee787"/>
+<rect x="721.6" y="422" width="8.4" height="8.5" fill="#2ea043"/>
 <rect x="730" y="422" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="738.4" y="422" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,422V439" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="433.2"><tspan x="49.6" fill="#6e7681">just now</tspan><tspan x="242.8" fill="#d29922">1</tspan><tspan x="259.6" fill="#8b939e">issues</tspan><tspan x="419.20000000000005" fill="#58a6ff">1</tspan><tspan x="436" fill="#8b939e">reviews</tspan></text>
 <path d="M20.2,439V456" stroke="#30363c" stroke-width="1.1" fill="none"/>
@@ -542,7 +519,6 @@
 <rect x="713.2" y="439" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="721.6" y="439" width="8.4" height="8.5" fill="#30363c"/>
 <rect x="730" y="439" width="8.4" height="8.5" fill="#30363c"/>
-<rect x="738.4" y="439" width="8.4" height="8.5" fill="#30363c"/>
 <path d="M952.6000000000001,439V456" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M20.2,456V473" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M952.6000000000001,456V473" stroke="#30363c" stroke-width="1.1" fill="none"/>

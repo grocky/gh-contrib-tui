@@ -65,7 +65,8 @@ which honour the token's actual read access, and aggregate them locally.
 | --- | --- | --- |
 | Pull requests and issues opened | `author:LOGIN created:FROM..TO` | GraphQL `search(type: ISSUE)` |
 | Reviews submitted | `is:pr reviewed-by:LOGIN updated:>=FROM` | GraphQL `search(type: ISSUE)` |
-| Commits | `author:LOGIN author-date:FROM..TO` | REST `/search/commits` |
+| Commits on default branches | `author:LOGIN author-date:FROM..TO` | REST `/search/commits` |
+| Commits on other branches | `refs` + `history(author:, since:)` | GraphQL `repository` |
 
 Pull requests and issues arrive from one search, discriminated by `__typename`.
 
@@ -127,11 +128,77 @@ permalink and belongs on its own day of the heatmap.
 - **`restrictedContributionsCount` as a fallback total.** It reports 0 here; the
   endpoint does not know about the work at all.
 
-## 7. Follow-ups
+## 7. Amendment: commits that never reached a default branch
+
+Date: 2026-08-12. Status: **Implemented**.
+
+Section 8 below originally recorded default-branch-only commit search as an
+accepted limitation, on the grounds that it matched GitHub's own counting. It
+does not match what the people using the report are being measured on.
+
+One user was reported as having made **0 commits** in the trailing 30 days.
+They had made **5** — one on an unmerged feature branch in one repository, four
+on an unmerged feature branch in another.
+
+None were reachable from a default branch, so `/search/commits` returned
+nothing for them: scoped to the repository holding them, `author:LOGIN
+repo:OWNER/NAME` matches 0. This is not a ranking problem; the commits are
+absent from the index.
+
+Two cheaper repairs were tested against the live host and both fail:
+
+- **Derive commits from pull requests.** The branch holding the first commit
+  has no pull request in any state. Pushed-but-never-proposed branches are
+  exactly the blind spot.
+- **The events API.** `/users/:user/events` returns no `PushEvent`s: for a user
+  other than the viewer it carries public events only, and every repository
+  here is private.
+
+So the branches are walked directly, via `repository.refs` with
+`history(author:, since:)`. What keeps that from being a crawl:
+
+- **Repositories are pruned by `pushedAt`** — only those written to inside the
+  window can hold a commit inside it — 6 of 32 in that measurement.
+- **Branches whose tip predates the window are skipped** without reading their
+  history, since a branch holds nothing newer than its own tip.
+
+**Branches cannot be pruned before they are fetched.** `RefOrderField` offers
+`ALPHABETICAL` and `TAG_COMMIT_DATE`, and the latter does not order *branches*
+by commit date — asked for it `DESC`, the host returned refs in reverse
+alphabetical order with tips ranging from 2024 to 2026 in no date order. An
+early implementation stopped the walk at the first old tip and consequently
+found nothing at all. The scan reads every branch of a recently-pushed
+repository, bounded at 400.
+
+**Dates.** `history(since:)` filters on committer date; the window is measured
+in author date, as commit search is. `since` is the looser of the two —
+rebasing moves committer date forward, never back — so the walk cannot miss an
+in-window commit, and `NewCollection` drops whatever falls outside on the author
+date. There is no `until` for the same reason.
+
+**Overlap.** A branch's history includes every ancestor, so a commit arrives
+once per branch built on it, and again from commit search once it lands.
+Dedupe on kind+URL collapses these. The branch stream is collected strictly
+after commit search so the default-branch copy wins, and the scan skips the
+default ref outright — a landed commit is never labelled with a branch.
+
+**Counting.** These are commits like any other: they count toward
+`TotalCommits` and the calendar. The event carries `Branch`, and the list
+renders `owner/repo@branch`, so unmerged work is identifiable without being
+second-class. This is a deliberate departure from GitHub's counting.
+
+**Cost.** One repository listing plus one query per recently-pushed repository.
+A trailing 30 days for the user above measured **7.1s**, against 3.5s before.
+Failure is non-fatal and warns, as commit search does; note that losing commit
+search no longer means losing every commit, since this stream is independent.
+
+## 8. Follow-ups
 
 - Commit search matches on the account, so commits authored under an unlinked
-  email are missed. Worth measuring before doing anything about it.
-- Commit search covers default branches; commits that only ever lived on a
-  feature branch do not appear. This matches GitHub's own counting.
+  email are missed. The branch scan filters history by the same account node
+  ID, so it shares the limitation. Worth measuring before doing anything.
+- The branch scan runs per person, so a team dashboard repeats the same
+  repository walks for everyone on it. Scanning each repository once and
+  attributing commits to authors afterwards would collapse that.
 - The heatmap column headers are week ordinals. Now that the calendar is built
   locally, month labels are straightforward.

@@ -187,6 +187,7 @@ func report(person contrib.Person, window contrib.Range, spread []work) *contrib
 				Repo:       w.repo,
 				Title:      titleFor(kind, i),
 				Merged:     kind == contrib.KindAuthored && i%4 == 0,
+				Branch:     branchFor(kind, i),
 				// Unique per event: the collection dedupes on kind and URL, and
 				// a shared one collapses a whole history into four entries.
 				URL: fmt.Sprintf("https://example.com/%s/%d", w.repo, i),
@@ -212,6 +213,17 @@ func kindFor(i int) string {
 	default:
 		return contrib.KindCommit
 	}
+}
+
+// branchFor puts some of the commits on unmerged branches. A good deal of real
+// activity never reaches a default branch, and it is the one thing the
+// contribution list annotates, so the screenshots should show it.
+func branchFor(kind string, i int) string {
+	if kind != contrib.KindCommit || i%3 != 1 {
+		return ""
+	}
+	branches := []string{"fix/retry-budget", "spike/cache-keys", "release-2-4"}
+	return branches[(i/3)%len(branches)]
 }
 
 func titleFor(kind string, i int) string {

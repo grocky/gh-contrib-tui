@@ -127,7 +127,7 @@
 <path d="M322.6,65V82" stroke="#8b939e" stroke-width="1.1" fill="none"/>
 <path d="M532.6,65V82" stroke="#8b939e" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,65V82" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="76.2"><tspan x="32.8" fill="#8b939e">User</tspan><tspan x="83.2" fill="#c9d1d9">nash-robin</tspan><tspan x="352" fill="#8b939e">From</tspan><tspan x="402.40000000000003" fill="#6e7681">2</tspan><tspan x="410.8" fill="#6e7681">026-05-04</tspan><tspan x="562" fill="#8b939e">To</tspan><tspan x="595.6" fill="#6e7681">2</tspan><tspan x="604" fill="#6e7681">026-08-04</tspan></text>
+<text y="76.2"><tspan x="32.8" fill="#8b939e">User</tspan><tspan x="83.2" fill="#c9d1d9">nash-robin</tspan><tspan x="352" fill="#8b939e">From</tspan><tspan x="402.40000000000003" fill="#6e7681">2</tspan><tspan x="410.8" fill="#6e7681">026-05-12</tspan><tspan x="562" fill="#8b939e">To</tspan><tspan x="595.6" fill="#6e7681">2</tspan><tspan x="604" fill="#6e7681">026-08-12</tspan></text>
 <path d="M23.2,90.5H24.4M20.2,82V87.5M20.2,87.5Q20.2,90.5 23.2,90.5" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M24.4,90.5H32.8" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M32.8,90.5H41.199999999999996" stroke="#30363c" stroke-width="1.1" fill="none"/>
@@ -370,7 +370,7 @@
 <path d="M1015.6,107.5H1016.8000000000001M1019.8000000000001,110.5V116M1019.8000000000001,110.5Q1019.8000000000001,107.5 1016.8000000000001,107.5" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M20.2,116V133" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,116V133" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="127.2"><tspan x="32.8" fill="#e6edf3" font-weight="600">Nash, Robin</tspan><tspan x="133.60000000000002" fill="#6e7681" font-weight="600">@nash-robin</tspan><tspan x="242.8" fill="#6e7681">2026-05-04 → 2026-08-04</tspan></text>
+<text y="127.2"><tspan x="32.8" fill="#e6edf3" font-weight="600">Nash, Robin</tspan><tspan x="133.60000000000002" fill="#6e7681" font-weight="600">@nash-robin</tspan><tspan x="242.8" fill="#6e7681">2026-05-12 → 2026-08-12</tspan></text>
 <path d="M20.2,133V150" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,133V150" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="144.2"><tspan x="32.8" fill="#3fb950" font-weight="600">154</tspan><tspan x="66.4" fill="#8b939e">contributions</tspan><tspan x="184" fill="#8b939e">·</tspan><tspan x="200.8" fill="#8b939e">91</tspan><tspan x="226" fill="#8b939e">commits</tspan><tspan x="293.2" fill="#8b939e">·</tspan><tspan x="310" fill="#d29922">20</tspan><tspan x="335.2" fill="#8b939e">issues</tspan><tspan x="394" fill="#8b939e">·</tspan><tspan x="410.8" fill="#3fb950">22</tspan><tspan x="436" fill="#8b939e">prs (4 merged)</tspan><tspan x="562" fill="#8b939e">·</tspan><tspan x="578.8000000000001" fill="#58a6ff">21</tspan><tspan x="604" fill="#8b939e">reviews</tspan></text>
@@ -651,36 +651,36 @@
 <rect x="914.8000000000001" y="201" width="8.4" height="17" fill="#8b939e"/>
 <rect x="923.2" y="201" width="8.4" height="17" fill="#8b939e"/>
 <path d="M1019.8000000000001,201V218" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="212.2"><tspan x="66.4" fill="#6e7681">May</tspan><tspan x="167.20000000000002" fill="#6e7681">Jun</tspan><tspan x="268" fill="#6e7681">Jul</tspan><tspan x="368.8" fill="#6e7681">Aug</tspan><tspan x="536.8000000000001" fill="#c9d1d9">acme/platform-api</tspan><tspan x="973.6" fill="#8b939e">84</tspan></text>
+<text y="212.2"><tspan x="142" fill="#6e7681">Jun</tspan><tspan x="242.8" fill="#6e7681">Jul</tspan><tspan x="343.6" fill="#6e7681">Aug</tspan><tspan x="536.8000000000001" fill="#c9d1d9">acme/platform-api</tspan><tspan x="973.6" fill="#8b939e">84</tspan></text>
 <path d="M20.2,218V235" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<rect x="66.4" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="74.80000000000001" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="66.4" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="74.80000000000001" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="91.60000000000001" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="100" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="116.80000000000001" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="125.2" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="142" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="150.4" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="167.20000000000002" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="175.6" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="192.4" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="200.8" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="217.60000000000002" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="226" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="167.20000000000002" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="175.6" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="192.4" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="200.8" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="217.60000000000002" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="226" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="242.8" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="251.20000000000002" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="268" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="276.40000000000003" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="293.2" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="301.6" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="318.40000000000003" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="326.8" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="318.40000000000003" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="326.8" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="343.6" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="352" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="368.8" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="377.2" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="394" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="402.40000000000003" y="220.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="368.8" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="377.2" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="394" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="402.40000000000003" y="220.125" width="8.4" height="14.875" fill="#7ee787"/>
 <path d="M515.8000000000001,218V235" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M524.2,218V235" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="696.4" y="218" width="8.4" height="17" fill="#8b939e"/>
@@ -700,18 +700,18 @@
 <path d="M1019.8000000000001,218V235" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="229.2"><tspan x="32.8" fill="#6e7681">Mon</tspan><tspan x="536.8000000000001" fill="#c9d1d9">acme/web-console</tspan><tspan x="973.6" fill="#8b939e">41</tspan></text>
 <path d="M20.2,235V252" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<rect x="66.4" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="74.80000000000001" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="66.4" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="74.80000000000001" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="91.60000000000001" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="100" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="116.80000000000001" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="125.2" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="142" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="150.4" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="167.20000000000002" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="175.6" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="192.4" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="200.8" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="167.20000000000002" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="175.6" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="192.4" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="200.8" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="217.60000000000002" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="226" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="242.8" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
@@ -720,12 +720,12 @@
 <rect x="276.40000000000003" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="293.2" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="301.6" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="318.40000000000003" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="326.8" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="318.40000000000003" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="326.8" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="343.6" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="352" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="368.8" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="377.2" y="237.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="368.8" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="377.2" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="394" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="402.40000000000003" y="237.125" width="8.4" height="14.875" fill="#30363c"/>
 <path d="M515.8000000000001,235V252" stroke="#30363c" stroke-width="1.1" fill="none"/>
@@ -749,22 +749,24 @@
 <rect x="150.4" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="167.20000000000002" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="175.6" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="192.4" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="200.8" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="192.4" y="254.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="200.8" y="254.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="217.60000000000002" y="254.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="226" y="254.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="242.8" y="254.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="251.20000000000002" y="254.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="242.8" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="251.20000000000002" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="268" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="276.40000000000003" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="293.2" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="301.6" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="318.40000000000003" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="326.8" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="343.6" y="254.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="352" y="254.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="343.6" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="352" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="368.8" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="377.2" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="394" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="402.40000000000003" y="254.125" width="8.4" height="14.875" fill="#30363c"/>
 <path d="M515.8000000000001,252V269" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M524.2,252V269" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="696.4" y="252" width="8.4" height="17" fill="#8b939e"/>
@@ -772,46 +774,46 @@
 <path d="M1019.8000000000001,252V269" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="263.2"><tspan x="32.8" fill="#6e7681">Wed</tspan><tspan x="536.8000000000001" fill="#c9d1d9">acme/docs</tspan><tspan x="982" fill="#8b939e">7</tspan></text>
 <path d="M20.2,269V286" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<rect x="66.4" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="74.80000000000001" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="66.4" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="74.80000000000001" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="91.60000000000001" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="100" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="116.80000000000001" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="125.2" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="142" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="150.4" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="167.20000000000002" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="175.6" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="116.80000000000001" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="125.2" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="142" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="150.4" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="167.20000000000002" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="175.6" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="192.4" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="200.8" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="217.60000000000002" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="226" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="242.8" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="251.20000000000002" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="217.60000000000002" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="226" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="242.8" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="251.20000000000002" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="268" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="276.40000000000003" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="293.2" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="301.6" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="318.40000000000003" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="326.8" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="343.6" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="352" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="368.8" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="377.2" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="343.6" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="352" y="271.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="368.8" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="377.2" y="271.125" width="8.4" height="14.875" fill="#30363c"/>
 <path d="M515.8000000000001,269V286" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M524.2,269V286" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <rect x="696.4" y="269" width="8.4" height="17" fill="#8b939e"/>
 <path d="M1019.8000000000001,269V286" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <text y="280.2"><tspan x="536.8000000000001" fill="#c9d1d9">acme/scripts</tspan><tspan x="982" fill="#8b939e">3</tspan></text>
 <path d="M20.2,286V303" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<rect x="66.4" y="288.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="74.80000000000001" y="288.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="91.60000000000001" y="288.125" width="8.4" height="14.875" fill="#7ee787"/>
-<rect x="100" y="288.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="66.4" y="288.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="74.80000000000001" y="288.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="91.60000000000001" y="288.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="100" y="288.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="116.80000000000001" y="288.125" width="8.4" height="14.875" fill="#30363c"/>
 <rect x="125.2" y="288.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="142" y="288.125" width="8.4" height="14.875" fill="#30363c"/>
-<rect x="150.4" y="288.125" width="8.4" height="14.875" fill="#30363c"/>
+<rect x="142" y="288.125" width="8.4" height="14.875" fill="#7ee787"/>
+<rect x="150.4" y="288.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="167.20000000000002" y="288.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="175.6" y="288.125" width="8.4" height="14.875" fill="#7ee787"/>
 <rect x="192.4" y="288.125" width="8.4" height="14.875" fill="#30363c"/>
@@ -1158,49 +1160,49 @@
 <text y="416.2"><tspan x="32.8" fill="#8b939e" font-weight="600">Contributions</tspan><tspan x="158.8" fill="#6e7681">1 of 154</tspan></text>
 <path d="M20.2,422V439" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,422V439" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="433.2"><tspan x="32.8" fill="#58a6ff">▸</tspan><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#58a6ff" font-weight="600">Drop the vendored fork</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
+<text y="433.2"><tspan x="32.8" fill="#58a6ff">▸</tspan><tspan x="49.6" fill="#6e7681">2026-08-10</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#58a6ff" font-weight="600">Drop the vendored fork</tspan><tspan x="704.8000000000001" fill="#6e7681">acme/platform-api@fix/retry-budget</tspan></text>
 <path d="M20.2,439V456" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,439V456" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="450.2"><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
+<text y="450.2"><tspan x="49.6" fill="#6e7681">2026-08-10</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
 <path d="M20.2,456V473" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,456V473" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="467.2"><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#3fb950">pr</tspan><tspan x="200.8" fill="#e6edf3">Rework the token walk</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
+<text y="467.2"><tspan x="49.6" fill="#6e7681">2026-08-10</tspan><tspan x="142" fill="#3fb950">pr</tspan><tspan x="200.8" fill="#e6edf3">Rework the token walk</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
 <path d="M20.2,473V490" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,473V490" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="484.2"><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Drop the vendored fork</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
+<text y="484.2"><tspan x="49.6" fill="#6e7681">2026-08-10</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Drop the vendored fork</tspan><tspan x="704.8000000000001" fill="#6e7681">acme/platform-api@spike/cache-keys</tspan></text>
 <path d="M20.2,490V507" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,490V507" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="501.2"><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#58a6ff">review</tspan><tspan x="200.8" fill="#e6edf3">Review: bound the org walk</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan></text>
+<text y="501.2"><tspan x="49.6" fill="#6e7681">2026-08-10</tspan><tspan x="142" fill="#58a6ff">review</tspan><tspan x="200.8" fill="#e6edf3">Review: bound the org walk</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan></text>
 <path d="M20.2,507V524" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,507V524" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="518.2"><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#d29922">issue</tspan><tspan x="200.8" fill="#e6edf3">Suspended users missing from listings</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan></text>
+<text y="518.2"><tspan x="49.6" fill="#6e7681">2026-08-10</tspan><tspan x="142" fill="#d29922">issue</tspan><tspan x="200.8" fill="#e6edf3">Suspended users missing from listings</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan></text>
 <path d="M20.2,524V541" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,524V541" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="535.2"><tspan x="49.6" fill="#6e7681">2026-07-31</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="805.6" fill="#6e7681">acme/terraform-modules</tspan></text>
+<text y="535.2"><tspan x="49.6" fill="#6e7681">2026-08-10</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="805.6" fill="#6e7681">acme/terraform-modules</tspan></text>
 <path d="M20.2,541V558" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,541V558" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="552.2"><tspan x="49.6" fill="#6e7681">2026-07-30</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
+<text y="552.2"><tspan x="49.6" fill="#6e7681">2026-08-07</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
 <path d="M20.2,558V575" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,558V575" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="569.2"><tspan x="49.6" fill="#6e7681">2026-07-30</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Fix the retry budget on 429s</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
+<text y="569.2"><tspan x="49.6" fill="#6e7681">2026-08-07</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Fix the retry budget on 429s</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
 <path d="M20.2,575V592" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,575V592" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="586.2"><tspan x="49.6" fill="#6e7681">2026-07-30</tspan><tspan x="142" fill="#bc8cff">merged</tspan><tspan x="200.8" fill="#e6edf3">Add read:org fallback for team listings</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
+<text y="586.2"><tspan x="49.6" fill="#6e7681">2026-08-07</tspan><tspan x="142" fill="#bc8cff">merged</tspan><tspan x="200.8" fill="#e6edf3">Add read:org fallback for team listings</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
 <path d="M20.2,592V609" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,592V609" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="603.2"><tspan x="49.6" fill="#6e7681">2026-07-30</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
+<text y="603.2"><tspan x="49.6" fill="#6e7681">2026-08-07</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Cache directory lookups</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
 <path d="M20.2,609V626" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,609V626" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="620.2"><tspan x="49.6" fill="#6e7681">2026-07-30</tspan><tspan x="142" fill="#58a6ff">review</tspan><tspan x="200.8" fill="#e6edf3">Review: split the report cache</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan></text>
+<text y="620.2"><tspan x="49.6" fill="#6e7681">2026-08-07</tspan><tspan x="142" fill="#58a6ff">review</tspan><tspan x="200.8" fill="#e6edf3">Review: split the report cache</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan></text>
 <path d="M20.2,626V643" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,626V643" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="637.2"><tspan x="49.6" fill="#6e7681">2026-07-30</tspan><tspan x="142" fill="#d29922">issue</tspan><tspan x="200.8" fill="#e6edf3">Search API undercounts private repos</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan></text>
+<text y="637.2"><tspan x="49.6" fill="#6e7681">2026-08-07</tspan><tspan x="142" fill="#d29922">issue</tspan><tspan x="200.8" fill="#e6edf3">Search API undercounts private repos</tspan><tspan x="856" fill="#6e7681">acme/web-console</tspan></text>
 <path d="M20.2,643V660" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,643V660" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="654.2"><tspan x="49.6" fill="#6e7681">2026-07-30</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Fix the retry budget on 429s</tspan><tspan x="805.6" fill="#6e7681">acme/terraform-modules</tspan></text>
+<text y="654.2"><tspan x="49.6" fill="#6e7681">2026-08-07</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Fix the retry budget on 429s</tspan><tspan x="805.6" fill="#6e7681">acme/terraform-modules</tspan></text>
 <path d="M20.2,660V677" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M1019.8000000000001,660V677" stroke="#30363c" stroke-width="1.1" fill="none"/>
-<text y="671.2"><tspan x="49.6" fill="#6e7681">2026-07-28</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Drop the vendored fork</tspan><tspan x="847.6" fill="#6e7681">acme/platform-api</tspan></text>
+<text y="671.2"><tspan x="49.6" fill="#6e7681">2026-08-03</tspan><tspan x="142" fill="#8b939e">commit</tspan><tspan x="200.8" fill="#e6edf3">Drop the vendored fork</tspan><tspan x="704.8000000000001" fill="#6e7681">acme/platform-api@spike/cache-keys</tspan></text>
 <path d="M23.2,685.5H24.4M20.2,677V682.5M20.2,682.5Q20.2,685.5 23.2,685.5" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M24.4,685.5H32.8" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M32.8,685.5H41.199999999999996" stroke="#30363c" stroke-width="1.1" fill="none"/>

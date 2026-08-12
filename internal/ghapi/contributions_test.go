@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	userPayload = `{"data":{"user":{"login":"octocat","name":"Mona"}}}`
+	userPayload = `{"data":{"user":{"id":"U_octocat","login":"octocat","name":"Mona"}}}`
 
 	authoredPayload = `{"data":{"search":{
 		"pageInfo":{"hasNextPage":false,"endCursor":""},
@@ -52,14 +52,61 @@ const (
 				"author":{"date":"2026-07-05T10:00:00Z"}},
 			"repository":{"full_name":"acme/repo1"}}
 	]}`
+
+	// The dormant repository was last pushed to long before the window, so the
+	// branch scan should never ask about its branches.
+	orgRepoPayload = `{"data":{"viewer":{"organizations":{
+		"pageInfo":{"hasNextPage":false,"endCursor":""},
+		"nodes":[{"repositories":{"nodes":[
+			{"name":"repo1","pushedAt":"2026-07-20T10:00:00Z","owner":{"login":"acme"}},
+			{"name":"dormant","pushedAt":"2026-01-05T10:00:00Z","owner":{"login":"acme"}}
+		]}}]}}}}`
+
+	// feature-x holds a commit that never reached main, which is the whole
+	// point of the scan. The main ref carries the commit that commit search
+	// already returned: it must be skipped as the default branch, not counted
+	// twice and not relabelled with a branch name.
+	branchCommitPayload = `{"data":{"repository":{
+		"defaultBranchRef":{"name":"main"},
+		"refs":{
+			"pageInfo":{"hasNextPage":false,"endCursor":""},
+			"nodes":[
+				{"name":"feature-x","target":{"committedDate":"2026-07-08T10:00:00Z","history":{"nodes":[
+					{"authoredDate":"2026-07-08T10:00:00Z","messageHeadline":"Push work to a branch",
+						"commitUrl":"https://example.com/commit/branch1"}
+				]}}},
+				{"name":"main","target":{"committedDate":"2026-07-07T10:00:00Z","history":{"nodes":[
+					{"authoredDate":"2026-07-05T10:00:00Z","messageHeadline":"Fix the thing",
+						"commitUrl":"https://example.com/commit/abc123"}
+				]}}},
+				{"name":"stale","target":{"committedDate":"2026-02-01T10:00:00Z","history":{"nodes":[
+					{"authoredDate":"2026-01-30T10:00:00Z","messageHeadline":"Ancient work",
+						"commitUrl":"https://example.com/commit/old1"}
+				]}}}
+			]}}}}`
 )
 
 // recorder captures every request a fetch makes, so tests can assert on the
 // search qualifiers we send as well as on what we do with the answers.
 type recorder struct {
-	mu       sync.Mutex
-	graphql  []string
-	restURLs []string
+	mu          sync.Mutex
+	graphql     []string
+	restURLs    []string
+	branchRepos []string
+}
+
+// addBranchRepo notes a repository the branch scan asked about, which is how
+// tests assert the scan pruned the ones it should never have reached.
+func (r *recorder) addBranchRepo(name string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.branchRepos = append(r.branchRepos, name)
+}
+
+func (r *recorder) branchRepositories() []string {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return append([]string(nil), r.branchRepos...)
 }
 
 func (r *recorder) add(query, url string) {
@@ -115,6 +162,12 @@ func contributionsServer(t *testing.T, commitStatus int) (*Client, *recorder) {
 			io.WriteString(w, userPayload)
 		case strings.Contains(req.Query, "reviews(first:"):
 			io.WriteString(w, reviewPayload)
+		case strings.Contains(req.Query, "organizations(first:"):
+			io.WriteString(w, orgRepoPayload)
+		case strings.Contains(req.Query, "refs(refPrefix:"):
+			name, _ := req.Variables["name"].(string)
+			rec.addBranchRepo(name)
+			io.WriteString(w, branchCommitPayload)
 		default:
 			io.WriteString(w, authoredPayload)
 		}
@@ -151,21 +204,22 @@ func TestFetchContributions_AggregatesEverySource(t *testing.T) {
 		t.Fatalf("user = %+v", report)
 	}
 	cc := report.Collection
-	if cc.TotalCommits != 1 || cc.TotalIssues != 1 || cc.TotalPullRequests != 2 || cc.TotalReviews != 1 {
+	if cc.TotalCommits != 2 || cc.TotalIssues != 1 || cc.TotalPullRequests != 2 || cc.TotalReviews != 1 {
 		t.Fatalf("totals = %+v", cc)
 	}
 	if cc.TotalMergedPullRequests != 1 {
 		t.Fatalf("merged = %d, want 1 of the 2 authored", cc.TotalMergedPullRequests)
 	}
-	if cc.Calendar.Total != 5 {
-		t.Fatalf("calendar total = %d, want 5 (the out-of-window review dropped)", cc.Calendar.Total)
+	if cc.Calendar.Total != 6 {
+		t.Fatalf("calendar total = %d, want 6 (the out-of-window review dropped)", cc.Calendar.Total)
 	}
 	if len(report.Warnings) != 0 {
 		t.Fatalf("unexpected warnings: %v", report.Warnings)
 	}
 
-	// Newest first, across all four sources.
+	// Newest first, across all five sources.
 	want := []struct{ kind, url string }{
+		{contrib.KindCommit, "https://example.com/commit/branch1"},
 		{contrib.KindAuthored, "https://example.com/pr/2"},
 		{contrib.KindCommit, "https://example.com/commit/abc123"},
 		{contrib.KindReviewed, "https://example.com/pr/9#review-1"},
@@ -179,6 +233,73 @@ func TestFetchContributions_AggregatesEverySource(t *testing.T) {
 		if cc.Events[i].Kind != w.kind || cc.Events[i].URL != w.url {
 			t.Errorf("event %d = %s %s, want %s %s", i, cc.Events[i].Kind, cc.Events[i].URL, w.kind, w.url)
 		}
+	}
+}
+
+// Commit search indexes default branches only, so a commit pushed to a feature
+// branch is invisible to it. The branch scan is what puts that work in the
+// report, tagged with the branch it lives on.
+func TestFetchContributions_FindsCommitsOnUnmergedBranches(t *testing.T) {
+	client, _ := contributionsServer(t, 0)
+
+	report, err := client.FetchContributions(context.Background(), "octocat", testWindow())
+	if err != nil {
+		t.Fatalf("FetchContributions returned error: %v", err)
+	}
+
+	byURL := map[string]contrib.Event{}
+	for _, e := range report.Collection.Events {
+		byURL[e.URL] = e
+	}
+
+	branched, ok := byURL["https://example.com/commit/branch1"]
+	if !ok {
+		t.Fatalf("branch-only commit missing from %+v", report.Collection.Events)
+	}
+	if branched.Branch != "feature-x" {
+		t.Errorf("branch = %q, want feature-x", branched.Branch)
+	}
+	if branched.Repo != "acme/repo1" || branched.Title != "Push work to a branch" {
+		t.Errorf("branch commit = %+v", branched)
+	}
+	if !branched.OccurredAt.Equal(time.Date(2026, 7, 8, 10, 0, 0, 0, time.UTC)) {
+		t.Errorf("occurred at %s, want the authored date", branched.OccurredAt)
+	}
+
+	// The default branch is skipped, so the commit search copy is the only one,
+	// and it carries no branch label.
+	landed, ok := byURL["https://example.com/commit/abc123"]
+	if !ok {
+		t.Fatalf("default-branch commit missing")
+	}
+	if landed.Branch != "" {
+		t.Errorf("branch = %q, want a landed commit to carry none", landed.Branch)
+	}
+
+	// The stale ref's tip predates the window, and refs arrive newest-tip-first,
+	// so the walk stops rather than reading it.
+	if _, found := byURL["https://example.com/commit/old1"]; found {
+		t.Errorf("commit from a branch older than the window leaked in")
+	}
+}
+
+// Only repositories pushed to inside the window can hold a commit inside it,
+// which is what keeps the scan from asking about every branch of every repo.
+func TestFetchContributions_BranchScanSkipsDormantRepositories(t *testing.T) {
+	client, rec := contributionsServer(t, 0)
+
+	if _, err := client.FetchContributions(context.Background(), "octocat", testWindow()); err != nil {
+		t.Fatalf("FetchContributions returned error: %v", err)
+	}
+
+	asked := rec.branchRepositories()
+	for _, name := range asked {
+		if name == "dormant" {
+			t.Fatalf("branch scan asked about a repository last pushed to before the window")
+		}
+	}
+	if len(asked) != 1 || asked[0] != "repo1" {
+		t.Fatalf("branch scan asked about %v, want only repo1", asked)
 	}
 }
 
@@ -263,8 +384,14 @@ func TestFetchContributions_WarnsWhenCommitSearchFails(t *testing.T) {
 	if err != nil {
 		t.Fatalf("commit search failure must not fail the whole fetch: %v", err)
 	}
-	if report.Collection.TotalCommits != 0 {
-		t.Fatalf("commits = %d, want 0", report.Collection.TotalCommits)
+	// The branch scan is an independent stream against GraphQL, so it still
+	// reports the branch-only commit -- losing commit search costs the report
+	// default-branch commits, not every commit.
+	if report.Collection.TotalCommits != 1 {
+		t.Fatalf("commits = %d, want the branch scan's 1 to survive", report.Collection.TotalCommits)
+	}
+	if report.Collection.Events[0].Branch != "feature-x" {
+		t.Fatalf("surviving commit = %+v, want the branch-only one", report.Collection.Events[0])
 	}
 	if report.Collection.TotalPullRequests != 2 || report.Collection.TotalReviews != 1 {
 		t.Fatalf("expected the other sources to survive: %+v", report.Collection)

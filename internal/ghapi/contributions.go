@@ -44,7 +44,7 @@ func (c *Client) FetchContributions(ctx context.Context, username string, window
 	return withTokens(c, ctx, "contributions", func(httpClient *http.Client) (*contrib.Report, error) {
 		gql := c.newGraphQLClient(httpClient)
 
-		report, err := c.resolveUser(ctx, gql, username)
+		report, authorID, err := c.resolveUser(ctx, gql, username)
 		if err != nil {
 			return nil, err
 		}
@@ -78,6 +78,23 @@ func (c *Client) FetchContributions(ctx context.Context, username string, window
 			report.Warnings = append(report.Warnings, fmt.Sprintf("commits unavailable: %v", err))
 		}
 
+		// Strictly after the commit search, so that when the same commit turns
+		// up in both streams the default-branch copy is the one dedupe keeps
+		// and a landed commit is never labelled with a branch.
+		branched, err := c.searchBranchCommits(ctx, gql, authorID, window)
+		switch {
+		case err == nil:
+			events = append(events, branched...)
+		case isUnauthorized(err):
+			return nil, err
+		default:
+			// Non-fatal for the same reason as commit search: an incomplete
+			// commit count is better than no report, as long as it says so.
+			c.logf("[yellow]branch scan failed: %v[-]", err)
+			report.Warnings = append(report.Warnings,
+				fmt.Sprintf("commits on unmerged branches unavailable: %v", err))
+		}
+
 		report.Collection = contrib.NewCollection(events, window)
 		cc := report.Collection
 		c.logf("[gray]contributions commits=%d issues=%d prs=%d (merged %d) reviews=%d[-]",
@@ -86,16 +103,18 @@ func (c *Client) FetchContributions(ctx context.Context, username string, window
 	})
 }
 
-// resolveUser confirms the login exists and picks up the display name.
-func (c *Client) resolveUser(ctx context.Context, gql *githubv4.Client, username string) (*contrib.Report, error) {
+// resolveUser confirms the login exists and picks up the display name, along
+// with the node ID the branch scan filters commit history by.
+func (c *Client) resolveUser(ctx context.Context, gql *githubv4.Client, username string) (*contrib.Report, githubv4.ID, error) {
 	var q userQuery
 	if err := gql.Query(ctx, &q, map[string]any{"login": githubv4.String(username)}); err != nil {
-		return nil, fmt.Errorf("graphql query failed: %w", err)
+		return nil, nil, fmt.Errorf("graphql query failed: %w", err)
 	}
 	if q.User.Login == "" {
-		return nil, ErrUserNotFound
+		return nil, nil, ErrUserNotFound
 	}
-	return &contrib.Report{Login: string(q.User.Login), Name: string(q.User.Name)}, nil
+	report := &contrib.Report{Login: string(q.User.Login), Name: string(q.User.Name)}
+	return report, q.User.ID, nil
 }
 
 // searchAuthored collects the pull requests and issues opened in the window.

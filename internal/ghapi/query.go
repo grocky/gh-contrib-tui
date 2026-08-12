@@ -13,8 +13,12 @@ import (
 // userQuery resolves a login, and distinguishes "no such user" from "this user
 // simply has no activity" -- the search endpoints return an empty result set
 // for both.
+// The node ID is what the branch scan filters commit history by: matching on
+// the account rather than on a commit's author email, exactly as commit search
+// does, so the two streams agree on whose work a commit is.
 type userQuery struct {
 	User struct {
+		ID    githubv4.ID
 		Login githubv4.String
 		Name  githubv4.String
 	} `graphql:"user(login: $login)"`
@@ -70,6 +74,76 @@ type reviewSearchQuery struct {
 			} `graphql:"... on PullRequest"`
 		}
 	} `graphql:"search(type: ISSUE, query: $query, first: 100, after: $cursor)"`
+}
+
+// orgRepoQuery lists the viewer's organizations with their repositories most
+// recently pushed to first, which is what lets the branch scan skip the great
+// majority of repositories without asking about their branches at all.
+type orgRepoQuery struct {
+	Viewer struct {
+		Organizations struct {
+			PageInfo pageInfoFragment
+			Nodes    []struct {
+				Repositories struct {
+					Nodes []struct {
+						Name     githubv4.String
+						PushedAt githubv4.DateTime
+						Owner    struct {
+							Login githubv4.String
+						}
+					}
+				} `graphql:"repositories(first: 100, orderBy: {field: PUSHED_AT, direction: DESC})"`
+			}
+		} `graphql:"organizations(first: 25, after: $orgCursor)"`
+	}
+}
+
+// branchCommitQuery walks one repository's branches, carrying the commits each
+// one holds that the given user authored inside the window.
+//
+// A branch's history includes every ancestor, so the same commit arrives once
+// per branch built on top of it; the domain layer's dedupe collapses them.
+// The default branch is named so the scan can skip it -- commit search already
+// covers it, and a landed commit should not be labelled with a branch.
+//
+// The ordering is ALPHABETICAL because it is the only one that means anything
+// here. RefOrderField's other value, TAG_COMMIT_DATE, does not order branches
+// by their commit date: asked for it DESC, an Enterprise host returned refs in
+// reverse alphabetical order, tips ranging over two years in no date order at
+// all. Any attempt to stop the walk early on "the tips are old
+// now" is therefore unsound, and the scan reads every branch.
+//
+// `since` bounds the walk by committer date, which is not the author date the
+// window is measured in. It is deliberately the looser of the two: rebasing
+// moves a commit's committer date forward, never back, so anything authored
+// inside the window is still caught here and the domain layer drops whatever
+// falls outside on the author date -- the same date commit search filters on.
+// There is no `until` for the same reason: a commit authored inside the window
+// can be rebased after it closes.
+type branchCommitQuery struct {
+	Repository struct {
+		DefaultBranchRef struct {
+			Name githubv4.String
+		}
+		Refs struct {
+			PageInfo pageInfoFragment
+			Nodes    []struct {
+				Name   githubv4.String
+				Target struct {
+					Commit struct {
+						CommittedDate githubv4.DateTime
+						History       struct {
+							Nodes []struct {
+								AuthoredDate    githubv4.DateTime
+								MessageHeadline githubv4.String
+								CommitURL       githubv4.URI
+							}
+						} `graphql:"history(since: $since, author: {id: $author}, first: 100)"`
+					} `graphql:"... on Commit"`
+				}
+			}
+		} `graphql:"refs(refPrefix: \"refs/heads/\", first: 100, after: $cursor, orderBy: {field: ALPHABETICAL, direction: ASC})"`
+	} `graphql:"repository(owner: $owner, name: $name)"`
 }
 
 // uriString renders a githubv4.URI, tolerating the null URLs GitHub returns

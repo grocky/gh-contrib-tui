@@ -49,6 +49,8 @@ and shown as `owner/repo@branch`, so unmerged work is visible as unmerged.
   organization-wide autocomplete
 - Optional: the [`gh` CLI](https://cli.github.com), which the app will borrow a
   token and a hostname from
+- Against a private GitHub Enterprise Server: the internal VPN, which the
+  host is only reachable from
 
 ## Install
 
@@ -75,6 +77,51 @@ up, so a stale environment variable does not block a working `gh` login.
 
 The host is resolved from `GITHUB_HOSTNAME`, then `GH_HOST`, then `gh auth
 status`, falling back to github.com.
+
+### GitHub Enterprise Server
+
+`github.example.com` is only reachable from the internal network, so you
+must be on the VPN for anything to work — the app, `gh`, and `git` alike. Off
+the VPN the host does not resolve or the connection times out, and the failure
+looks like a dead network rather than a bad token: `dial tcp: lookup
+github.example.com: no such host`, or a fetch that hangs and then errors.
+Connect first, then re-check the token.
+
+### When authentication does not work
+
+Start by asking what token you have and what it is allowed to do:
+
+```sh
+gh auth status              # which host, which account, which scopes
+```
+
+That reads the `gh` login only. To ask the same of whatever token the app would
+actually pick up, send it at the API and read the scopes off the response
+headers — GitHub reports them on every authenticated REST request:
+
+```sh
+curl -sI -H "Authorization: Bearer $GITHUB_TOKEN" \
+  https://github.example.com/api/v3/user | grep -i x-oauth-scopes
+```
+
+Use `https://api.github.com/user` for github.com. `X-OAuth-Scopes` lists what
+the token carries; a `200` with an empty list means the token authenticates but
+grants nothing — expect empty results rather than errors. Fine-grained personal
+access tokens and GitHub App tokens have no scopes at all and always report an
+empty header; their permissions are only visible on the token's own settings
+page.
+
+| Symptom | Likely cause |
+| --- | --- |
+| `... failed for all token sources; refresh credentials` | every candidate token is expired or revoked — `gh auth login`, or replace `GITHUB_TOKEN` |
+| Authenticates, but everyone shows 0 contributions | the token is missing `repo`, so private and internal repositories are invisible |
+| Adding someone autocompletes nothing | the token is missing `read:org` |
+| A stale `GITHUB_TOKEN` seems to be winning | it is tried first; `unset GITHUB_TOKEN GH_TOKEN` to fall through to `gh` |
+| Requests hang or the host will not resolve | not on the VPN (Enterprise Server only) |
+
+`alt+L` opens the log pane, which names the token source it tried and a
+fingerprint of the token itself — first and last four characters and its length,
+never the whole thing — so you can tell which credential a failure belongs to.
 
 ## Using it
 

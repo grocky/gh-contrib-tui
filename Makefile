@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := help
 
 GO       := go
+MODULE   := $(shell $(GO) list -m)
 BIN      := bin
 CMDS     := gh-contrib-tui screenshots ansi2svg
 TARGETS  := $(addprefix $(BIN)/,$(CMDS))
@@ -8,6 +9,7 @@ SRC      := $(shell find . -type f -name '*.go' -not -path './vendor/*') go.mod 
 
 STATICCHECK := $(GO) run honnef.co/go/tools/cmd/staticcheck@latest
 GORELEASER  := $(GO) run github.com/goreleaser/goreleaser/v2@latest
+GOIMPORTS   := $(GO) run golang.org/x/tools/cmd/goimports@latest -local $(MODULE)
 
 Q = $(if $(filter 1,$V),,@)
 M = $(shell printf "$(BLUE)▶$(RESET)")
@@ -60,16 +62,16 @@ cover: ; $(info $(M) running tests with coverage...) @ ## run tests and open the
 # ==================================================================================== #
 
 .PHONY: fmt
-fmt: ; $(info $(M) formatting...) @ ## format all Go source files
-	$Q gofmt -w cmd internal
+fmt: ; $(info $(M) formatting...) @ ## format and group imports in all Go source files (goimports)
+	$Q $(GOIMPORTS) -w cmd internal
 
 .PHONY: tidy
 tidy: fmt ; $(info $(M) tidying modfile...) @ ## format code and tidy the modfile
 	$Q $(GO) mod tidy -v
 
 .PHONY: fmt-check
-fmt-check: ; $(info $(M) checking formatting...) @ ## fail if any file is not gofmt clean
-	$Q out=$$(gofmt -l cmd internal); if [ -n "$$out" ]; then echo "not gofmt clean:"; echo "$$out"; exit 1; fi
+fmt-check: ; $(info $(M) checking formatting...) @ ## fail if any file is not goimports clean
+	$Q out=$$($(GOIMPORTS) -l cmd internal); if [ -n "$$out" ]; then echo "not goimports clean:"; echo "$$out"; exit 1; fi
 
 .PHONY: lint
 lint: ; $(info $(M) linting...) @ ## run go vet and staticcheck

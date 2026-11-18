@@ -261,7 +261,7 @@ without a network.
 ```sh
 make test        # the suite
 make test-race   # with the race detector
-make audit       # gofmt, go vet, staticcheck, race tests, go mod verify
+make audit       # goimports, go vet, staticcheck, race tests, go mod verify
 make help        # everything else
 ```
 

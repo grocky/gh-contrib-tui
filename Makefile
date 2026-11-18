@@ -7,6 +7,7 @@ TARGETS  := $(addprefix $(BIN)/,$(CMDS))
 SRC      := $(shell find . -type f -name '*.go' -not -path './vendor/*') go.mod go.sum
 
 STATICCHECK := $(GO) run honnef.co/go/tools/cmd/staticcheck@latest
+GORELEASER  := $(GO) run github.com/goreleaser/goreleaser/v2@latest
 
 Q = $(if $(filter 1,$V),,@)
 M = $(shell printf "$(BLUE)▶$(RESET)")
@@ -34,8 +35,8 @@ screenshots: ## regenerate docs/images/*.svg
 	$Q $(GO) run ./cmd/screenshots
 
 .PHONY: clean
-clean: ; $(info $(M) cleaning...) @ ## remove build and coverage artifacts
-	$Q rm -rf $(BIN) coverage.out
+clean: ; $(info $(M) cleaning...) @ ## remove build, release and coverage artifacts
+	$Q rm -rf $(BIN) dist coverage.out
 
 # ==================================================================================== #
 # TEST
@@ -78,6 +79,18 @@ lint: ; $(info $(M) linting...) @ ## run go vet and staticcheck
 .PHONY: audit
 audit: fmt-check lint test-race ; $(info $(M) verifying modules...) @ ## run every check (formatting, lint, race tests, module verification)
 	$Q $(GO) mod verify
+
+# ==================================================================================== #
+# RELEASE
+# ==================================================================================== #
+
+.PHONY: release-check
+release-check: ; $(info $(M) checking the release config...) @ ## validate .goreleaser.yaml
+	$Q $(GORELEASER) check
+
+.PHONY: snapshot
+snapshot: ; $(info $(M) building a snapshot release...) @ ## build every release archive into dist/ without publishing
+	$Q $(GORELEASER) release --snapshot --clean
 
 # ==================================================================================== #
 # HELPERS

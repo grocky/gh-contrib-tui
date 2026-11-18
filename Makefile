@@ -7,9 +7,13 @@ CMDS     := gh-contrib-tui screenshots ansi2svg
 TARGETS  := $(addprefix $(BIN)/,$(CMDS))
 SRC      := $(shell find . -type f -name '*.go' -not -path './vendor/*') go.mod go.sum
 
-STATICCHECK := $(GO) run honnef.co/go/tools/cmd/staticcheck@latest
-GORELEASER  := $(GO) run github.com/goreleaser/goreleaser/v2@latest
-GOIMPORTS   := $(GO) run golang.org/x/tools/cmd/goimports@latest -local $(MODULE)
+GOIMPORTS_VERSION   := v0.53.0
+STATICCHECK_VERSION := v0.8.2
+GORELEASER_VERSION  := v2.20.2
+
+GOIMPORTS   := $(GO) run golang.org/x/tools/cmd/goimports@$(GOIMPORTS_VERSION) -local $(MODULE)
+STATICCHECK := $(GO) run honnef.co/go/tools/cmd/staticcheck@$(STATICCHECK_VERSION)
+GORELEASER  := $(GO) run github.com/goreleaser/goreleaser/v2@$(GORELEASER_VERSION)
 
 Q = $(if $(filter 1,$V),,@)
 M = $(shell printf "$(BLUE)▶$(RESET)")

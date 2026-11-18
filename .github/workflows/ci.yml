@@ -21,4 +21,9 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
+      # setup-go installs go.mod's minimum Go and pins GOTOOLCHAIN=local. The
+      # module is still built and tested on that version, since nothing in it
+      # asks for newer; auto only lets the pinned tools fetch the Go they need.
       - run: make audit
+        env:
+          GOTOOLCHAIN: auto

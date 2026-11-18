@@ -1,0 +1,66 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the GitHub Release
+      id-token: write # sign the provenance attestation
+      attestations: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # the changelog walks back to the previous tag
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/checksums.txt
+
+  homebrew:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      # The token can push to the tap, so the bump lands as a direct commit; the
+      # tap's own CI audits it.
+      - uses: mislav/bump-homebrew-formula-action@v4
+        with:
+          formula-name: gh-contrib-tui
+          homebrew-tap: grocky/homebrew-tap
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+
+  go-proxy:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v6
+        with:
+          go-version: stable
+      # The first `go install ...@latest` after a tag would otherwise wait on the
+      # proxy fetching it.
+      - run: go list -m "github.com/grocky/gh-contrib-tui@${GITHUB_REF_NAME}"
+        env:
+          GOPROXY: https://proxy.golang.org

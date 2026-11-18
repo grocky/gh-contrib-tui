@@ -98,6 +98,29 @@ release-check: ; $(info $(M) checking the release config...) @ ## validate .gore
 snapshot: ; $(info $(M) building a snapshot release...) @ ## build every release archive into dist/ without publishing
 	$Q $(GORELEASER) release --snapshot --clean
 
+# Pushing the tag is the release: release.yml publishes everything from it.
+# Every check runs before anything is created, so a refusal leaves no trace.
+.PHONY: release
+release: ; $(info $(M) checking release $(VERSION)...) @ ## tag and push a release, e.g. make release VERSION=v0.2.0
+	$Q echo "$(VERSION)" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$$' \
+		|| { echo "VERSION must look like v1.2.3, got '$(VERSION)'"; exit 1; }
+	$Q test "$$(git branch --show-current)" = main \
+		|| { echo "releases are cut from main"; exit 1; }
+	$Q test -z "$$(git status --porcelain)" \
+		|| { echo "the working tree has uncommitted changes"; exit 1; }
+	$Q git fetch -q --tags origin main
+	$Q git merge-base --is-ancestor origin/main HEAD \
+		|| { echo "main is behind or has diverged from origin/main; pull first"; exit 1; }
+	$Q ! git rev-parse -q --verify "refs/tags/$(VERSION)" >/dev/null \
+		|| { echo "$(VERSION) is already tagged"; exit 1; }
+	$Q latest=$$(git tag -l 'v*' --sort=-v:refname | head -1); \
+		test -z "$$latest" || test "$$(printf '%s\n%s\n' "$$latest" "$(VERSION)" | sort -V | tail -1)" = "$(VERSION)" \
+		|| { echo "$(VERSION) is not newer than $$latest"; exit 1; }
+	$Q $(MAKE) --no-print-directory audit
+	$Q git tag -a "$(VERSION)" -m "$(VERSION)"
+	$Q git push --atomic origin main "refs/tags/$(VERSION)"
+	@echo "Released $(VERSION). Follow it with: gh run watch -R grocky/gh-contrib-tui \$$(gh run list -R grocky/gh-contrib-tui -w release -L 1 --json databaseId -q '.[0].databaseId')"
+
 # ==================================================================================== #
 # HELPERS
 # ==================================================================================== #

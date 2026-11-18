@@ -44,24 +44,52 @@ and shown as `owner/repo@branch`, so unmerged work is visible as unmerged.
 
 ## Requirements
 
-- Go 1.25 or newer to build
 - A GitHub token with the `repo` scope, and `read:org` if you want
   organization-wide autocomplete
 - Optional: the [`gh` CLI](https://cli.github.com), which the app will borrow a
   token and a hostname from
 - Against a private GitHub Enterprise Server: the internal VPN, which the
   host is only reachable from
+- Go 1.25 or newer, only to build from source
 
 ## Install
 
+With Homebrew, on macOS or Linux:
+
 ```sh
-make build   # writes bin/gh-contrib-tui (and the screenshot tools)
+brew install grocky/tap/gh-contrib-tui
 ```
 
-Or run it straight from the source tree:
+With Go:
 
 ```sh
-make run
+go install github.com/grocky/gh-contrib-tui/cmd/gh-contrib-tui@latest
+```
+
+Or download an archive for your platform from the
+[releases page](https://github.com/grocky/gh-contrib-tui/releases), check it, and
+put `gh-contrib-tui` on your `PATH`:
+
+```sh
+gh attestation verify gh-contrib-tui_*.tar.gz --repo grocky/gh-contrib-tui
+```
+
+The macOS binaries are not notarized. If you downloaded one in a browser,
+Gatekeeper will refuse to open it until you clear the quarantine flag:
+
+```sh
+xattr -d com.apple.quarantine ./gh-contrib-tui
+```
+
+Windows archives are published but untested.
+
+`gh-contrib-tui --version` reports which build you have.
+
+From a checkout:
+
+```sh
+make build   # writes bin/gh-contrib-tui (and the screenshot tools)
+make run     # or run it straight from the source tree
 ```
 
 ## Authentication
@@ -236,6 +264,20 @@ make test-race   # with the race detector
 make audit       # gofmt, go vet, staticcheck, race tests, go mod verify
 make help        # everything else
 ```
+
+### Releasing
+
+A pushed `v*` tag is the whole release. CI reruns the audit, GoReleaser publishes
+the archives and `checksums.txt` with a provenance attestation, the Homebrew tap
+formula is bumped, and the Go proxy is warmed for `go install`.
+
+```sh
+make snapshot                              # dry run: every archive into dist/
+git tag -a v0.1.0 -m v0.1.0 && git push origin v0.1.0
+```
+
+The tap bump needs a `HOMEBREW_TAP_TOKEN` secret that can push to
+`grocky/homebrew-tap`.
 
 Tests are written before the code they cover, and cover the fallbacks as well as
 the happy path — narrow terminals, missing scopes, corrupt caches, and slow

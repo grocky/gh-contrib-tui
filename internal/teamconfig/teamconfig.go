@@ -104,16 +104,31 @@ type Store struct {
 	host     string
 	path     string
 	disabled error
+
+	// legacyPath is where the team lived before the config directory moved,
+	// read only when nothing is at path yet.
+	legacyPath string
 }
 
 // Option customizes a Store.
 type Option func(*Store)
 
-// WithBaseDir overrides the config directory, primarily for tests.
+// WithBaseDir overrides the config directory, primarily for tests. It also
+// drops the legacy location, so an explicit directory never picks up a real
+// user's roster.
 func WithBaseDir(dir string) Option {
 	return func(s *Store) {
 		s.disabled = nil
 		s.path = filepath.Join(dir, fileName(s.host))
+		s.legacyPath = ""
+	}
+}
+
+// withLegacyDir sets the directory a team is restored from when the current
+// one has none.
+func withLegacyDir(dir string) Option {
+	return func(s *Store) {
+		s.legacyPath = filepath.Join(dir, fileName(s.host))
 	}
 }
 
@@ -157,19 +172,46 @@ func (s *Store) Load() (Team, error) {
 
 	raw, err := os.ReadFile(s.path)
 	if errors.Is(err, os.ErrNotExist) {
-		return Team{}, ErrNotConfigured
+		return s.restoreLegacy()
 	}
 	if err != nil {
 		return Team{}, fmt.Errorf("reading team config: %w", err)
 	}
+	return decode(raw, s.path)
+}
 
+// restoreLegacy loads a team from where it lived before the config directory
+// moved and copies it to the current location. The legacy file is left alone:
+// the move is not ours to finish, and it keeps a rollback. A failed copy still
+// returns the team, since the next save surfaces the same problem and the
+// restore is retried on the next launch.
+func (s *Store) restoreLegacy() (Team, error) {
+	if s.legacyPath == "" {
+		return Team{}, ErrNotConfigured
+	}
+	raw, err := os.ReadFile(s.legacyPath)
+	if errors.Is(err, os.ErrNotExist) {
+		return Team{}, ErrNotConfigured
+	}
+	if err != nil {
+		return Team{}, fmt.Errorf("reading legacy team config: %w", err)
+	}
+	team, err := decode(raw, s.legacyPath)
+	if err != nil {
+		return Team{}, err
+	}
+	_ = s.Save(team)
+	return team, nil
+}
+
+func decode(raw []byte, path string) (Team, error) {
 	var e entry
 	if err := json.Unmarshal(raw, &e); err != nil {
-		return Team{}, fmt.Errorf("parsing team config %s: %w", s.path, err)
+		return Team{}, fmt.Errorf("parsing team config %s: %w", path, err)
 	}
 	if e.SchemaVersion != schemaVersion {
 		return Team{}, fmt.Errorf("team config %s has schema version %d, want %d",
-			s.path, e.SchemaVersion, schemaVersion)
+			path, e.SchemaVersion, schemaVersion)
 	}
 	if e.Members == nil {
 		e.Members = []contrib.Person{}

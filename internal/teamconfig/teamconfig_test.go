@@ -201,3 +201,73 @@ func TestSave_CreatesItsDirectory(t *testing.T) {
 		t.Fatalf("load: %v", err)
 	}
 }
+
+// Setting XDG_CONFIG_HOME on macOS moves the config directory. A roster saved
+// before that has to follow the user to the new place, not vanish.
+func TestLoad_RestoresATeamFromTheLegacyDir(t *testing.T) {
+	dir, legacy := t.TempDir(), t.TempDir()
+	want := Team{Members: []contrib.Person{person("octocat", "Mona")}}
+	if err := Open("github.com", WithBaseDir(legacy)).Save(want); err != nil {
+		t.Fatalf("seeding legacy team: %v", err)
+	}
+
+	store := Open("github.com", WithBaseDir(dir), withLegacyDir(legacy))
+	got, err := store.Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v, want the legacy team", err)
+	}
+	if len(got.Members) != 1 || got.Members[0].Login != "octocat" {
+		t.Fatalf("Load() = %+v, want %+v", got.Members, want.Members)
+	}
+
+	restored, err := Open("github.com", WithBaseDir(dir)).Load()
+	if err != nil {
+		t.Fatalf("Load() from the new dir error = %v, want the restored team", err)
+	}
+	if len(restored.Members) != 1 || restored.Members[0].Login != "octocat" {
+		t.Fatalf("restored team = %+v, want %+v", restored.Members, want.Members)
+	}
+	if _, err := os.Stat(filepath.Join(legacy, fileName("github.com"))); err != nil {
+		t.Errorf("legacy file after restore: %v, want it left in place", err)
+	}
+}
+
+func TestLoad_PrefersTheCurrentDirOverTheLegacyDir(t *testing.T) {
+	dir, legacy := t.TempDir(), t.TempDir()
+	if err := Open("github.com", WithBaseDir(legacy)).Save(Team{Members: []contrib.Person{person("old", "Old")}}); err != nil {
+		t.Fatalf("seeding legacy team: %v", err)
+	}
+	if err := Open("github.com", WithBaseDir(dir)).Save(Team{Members: []contrib.Person{person("new", "New")}}); err != nil {
+		t.Fatalf("seeding current team: %v", err)
+	}
+
+	got, err := Open("github.com", WithBaseDir(dir), withLegacyDir(legacy)).Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	if len(got.Members) != 1 || got.Members[0].Login != "new" {
+		t.Fatalf("Load() = %+v, want the current dir's team", got.Members)
+	}
+}
+
+func TestLoad_CorruptLegacyFileIsAnErrorAndIsNotRestored(t *testing.T) {
+	dir, legacy := t.TempDir(), t.TempDir()
+	if err := os.WriteFile(filepath.Join(legacy, fileName("github.com")), []byte("{not json"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	_, err := Open("github.com", WithBaseDir(dir), withLegacyDir(legacy)).Load()
+	if err == nil || errors.Is(err, ErrNotConfigured) {
+		t.Fatalf("Load() error = %v, want a parse error", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, fileName("github.com"))); !errors.Is(err, os.ErrNotExist) {
+		t.Errorf("current file after a corrupt legacy load: %v, want it not created", err)
+	}
+}
+
+func TestLoad_NothingInEitherDirIsUnconfigured(t *testing.T) {
+	_, err := Open("github.com", WithBaseDir(t.TempDir()), withLegacyDir(t.TempDir())).Load()
+	if !errors.Is(err, ErrNotConfigured) {
+		t.Fatalf("Load() error = %v, want ErrNotConfigured", err)
+	}
+}

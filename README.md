@@ -74,6 +74,19 @@ put `gh-contrib-tui` on your `PATH`:
 gh attestation verify gh-contrib-tui_*.tar.gz --repo grocky/gh-contrib-tui
 ```
 
+On Linux, the same page has packages that install `gh-contrib-tui` to
+`/usr/bin`, and that your package manager can remove again later:
+
+```sh
+sudo apt install ./gh-contrib-tui_<version>_linux_amd64.deb   # Debian, Ubuntu
+sudo dnf install ./gh-contrib-tui_<version>_linux_amd64.rpm   # Fedora, RHEL
+sudo apk add --allow-untrusted ./gh-contrib-tui_<version>_linux_amd64.apk   # Alpine
+```
+
+They don't update themselves; install the next release's package over them.
+Opening links uses `xdg-open` and copying uses `xclip` or `wl-copy`, which
+are suggested but not required.
+
 The macOS binaries are not notarized. If you downloaded one in a browser,
 Gatekeeper will refuse to open it until you clear the quarantine flag:
 

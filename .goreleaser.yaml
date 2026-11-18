@@ -27,6 +27,30 @@ archives:
       - README.md
       - LICENSE
 
+nfpms:
+  - id: packages
+    ids: [gh-contrib-tui]
+    package_name: gh-contrib-tui
+    formats: [deb, rpm, apk]
+    vendor: Rocky Gray
+    maintainer: Rocky Gray <grocky@users.noreply.github.com>
+    homepage: https://github.com/grocky/gh-contrib-tui
+    description: Terminal dashboard of a GitHub team's contributions.
+    license: MIT
+    section: utils
+    bindir: /usr/bin
+    # Opening links and copying to the clipboard shell out to these; without
+    # them the TUI still works, so they are suggestions, not dependencies.
+    suggests:
+      - xdg-utils
+      - xclip
+      - wl-clipboard
+    contents:
+      - src: LICENSE
+        dst: /usr/share/doc/gh-contrib-tui/copyright
+      - src: README.md
+        dst: /usr/share/doc/gh-contrib-tui/README.md
+
 checksum:
   name_template: checksums.txt
 

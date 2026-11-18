@@ -418,7 +418,7 @@ func TestDashboard_FetchesSomeoneJustAdded(t *testing.T) {
 
 	m = pressRune(t, m, 'a')
 	m = typeText(t, m, "avery-lynn")
-	m = pressAndSettle(t, m, tea.KeyMsg{Type: tea.KeyEnter})
+	pressAndSettle(t, m, tea.KeyMsg{Type: tea.KeyEnter})
 
 	if got := svc.askedFor(); len(got) != 1 || got[0] != "avery-lynn" {
 		t.Errorf("fetched %v, want the new member fetched", got)

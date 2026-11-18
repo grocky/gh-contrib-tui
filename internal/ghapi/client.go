@@ -105,7 +105,7 @@ func (c *Client) newRESTClient(httpClient *http.Client) (*github.Client, error) 
 	if c.cfg.IsDotcom() {
 		return github.NewClient(httpClient), nil
 	}
-	return github.NewEnterpriseClient(c.cfg.RestBase, c.cfg.UploadBase, httpClient)
+	return github.NewClient(httpClient).WithEnterpriseURLs(c.cfg.RestBase, c.cfg.UploadBase)
 }
 
 // isUnauthorized reports whether an API error looks like a credential problem

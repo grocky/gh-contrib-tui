@@ -175,12 +175,18 @@ share a team or a cached report.
 
 | What | Where | Lifetime |
 | --- | --- | --- |
-| Your team | `<config>/gh-contrib-tuis/team-<host>.json` | until you change it |
-| Contribution reports | `<cache>/gh-contrib-tuis/reports-<host>.json` | 1 hour |
-| User directory | `<cache>/gh-contrib-tuis/directory-<host>.json` | 24 hours |
+| Your team | `<config>/gh-contrib/team-<host>.json` | until you change it |
+| Contribution reports | `<cache>/gh-contrib/reports-<host>.json` | 1 hour |
+| User directory | `<cache>/gh-contrib/directory-<host>.json` | 24 hours |
 
-`<config>` and `<cache>` are your platform's own — `~/.config` and `~/.cache` on
-Linux, `~/Library/Application Support` and `~/Library/Caches` on macOS.
+`<config>` is `$XDG_CONFIG_HOME` and `<cache>` is `$XDG_CACHE_HOME` when they
+are set to absolute paths, on macOS as well as Linux. Otherwise they are your
+platform's own: `~/.config` and `~/.cache` on Linux, `~/Library/Application
+Support` and `~/Library/Caches` on macOS.
+
+If you set `XDG_CONFIG_HOME` after a team was saved under `~/Library/Application
+Support`, the next launch copies it into the new location. The original is left
+where it was.
 
 The team file is written indented and is meant to be edited by hand. The two
 caches are disposable: delete them and the next launch refetches.
@@ -213,6 +219,7 @@ internal/teamconfig      the team roster, in the config directory
 internal/reportcache     contribution reports, in the cache directory
 internal/directorycache  the user directory, in the cache directory
 internal/platform        opening a browser and the clipboard, per OS
+internal/userdirs        the config and cache base dirs, XDG first
 internal/logging         the logger the pane reads from
 internal/ansisvg         the ANSI-to-SVG conversion behind both commands
 ```

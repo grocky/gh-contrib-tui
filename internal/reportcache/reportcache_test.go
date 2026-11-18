@@ -2,6 +2,7 @@ package reportcache
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -249,5 +250,15 @@ func TestNilCache_IsUsable(t *testing.T) {
 	}
 	if err := cache.Store("octocat", july, report("octocat", 12)); err == nil {
 		t.Error("nil cache stored without complaint, want an error to log")
+	}
+}
+
+func TestOpen_HonorsXDGCacheHome(t *testing.T) {
+	dir := t.TempDir()
+	t.Setenv("XDG_CACHE_HOME", dir)
+
+	want := filepath.Join(dir, "gh-contrib", fileName("github.com"))
+	if got := Open("github.com").Path(); got != want {
+		t.Errorf("Open(%q).Path() = %q, want %q", "github.com", got, want)
 	}
 }

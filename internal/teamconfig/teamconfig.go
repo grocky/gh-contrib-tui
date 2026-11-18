@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"gh-contrib/internal/contrib"
+	"gh-contrib/internal/userdirs"
 )
 
 const (
@@ -138,11 +139,15 @@ func withLegacyDir(dir string) Option {
 func Open(host string, opts ...Option) *Store {
 	s := &Store{host: host}
 
-	base, err := os.UserConfigDir()
+	base, err := userdirs.Config(os.Getenv)
 	if err != nil {
 		s.disabled = fmt.Errorf("locating user config dir: %w", err)
 	} else {
 		s.path = filepath.Join(base, "gh-contrib", fileName(host))
+		// Where the team lived before XDG_CONFIG_HOME was honored on macOS.
+		if platform, err := os.UserConfigDir(); err == nil && platform != base {
+			s.legacyPath = filepath.Join(platform, "gh-contrib", fileName(host))
+		}
 	}
 	for _, opt := range opts {
 		opt(s)

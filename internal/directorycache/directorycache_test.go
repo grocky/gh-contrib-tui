@@ -233,3 +233,13 @@ func TestNilCacheIsUsable(t *testing.T) {
 		t.Fatal("expected a nil cache to report an error")
 	}
 }
+
+func TestOpen_HonorsXDGCacheHome(t *testing.T) {
+	dir := t.TempDir()
+	t.Setenv("XDG_CACHE_HOME", dir)
+
+	want := filepath.Join(dir, "gh-contrib", fileName("github.com"))
+	if got := Open("github.com").Path(); got != want {
+		t.Errorf("Open(%q).Path() = %q, want %q", "github.com", got, want)
+	}
+}

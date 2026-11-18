@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"gh-contrib/internal/contrib"
@@ -269,5 +270,41 @@ func TestLoad_NothingInEitherDirIsUnconfigured(t *testing.T) {
 	_, err := Open("github.com", WithBaseDir(t.TempDir()), withLegacyDir(t.TempDir())).Load()
 	if !errors.Is(err, ErrNotConfigured) {
 		t.Fatalf("Load() error = %v, want ErrNotConfigured", err)
+	}
+}
+
+func TestOpen_HonorsXDGConfigHome(t *testing.T) {
+	dir := t.TempDir()
+	t.Setenv("XDG_CONFIG_HOME", dir)
+
+	want := filepath.Join(dir, "gh-contrib", fileName("github.com"))
+	if got := Open("github.com").Path(); got != want {
+		t.Errorf("Open(%q).Path() = %q, want %q", "github.com", got, want)
+	}
+}
+
+// On macOS the platform config dir is ~/Library/Application Support, which is
+// where a team lived before XDG_CONFIG_HOME was honored.
+func TestOpen_RestoresATeamFromApplicationSupport(t *testing.T) {
+	if runtime.GOOS != "darwin" {
+		t.Skip("the platform config dir only differs from XDG_CONFIG_HOME on macOS")
+	}
+	home, xdg := t.TempDir(), t.TempDir()
+	t.Setenv("HOME", home)
+	t.Setenv("XDG_CONFIG_HOME", xdg)
+	legacy := filepath.Join(home, "Library", "Application Support", "gh-contrib")
+	if err := Open("github.com", WithBaseDir(legacy)).Save(Team{Members: []contrib.Person{person("octocat", "Mona")}}); err != nil {
+		t.Fatalf("seeding legacy team: %v", err)
+	}
+
+	got, err := Open("github.com").Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v, want the Application Support team", err)
+	}
+	if len(got.Members) != 1 || got.Members[0].Login != "octocat" {
+		t.Fatalf("Load() = %+v, want octocat", got.Members)
+	}
+	if _, err := os.Stat(filepath.Join(xdg, "gh-contrib", fileName("github.com"))); err != nil {
+		t.Errorf("restored file under XDG_CONFIG_HOME: %v", err)
 	}
 }

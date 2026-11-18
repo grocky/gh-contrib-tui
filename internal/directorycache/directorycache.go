@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"gh-contrib/internal/contrib"
+	"gh-contrib/internal/userdirs"
 )
 
 const (
@@ -74,7 +75,7 @@ func withClock(now func() time.Time) Option {
 func Open(host string, opts ...Option) *Cache {
 	c := &Cache{host: host, ttl: DefaultTTL, now: time.Now}
 
-	base, err := os.UserCacheDir()
+	base, err := userdirs.Cache(os.Getenv)
 	if err != nil {
 		c.disabled = fmt.Errorf("locating user cache dir: %w", err)
 	} else {

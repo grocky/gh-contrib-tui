@@ -55,13 +55,13 @@ and shown as `owner/repo@branch`, so unmerged work is visible as unmerged.
 ## Install
 
 ```sh
-go build -o gh-contrib-tuis ./cmd/gh-contrib-tui
+make build   # writes bin/gh-contrib-tui (and the screenshot tools)
 ```
 
 Or run it straight from the source tree:
 
 ```sh
-go run ./cmd/gh-contrib-tui
+make run
 ```
 
 ## Authentication
@@ -224,9 +224,10 @@ without a network.
 ## Development
 
 ```sh
-go test ./...            # the suite
-go test ./... -race      # with the race detector
-go vet ./... && gofmt -l internal cmd
+make test        # the suite
+make test-race   # with the race detector
+make audit       # gofmt, go vet, staticcheck, race tests, go mod verify
+make help        # everything else
 ```
 
 Tests are written before the code they cover, and cover the fallbacks as well as
@@ -239,7 +240,7 @@ They are the real screens rather than mockups, and they regenerate with one
 command:
 
 ```sh
-go run ./cmd/screenshots               # writes docs/images/*.svg
+make screenshots                       # writes docs/images/*.svg
 go run ./cmd/screenshots -ansi /tmp/f  # keeps the captured frames too
 ```
 

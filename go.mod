@@ -1,4 +1,4 @@
-module gh-contrib
+module github.com/grocky/gh-contrib-tui
 
 go 1.25.0
 

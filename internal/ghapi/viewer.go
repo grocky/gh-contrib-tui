@@ -8,7 +8,7 @@ import (
 
 	"github.com/shurcooL/githubv4"
 
-	"gh-contrib/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
 )
 
 // viewerQuery identifies the account a token authenticates as.

@@ -14,9 +14,9 @@ import (
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
 
-	"gh-contrib/internal/auth"
-	"gh-contrib/internal/config"
-	"gh-contrib/internal/logging"
+	"github.com/grocky/gh-contrib-tui/internal/auth"
+	"github.com/grocky/gh-contrib-tui/internal/config"
+	"github.com/grocky/gh-contrib-tui/internal/logging"
 )
 
 // ErrUserNotFound is returned when the queried login is missing or the token

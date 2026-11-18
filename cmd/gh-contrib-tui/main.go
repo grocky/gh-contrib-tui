@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"os"
 
-	"gh-contrib/internal/directorycache"
-	"gh-contrib/internal/ghapi"
-	"gh-contrib/internal/reportcache"
-	"gh-contrib/internal/teamconfig"
-	"gh-contrib/internal/ui"
+	"github.com/grocky/gh-contrib-tui/internal/directorycache"
+	"github.com/grocky/gh-contrib-tui/internal/ghapi"
+	"github.com/grocky/gh-contrib-tui/internal/reportcache"
+	"github.com/grocky/gh-contrib-tui/internal/teamconfig"
+	"github.com/grocky/gh-contrib-tui/internal/ui"
 )
 
 func main() {

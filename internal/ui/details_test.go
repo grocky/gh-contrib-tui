@@ -7,8 +7,8 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"gh-contrib/internal/contrib"
-	"gh-contrib/internal/reportcache"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/reportcache"
 )
 
 // openDetailsFor drives the dashboard the way a person does: put the cursor on

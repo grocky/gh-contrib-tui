@@ -10,9 +10,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"gh-contrib/internal/contrib"
-	"gh-contrib/internal/reportcache"
-	"gh-contrib/internal/teamconfig"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/reportcache"
+	"github.com/grocky/gh-contrib-tui/internal/teamconfig"
 )
 
 // ContributionService is the GitHub-facing behavior the UI depends on.

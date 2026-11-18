@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"testing"
 
-	"gh-contrib/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
 )
 
 func person(login, name string) contrib.Person {

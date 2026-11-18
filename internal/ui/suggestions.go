@@ -4,7 +4,7 @@ import (
 	"strings"
 	"sync"
 
-	"gh-contrib/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
 )
 
 const (

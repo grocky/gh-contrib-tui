@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gh-contrib/internal/userdirs"
+	"github.com/grocky/gh-contrib-tui/internal/userdirs"
 )
 
 func TestConfig(t *testing.T) {

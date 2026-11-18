@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/lipgloss"
 
-	"gh-contrib/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
 )
 
 // Vertical costs the list has to give way to. Only the panels whose height is

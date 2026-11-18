@@ -12,9 +12,9 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"gh-contrib/internal/contrib"
-	"gh-contrib/internal/reportcache"
-	"gh-contrib/internal/teamconfig"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/reportcache"
+	"github.com/grocky/gh-contrib-tui/internal/teamconfig"
 )
 
 // fakeTeamStore is an in-memory roster.

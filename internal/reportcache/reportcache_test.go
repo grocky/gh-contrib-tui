@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"gh-contrib/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
 )
 
 var (

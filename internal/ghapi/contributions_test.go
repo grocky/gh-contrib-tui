@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"gh-contrib/internal/config"
-	"gh-contrib/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/config"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
 )
 
 const (

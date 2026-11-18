@@ -15,7 +15,7 @@ import (
 	"io"
 	"os"
 
-	"gh-contrib/internal/ansisvg"
+	"github.com/grocky/gh-contrib-tui/internal/ansisvg"
 )
 
 func main() {

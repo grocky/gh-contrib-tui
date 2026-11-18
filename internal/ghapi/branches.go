@@ -6,7 +6,7 @@ import (
 
 	"github.com/shurcooL/githubv4"
 
-	"gh-contrib/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
 )
 
 // GitHub's commit search index covers a repository's default branch and

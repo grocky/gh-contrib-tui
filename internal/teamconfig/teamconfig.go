@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gh-contrib/internal/contrib"
-	"gh-contrib/internal/userdirs"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/userdirs"
 )
 
 const (

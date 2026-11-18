@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/go-github/v66/github"
 
-	"gh-contrib/internal/auth"
+	"github.com/grocky/gh-contrib-tui/internal/auth"
 )
 
 func staticTokens(tokens ...string) TokenResolver {

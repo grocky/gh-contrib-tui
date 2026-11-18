@@ -21,9 +21,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
 
-	"gh-contrib/internal/ansisvg"
-	"gh-contrib/internal/contrib"
-	"gh-contrib/internal/ui"
+	"github.com/grocky/gh-contrib-tui/internal/ansisvg"
+	"github.com/grocky/gh-contrib-tui/internal/contrib"
+	"github.com/grocky/gh-contrib-tui/internal/ui"
 )
 
 // The sample team. Real-looking names, because the name column's width is one

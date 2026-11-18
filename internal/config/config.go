@@ -76,7 +76,7 @@ func resolveHost() string {
 	if err != nil {
 		return ""
 	}
-	for _, line := range strings.Split(stripANSICodes(string(out)), "\n") {
+	for line := range strings.SplitSeq(stripANSICodes(string(out)), "\n") {
 		line = strings.TrimSpace(line)
 		if line == "" || strings.HasPrefix(line, "✓") || strings.HasPrefix(line, "-") {
 			continue

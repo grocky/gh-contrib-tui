@@ -1,4 +1,4 @@
-// Command github-contrib-tui is a terminal browser for a GitHub user's
+// Command gh-contrib-tui is a terminal browser for a GitHub user's
 // contribution activity: summary totals, a contribution heatmap, and the pull
 // requests they authored or reviewed.
 package main
@@ -7,16 +7,16 @@ import (
 	"fmt"
 	"os"
 
-	"gh-contribs/internal/directorycache"
-	"gh-contribs/internal/ghapi"
-	"gh-contribs/internal/reportcache"
-	"gh-contribs/internal/teamconfig"
-	"gh-contribs/internal/ui"
+	"gh-contrib/internal/directorycache"
+	"gh-contrib/internal/ghapi"
+	"gh-contrib/internal/reportcache"
+	"gh-contrib/internal/teamconfig"
+	"gh-contrib/internal/ui"
 )
 
 func main() {
 	if err := run(); err != nil {
-		fmt.Fprintf(os.Stderr, "github-contrib-tui: %v\n", err)
+		fmt.Fprintf(os.Stderr, "gh-contrib-tui: %v\n", err)
 		os.Exit(1)
 	}
 }

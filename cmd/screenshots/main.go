@@ -21,9 +21,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
 
-	"gh-contribs/internal/ansisvg"
-	"gh-contribs/internal/contrib"
-	"gh-contribs/internal/ui"
+	"gh-contrib/internal/ansisvg"
+	"gh-contrib/internal/contrib"
+	"gh-contrib/internal/ui"
 )
 
 // The sample team. Real-looking names, because the name column's width is one
@@ -46,9 +46,9 @@ type work struct {
 var (
 	// The dashboard's window: what the team has been doing lately.
 	recent = map[string][]work{
-		"nash-robin":        {{"acme/platform-api", 38}, {"acme/web-console", 17}, {"acme/terraform-modules", 9}},
-		"avery-lynn":       {{"acme/web-console", 24}, {"acme/design-system", 11}},
-		"olsen-ana":        {{"acme/ingest", 21}, {"acme/platform-api", 6}, {"acme/scripts", 2}},
+		"nash-robin":    {{"acme/platform-api", 38}, {"acme/web-console", 17}, {"acme/terraform-modules", 9}},
+		"avery-lynn":    {{"acme/web-console", 24}, {"acme/design-system", 11}},
+		"olsen-ana":     {{"acme/ingest", 21}, {"acme/platform-api", 6}, {"acme/scripts", 2}},
 		"bianchi-priya": {{"acme/platform-api", 12}, {"acme/docs", 4}},
 	}
 
@@ -103,7 +103,7 @@ func run() error {
 	}{
 		{
 			name:  "dashboard",
-			title: "gh-contribs team dashboard",
+			title: "gh-contrib team dashboard",
 			shot: ui.Screenshot{
 				Width: 112, Height: 30, Host: *host,
 				Team: team, Reports: dashboardReports, Window: dashboardWindow,
@@ -111,7 +111,7 @@ func run() error {
 		},
 		{
 			name:  "details",
-			title: "gh-contribs contribution details",
+			title: "gh-contrib contribution details",
 			shot: ui.Screenshot{
 				Width: 120, Height: 42, Host: *host,
 				Team: team, Reports: detailsReports, Window: detailsWindow,
@@ -120,7 +120,7 @@ func run() error {
 		},
 		{
 			name:  "details-tiles",
-			title: "gh-contribs repository tiles",
+			title: "gh-contrib repository tiles",
 			shot: ui.Screenshot{
 				Width: 120, Height: 42, Host: *host,
 				Team: team, Reports: detailsReports, Window: detailsWindow,

@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"gh-contribs/internal/config"
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/config"
+	"gh-contrib/internal/contrib"
 )
 
 const (

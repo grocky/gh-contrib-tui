@@ -15,7 +15,7 @@ import (
 	"io"
 	"os"
 
-	"gh-contribs/internal/ansisvg"
+	"gh-contrib/internal/ansisvg"
 )
 
 func main() {

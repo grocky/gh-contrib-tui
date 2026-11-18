@@ -195,7 +195,7 @@ caller, so there is no reason to keep both.
 
 Suggestions should be instant on the second launch.
 
-- Path: `os.UserCacheDir()/gh-contribs/directory-<host>.json`
+- Path: `os.UserCacheDir()/gh-contrib/directory-<host>.json`
   (`<host>` sanitized, so github.com and GHES caches never collide)
 - Written `0600` — this is org roster data, not secret, but not world-readable either
 - Payload: `{schemaVersion, host, viewer, fetchedAt, people[]}`

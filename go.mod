@@ -1,4 +1,4 @@
-module gh-contribs
+module gh-contrib
 
 go 1.25.0
 

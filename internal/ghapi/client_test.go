@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/go-github/v66/github"
 
-	"gh-contribs/internal/auth"
+	"gh-contrib/internal/auth"
 )
 
 func staticTokens(tokens ...string) TokenResolver {

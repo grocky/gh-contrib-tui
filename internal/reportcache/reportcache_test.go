@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/contrib"
 )
 
 var (

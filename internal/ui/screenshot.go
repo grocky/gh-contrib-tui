@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/list"
 
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/contrib"
 )
 
 // Screenshot describes a frame to render for the documentation.

@@ -12,8 +12,8 @@ import (
 	"sync"
 	"testing"
 
-	"gh-contribs/internal/config"
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/config"
+	"gh-contrib/internal/contrib"
 )
 
 // scriptedGraphQL replies with the next payload in the list for each request,

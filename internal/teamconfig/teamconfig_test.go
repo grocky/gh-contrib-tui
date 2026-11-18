@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/contrib"
 )
 
 func person(login, name string) contrib.Person {

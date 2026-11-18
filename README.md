@@ -1,4 +1,4 @@
-# gh-contribs
+# gh-contrib-tuis
 
 A terminal dashboard for GitHub contribution activity. It opens on a team
 summary — everyone you follow, ranked by how much they have been doing — and
@@ -55,13 +55,13 @@ and shown as `owner/repo@branch`, so unmerged work is visible as unmerged.
 ## Install
 
 ```sh
-go build -o gh-contribs ./cmd/github-contrib-tui
+go build -o gh-contrib-tuis ./cmd/gh-contrib-tui
 ```
 
 Or run it straight from the source tree:
 
 ```sh
-go run ./cmd/github-contrib-tui
+go run ./cmd/gh-contrib-tui
 ```
 
 ## Authentication
@@ -175,9 +175,9 @@ share a team or a cached report.
 
 | What | Where | Lifetime |
 | --- | --- | --- |
-| Your team | `<config>/gh-contribs/team-<host>.json` | until you change it |
-| Contribution reports | `<cache>/gh-contribs/reports-<host>.json` | 1 hour |
-| User directory | `<cache>/gh-contribs/directory-<host>.json` | 24 hours |
+| Your team | `<config>/gh-contrib-tuis/team-<host>.json` | until you change it |
+| Contribution reports | `<cache>/gh-contrib-tuis/reports-<host>.json` | 1 hour |
+| User directory | `<cache>/gh-contrib-tuis/directory-<host>.json` | 24 hours |
 
 `<config>` and `<cache>` are your platform's own — `~/.config` and `~/.cache` on
 Linux, `~/Library/Application Support` and `~/Library/Caches` on macOS.
@@ -200,7 +200,7 @@ goes past the cache whatever its age.
 ## Layout of the source
 
 ```
-cmd/github-contrib-tui   the binary: wires a client, the stores, and the UI
+cmd/gh-contrib-tui   the binary: wires a client, the stores, and the UI
 cmd/ansi2svg             turns a captured terminal frame into an SVG
 cmd/screenshots          renders the README's frames and converts them
 internal/contrib         the domain — reports, events, calendars, date ranges.

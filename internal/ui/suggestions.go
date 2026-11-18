@@ -4,7 +4,7 @@ import (
 	"strings"
 	"sync"
 
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/contrib"
 )
 
 const (

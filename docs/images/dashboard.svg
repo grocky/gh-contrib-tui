@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="972" height="538" viewBox="0 0 972 538" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace" font-size="14">
-<title>gh-contribs team dashboard</title>
+<title>gh-contrib team dashboard</title>
 <rect width="972" height="538" rx="8" fill="#0d1117"/>
 <rect x="24.4" y="14" width="92.4" height="17" fill="#58a6ff"/>
 <rect x="704.8000000000001" y="133" width="8.4" height="17" fill="#7ee787"/>
@@ -54,7 +54,7 @@
 <rect x="713.2" y="422" width="8.4" height="17" fill="#30363c"/>
 <rect x="721.6" y="422" width="8.4" height="17" fill="#30363c"/>
 <rect x="730" y="422" width="8.4" height="17" fill="#30363c"/>
-<text y="25.2"><tspan x="24.4" fill="#ffffff" font-weight="600">gh-contribs</tspan><tspan x="805.6" fill="#6e7681">github.example.com</tspan></text>
+<text y="25.2"><tspan x="24.4" fill="#ffffff" font-weight="600">gh-contrib</tspan><tspan x="805.6" fill="#6e7681">github.example.com</tspan></text>
 <path d="M23.2,56.5H24.4M20.2,59.5V65M20.2,59.5Q20.2,56.5 23.2,56.5" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M24.4,56.5H32.8" stroke="#30363c" stroke-width="1.1" fill="none"/>
 <path d="M32.8,56.5H41.199999999999996" stroke="#30363c" stroke-width="1.1" fill="none"/>

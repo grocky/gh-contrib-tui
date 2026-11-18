@@ -9,7 +9,7 @@ import (
 	"github.com/google/go-github/v66/github"
 	"github.com/shurcooL/githubv4"
 
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/contrib"
 )
 
 // GraphQL connection page sizes live in the struct tags below, which must be

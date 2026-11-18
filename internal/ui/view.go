@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/lipgloss"
 
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/contrib"
 )
 
 // Vertical costs the list has to give way to. Only the panels whose height is
@@ -120,7 +120,7 @@ func (m model) viewTeam() string {
 }
 
 func (m model) viewHeader() string {
-	title := titleStyle.Render("gh-contribs")
+	title := titleStyle.Render("gh-contrib")
 	host := hostStyle.Render(m.host)
 	gap := m.width - lipgloss.Width(title) - lipgloss.Width(host)
 	if gap < 1 {

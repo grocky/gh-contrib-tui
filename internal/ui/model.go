@@ -16,10 +16,10 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"gh-contribs/internal/contrib"
-	"gh-contribs/internal/platform"
-	"gh-contribs/internal/reportcache"
-	"gh-contribs/internal/teamconfig"
+	"gh-contrib/internal/contrib"
+	"gh-contrib/internal/platform"
+	"gh-contrib/internal/reportcache"
+	"gh-contrib/internal/teamconfig"
 )
 
 // discoveryTimeout bounds the background user-suggestion lookup.

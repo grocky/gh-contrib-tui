@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/contrib"
 )
 
 const (
@@ -127,7 +127,7 @@ func Open(host string, opts ...Option) *Store {
 	if err != nil {
 		s.disabled = fmt.Errorf("locating user config dir: %w", err)
 	} else {
-		s.path = filepath.Join(base, "gh-contribs", fileName(host))
+		s.path = filepath.Join(base, "gh-contrib", fileName(host))
 	}
 	for _, opt := range opts {
 		opt(s)

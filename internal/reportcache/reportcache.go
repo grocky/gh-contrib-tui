@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/contrib"
 )
 
 const (
@@ -111,7 +111,7 @@ func Open(host string, opts ...Option) *Cache {
 	if err != nil {
 		c.disabled = fmt.Errorf("locating user cache dir: %w", err)
 	} else {
-		c.path = filepath.Join(base, "gh-contribs", fileName(host))
+		c.path = filepath.Join(base, "gh-contrib", fileName(host))
 	}
 	for _, opt := range opts {
 		opt(c)

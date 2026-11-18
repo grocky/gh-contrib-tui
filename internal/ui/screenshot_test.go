@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 
-	"gh-contribs/internal/contrib"
+	"gh-contrib/internal/contrib"
 )
 
 func shotFixture() Screenshot {
@@ -25,7 +25,7 @@ func shotFixture() Screenshot {
 			{Login: "ghost", Name: "Nobody, Home", Active: true},
 		},
 		Reports: map[string]*contrib.Report{
-			"nash-robin":  busy,
+			"nash-robin": busy,
 			"avery-lynn": reportOver("avery-lynn", 12, 1),
 		},
 		Window: window,
